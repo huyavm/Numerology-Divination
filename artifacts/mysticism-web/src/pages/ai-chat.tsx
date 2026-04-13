@@ -7,6 +7,7 @@ import { useListOpenaiConversations, useCreateOpenaiConversation, useGetOpenaiCo
 import { useQueryClient } from "@tanstack/react-query";
 import { Trash2, MessageSquarePlus, Send } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 export default function AIChatPage() {
   const queryClient = useQueryClient();
@@ -181,17 +182,23 @@ export default function AIChatPage() {
                 ) : (
                   localMessages.map((msg, i) => (
                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      <div className={`max-w-[80%] rounded-2xl px-5 py-3 text-sm leading-relaxed ${
-                        msg.role === 'user' 
-                          ? 'bg-primary text-primary-foreground rounded-tr-sm' 
-                          : 'bg-card/60 backdrop-blur-sm border border-primary/20 text-foreground rounded-tl-sm'
-                      }`}>
-                        {msg.role === 'assistant' && !msg.content && isStreaming && i === localMessages.length - 1 ? (
-                          <span className="animate-pulse">Đang suy ngẫm...</span>
-                        ) : (
-                          <div className="whitespace-pre-wrap">{msg.content}</div>
-                        )}
-                      </div>
+                      {msg.role === 'user' ? (
+                        <div className="max-w-[75%] rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed bg-primary text-primary-foreground">
+                          {msg.content}
+                        </div>
+                      ) : (
+                        <div className="max-w-[85%] rounded-2xl rounded-tl-sm px-5 py-4 bg-card/60 backdrop-blur-sm border border-primary/20 text-foreground">
+                          {!msg.content && isStreaming && i === localMessages.length - 1 ? (
+                            <div className="flex items-center gap-1.5 py-1">
+                              <span className="w-2 h-2 rounded-full bg-primary/70 animate-bounce" style={{ animationDelay: "0ms" }} />
+                              <span className="w-2 h-2 rounded-full bg-primary/70 animate-bounce" style={{ animationDelay: "150ms" }} />
+                              <span className="w-2 h-2 rounded-full bg-primary/70 animate-bounce" style={{ animationDelay: "300ms" }} />
+                            </div>
+                          ) : (
+                            <MarkdownRenderer content={msg.content} />
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))
                 )}

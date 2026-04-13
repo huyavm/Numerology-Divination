@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { computeLifePathNumber, computeSoulNumber, computeDestinyNumber, computePersonalityNumber, getNumberMeaning } from "@/lib/numerology";
 import { useSSEChat } from "@/hooks/use-sse-chat";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 export default function NumerologyPage() {
   const [name, setName] = useState("");
@@ -119,8 +120,16 @@ export default function NumerologyPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {messages.filter(m => m.role === 'assistant').map((msg, i) => (
-                    <div key={i} className="p-4 rounded-md bg-background/50 border border-border/50 text-foreground whitespace-pre-wrap leading-relaxed font-sans text-sm">
-                      {msg.content}
+                    <div key={i} className="px-5 py-4 rounded-lg bg-background/40 border border-primary/15 shadow-inner">
+                      {msg.content ? (
+                        <MarkdownRenderer content={msg.content} />
+                      ) : (
+                        <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
+                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
+                        </div>
+                      )}
                     </div>
                   ))}
                   {!messages.some(m => m.role === 'assistant') && !isStreaming && (
