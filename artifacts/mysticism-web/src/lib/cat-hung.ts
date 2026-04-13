@@ -515,6 +515,81 @@ export function analyzeCompatibility(name: string, digits: string): Compatibilit
   return { nameNumber, phoneNumber, level, label, labelColor, description };
 }
 
+export function extractAllPhoneDigits(phone: string): string {
+  return phone.replace(/\D/g, "").slice(0, 10);
+}
+
+export function computeLifePathFromDOB(dob: string): number {
+  const digits = dob.replace(/\D/g, "").split("").map(Number);
+  if (digits.length < 8) return 0;
+  let sum = digits.reduce((a, b) => a + b, 0);
+  while (sum > 9) {
+    sum = String(sum).split("").reduce((s, d) => s + parseInt(d), 0);
+  }
+  return sum;
+}
+
+export interface FullPhoneAnalysis {
+  allDigits: string;
+  prefixDigits: string;
+  subscriberDigits: string;
+  prefixResult: CatHungResult;
+  subscriberResult: CatHungResult;
+  fullResult: CatHungResult;
+  energyNumber: number;
+}
+
+export function analyzeFullPhone(phone: string): FullPhoneAnalysis {
+  const allDigits = extractAllPhoneDigits(phone);
+  const prefixDigits = allDigits.slice(0, 4);
+  const subscriberDigits = allDigits.slice(4);
+  return {
+    allDigits,
+    prefixDigits,
+    subscriberDigits,
+    prefixResult: analyzeCatHung(prefixDigits),
+    subscriberResult: analyzeCatHung(subscriberDigits),
+    fullResult: analyzeCatHung(allDigits),
+    energyNumber: computePhoneEnergyNumber(allDigits),
+  };
+}
+
+export function analyzeCompatibilityWithDOB(dob: string, digits: string): CompatibilityResult {
+  const lifePathNumber = computeLifePathFromDOB(dob);
+  const phoneNumber = computePhoneEnergyNumber(digits);
+
+  let level: CompatibilityResult["level"];
+  let label: string;
+  let labelColor: string;
+  let description: string;
+
+  const effectiveLP = lifePathNumber === 0 ? 1 : lifePathNumber;
+
+  if (effectiveLP === phoneNumber) {
+    level = "perfect";
+    label = "Tuyệt Đối Tương Hợp";
+    labelColor = "text-yellow-400";
+    description = `Số đường đời ${NUMBER_NAME[effectiveLP]} hoàn toàn cộng hưởng với năng lượng ${NUMBER_NAME[phoneNumber]} của số điện thoại. Đây là sự kết hợp thiên định — số này như được vũ trụ trao tặng riêng cho bạn.`;
+  } else if (COMPATIBILITY_MAP[effectiveLP]?.friends.includes(phoneNumber)) {
+    level = "good";
+    label = "Tương Hợp";
+    labelColor = "text-green-400";
+    description = `Số đường đời ${NUMBER_NAME[effectiveLP]} hòa hợp với năng lượng ${NUMBER_NAME[phoneNumber]} của số điện thoại. Hai nguồn năng lượng bổ trợ nhau, giúp cuộc sống hanh thông hơn.`;
+  } else if (COMPATIBILITY_MAP[effectiveLP]?.clash.includes(phoneNumber)) {
+    level = "clash";
+    label = "Xung Khắc";
+    labelColor = "text-red-400";
+    description = `Số đường đời ${NUMBER_NAME[effectiveLP]} xung với năng lượng ${NUMBER_NAME[phoneNumber]} của số điện thoại. Sự đối lập này có thể tạo ra ma sát vô hình. Nên đeo vật phẩm phong thủy tương ứng để hóa giải.`;
+  } else {
+    level = "neutral";
+    label = "Trung Tính";
+    labelColor = "text-blue-400";
+    description = `Số đường đời ${NUMBER_NAME[effectiveLP]} và năng lượng ${NUMBER_NAME[phoneNumber]} của số điện thoại không đặc biệt tương hợp cũng không xung khắc. Tự thân nỗ lực là yếu tố quyết định thành công.`;
+  }
+
+  return { nameNumber: effectiveLP, phoneNumber, level, label, labelColor, description };
+}
+
 export const LEVEL_CONFIG: Record<DigitInfo["level"], { bg: string; border: string; text: string; badge: string }> = {
   great:   { bg: "bg-yellow-500/10", border: "border-yellow-500/40", text: "text-yellow-400", badge: "bg-yellow-500/20 text-yellow-300 border-yellow-500/40" },
   good:    { bg: "bg-green-500/10",  border: "border-green-500/40",  text: "text-green-400",  badge: "bg-green-500/20 text-green-300 border-green-500/40"  },
