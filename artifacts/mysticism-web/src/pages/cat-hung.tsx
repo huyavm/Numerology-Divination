@@ -21,6 +21,7 @@ import {
   type CompatibilityResult,
   type FullPhoneAnalysis,
 } from "@/lib/cat-hung";
+import { CatHungKnowledge } from "@/components/knowledge-base";
 import { useSSEChat } from "@/hooks/use-sse-chat";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
@@ -560,23 +561,7 @@ export default function CatHungPage() {
             </TabsContent>
           </Tabs>
 
-          <Card className="bg-card/20 backdrop-blur-sm border-primary/10 p-6">
-            <p className="text-xs text-muted-foreground text-center mb-4 uppercase tracking-widest">Thang điểm cát hung</p>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-center text-xs">
-              {[
-                { label: "Đại Cát", color: "text-yellow-400", desc: "≥ 8 điểm" },
-                { label: "Cát", color: "text-green-400", desc: "4–7.9 điểm" },
-                { label: "Bình Thường", color: "text-blue-400", desc: "0–3.9 điểm" },
-                { label: "Hung", color: "text-orange-400", desc: "-4–-0.1 điểm" },
-                { label: "Đại Hung", color: "text-red-500", desc: "< -4 điểm" },
-              ].map((v, i) => (
-                <div key={i} className="space-y-1">
-                  <div className={`font-bold text-sm ${v.color}`}>{v.label}</div>
-                  <div className="text-muted-foreground">{v.desc}</div>
-                </div>
-              ))}
-            </div>
-          </Card>
+          <CatHungKnowledge />
         </div>
       </main>
     </div>

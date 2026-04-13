@@ -8,6 +8,7 @@ import { computeBatu, Pillar, NguyenHanhItem } from "@/lib/batu";
 import { useSSEChat } from "@/hooks/use-sse-chat";
 import { Progress } from "@/components/ui/progress";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
+import { BatuKnowledge } from "@/components/knowledge-base";
 
 export default function BatuPage() {
   const [date, setDate] = useState("");
@@ -135,6 +136,7 @@ export default function BatuPage() {
               </Card>
             </div>
           )}
+          <BatuKnowledge />
         </div>
       </main>
     </div>

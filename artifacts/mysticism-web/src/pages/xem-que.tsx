@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Hexagram, randomHexagram } from "@/lib/iching";
 import { useSSEChat } from "@/hooks/use-sse-chat";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
+import { IChingKnowledge } from "@/components/knowledge-base";
 
 export default function IChingPage() {
   const [hexagram, setHexagram] = useState<Hexagram | null>(null);
@@ -108,6 +109,7 @@ export default function IChingPage() {
               </div>
             )}
           </div>
+          <IChingKnowledge />
         </div>
       </main>
     </div>

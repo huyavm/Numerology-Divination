@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { computeLifePathNumber, computeSoulNumber, computeDestinyNumber, computePersonalityNumber, getNumberMeaning } from "@/lib/numerology";
 import { useSSEChat } from "@/hooks/use-sse-chat";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
+import { NumerologyKnowledge } from "@/components/knowledge-base";
 
 export default function NumerologyPage() {
   const [name, setName] = useState("");
@@ -139,6 +140,7 @@ export default function NumerologyPage() {
               </Card>
             </div>
           )}
+          <NumerologyKnowledge />
         </div>
       </main>
     </div>
