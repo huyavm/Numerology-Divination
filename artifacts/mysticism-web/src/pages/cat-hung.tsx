@@ -22,7 +22,7 @@ import {
   type FullPhoneAnalysis,
 } from "@/lib/cat-hung";
 import { CatHungKnowledge } from "@/components/knowledge-base";
-import { useSSEChat } from "@/hooks/use-sse-chat";
+import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 type PhoneMode = "6" | "10";
@@ -224,7 +224,7 @@ function SixDigitResult({
 }: {
   result: CatHungResult; numStr: string; ownerName?: string; compat?: CompatibilityResult;
 }) {
-  const { messages, streamResponse, isStreaming } = useSSEChat();
+  const { messages, streamResponse, isStreaming } = useAISSEChat();
   const handleAskAI = () => {
     const ownerPart = ownerName
       ? ` Chủ sở hữu: ${ownerName} (số mệnh: ${compat?.nameNumber}, năng lượng số: ${compat?.phoneNumber}, tương hợp: ${compat?.label}).`
@@ -255,7 +255,7 @@ function TenDigitResult({
   compatName?: CompatibilityResult;
   compatDOB?: CompatibilityResult;
 }) {
-  const { messages, streamResponse, isStreaming } = useSSEChat();
+  const { messages, streamResponse, isStreaming } = useAISSEChat();
   const handleAskAI = () => {
     const ownerPart = ownerName
       ? ` Chủ sở hữu: ${ownerName}.`
@@ -311,7 +311,7 @@ function TenDigitResult({
 }
 
 function PlateResult({ result, numStr }: { result: CatHungResult; numStr: string }) {
-  const { messages, streamResponse, isStreaming } = useSSEChat();
+  const { messages, streamResponse, isStreaming } = useAISSEChat();
   const handleAskAI = () => {
     const context = `Phân tích cát hung biển số xe: ${numStr}. Kết quả: ${result.verdictLabel} (điểm: ${result.totalScore.toFixed(1)}). Chữ số: ${result.digits.map((d) => `${d.digit}(${d.meaning})`).join(", ")}. ${result.combinations.length > 0 ? `Tổ hợp: ${result.combinations.map((c) => `${c.pattern} - ${c.name}: ${c.meaning}`).join("; ")}.` : ""}`;
     streamResponse("/api/mysticism/ai-interpret", { type: "cat-hung", context });

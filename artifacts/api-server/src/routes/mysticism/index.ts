@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { openai } from "@workspace/integrations-openai-ai-server";
+import { openai as replitOpenAI } from "@workspace/integrations-openai-ai-server";
+import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AiInterpretMysticismBody } from "@workspace/api-zod";
 
 const router = Router();
@@ -14,6 +16,10 @@ const SYSTEM_PROMPTS: Record<string, string> = {
   "cat-hung": `Bạn là chuyên gia huyền số học người Việt, thông thạo cả phong thủy Á Đông lẫn thần số học hiện đại. Khi phân tích cát hung của số điện thoại hoặc biển số xe, hãy: (1) Giải thích ý nghĩa tâm linh và năng lượng của từng chữ số (Lộc-6, Phát-8, Cửu-9, Tử-4...), (2) Phân tích các tổ hợp số đặc biệt và cộng hưởng năng lượng giữa chúng, (3) Đánh giá tổng thể ảnh hưởng đến tài lộc, sự nghiệp, sức khỏe, tình duyên, (4) Đưa ra lời khuyên thực tế — nếu hung thì gợi ý cách hóa giải hoặc bổ sung phong thủy, nếu cát thì chỉ cách phát huy tối đa. Giọng văn sâu sắc, uyên bác nhưng gần gũi. Trả lời bằng tiếng Việt.`,
 };
 
+function getSystemPrompt(type: string): string {
+  return SYSTEM_PROMPTS[type] || `Bạn là nhà huyền học uyên bác, trả lời bằng tiếng Việt với giọng văn sâu sắc và thấu đáo.`;
+}
+
 router.post("/mysticism/ai-interpret", async (req, res) => {
   const parsed = AiInterpretMysticismBody.safeParse(req.body);
   if (!parsed.success) {
@@ -22,33 +28,71 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
   }
 
   const { type, context, question } = parsed.data;
-  const systemPrompt =
-    SYSTEM_PROMPTS[type] ||
-    `Bạn là nhà huyền học uyên bác, trả lời bằng tiếng Việt với giọng văn sâu sắc và thấu đáo.`;
+  const systemPrompt = getSystemPrompt(type);
+  const userMessage = question ? `${context}\n\nCâu hỏi của tôi: ${question}` : context;
 
-  const userMessage = question
-    ? `${context}\n\nCâu hỏi của tôi: ${question}`
-    : context;
+  const provider = (req.headers["x-ai-provider"] as string) || "default";
+  const userApiKey = (req.headers["x-ai-key"] as string) || "";
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  const stream = await openai.chat.completions.create({
-    model: "gpt-5.2",
-    max_completion_tokens: 8192,
-    messages: [
-      { role: "system", content: systemPrompt },
-      { role: "user", content: userMessage },
-    ],
-    stream: true,
-  });
+  try {
+    if (provider === "gemini" && userApiKey) {
+      const genAI = new GoogleGenerativeAI(userApiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
-  for await (const chunk of stream) {
-    const content = chunk.choices[0]?.delta?.content;
-    if (content) {
-      res.write(`data: ${JSON.stringify({ content })}\n\n`);
+      const result = await model.generateContentStream([
+        { role: "user", parts: [{ text: `${systemPrompt}\n\n${userMessage}` }] },
+      ]);
+
+      for await (const chunk of result.stream) {
+        const text = chunk.text();
+        if (text) {
+          res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
+        }
+      }
+    } else if (provider === "openai" && userApiKey) {
+      const client = new OpenAI({ apiKey: userApiKey });
+
+      const stream = await client.chat.completions.create({
+        model: "gpt-4o",
+        max_tokens: 8192,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        stream: true,
+      });
+
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content;
+        if (content) {
+          res.write(`data: ${JSON.stringify({ content })}\n\n`);
+        }
+      }
+    } else {
+      const stream = await replitOpenAI.chat.completions.create({
+        model: "gpt-5.2",
+        max_completion_tokens: 8192,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage },
+        ],
+        stream: true,
+      });
+
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content;
+        if (content) {
+          res.write(`data: ${JSON.stringify({ content })}\n\n`);
+        }
+      }
     }
+  } catch (err: any) {
+    const msg = err?.message || "Lỗi không xác định";
+    res.write(`data: ${JSON.stringify({ content: `\n\n*Lỗi: ${msg}*` })}\n\n`);
   }
 
   res.write(`data: ${JSON.stringify({ done: true })}\n\n`);

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { computeBatu, Pillar, NguyenHanhItem } from "@/lib/batu";
-import { useSSEChat } from "@/hooks/use-sse-chat";
+import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
 import { Progress } from "@/components/ui/progress";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { BatuKnowledge } from "@/components/knowledge-base";
@@ -21,7 +21,7 @@ export default function BatuPage() {
     nguHanhAnalysis: NguyenHanhItem[];
   } | null>(null);
 
-  const { messages, streamResponse, isStreaming } = useSSEChat();
+  const { messages, streamResponse, isStreaming } = useAISSEChat();
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();

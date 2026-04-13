@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { computeLifePathNumber, computeSoulNumber, computeDestinyNumber, computePersonalityNumber, getNumberMeaning } from "@/lib/numerology";
-import { useSSEChat } from "@/hooks/use-sse-chat";
+import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { NumerologyKnowledge } from "@/components/knowledge-base";
 
@@ -19,7 +19,7 @@ export default function NumerologyPage() {
     personality: number;
   } | null>(null);
 
-  const { messages, streamResponse, isStreaming } = useSSEChat();
+  const { messages, streamResponse, isStreaming } = useAISSEChat();
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();

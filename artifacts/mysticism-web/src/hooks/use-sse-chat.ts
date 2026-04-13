@@ -1,6 +1,11 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 
-export function useSSEChat() {
+export interface SSEHeaders {
+  provider?: string;
+  apiKey?: string;
+}
+
+export function useSSEChat(sseHeaders?: SSEHeaders) {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
   const [isStreaming, setIsStreaming] = useState(false);
 
@@ -10,11 +15,31 @@ export function useSSEChat() {
     setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
 
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+
+      if (sseHeaders?.provider && sseHeaders.provider !== 'default') {
+        headers['x-ai-provider'] = sseHeaders.provider;
+      }
+      if (sseHeaders?.apiKey) {
+        headers['x-ai-key'] = sseHeaders.apiKey;
+      }
+
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify(body),
       });
+
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({ error: 'Lỗi kết nối' }));
+        setMessages((prev) => {
+          const copy = [...prev];
+          const last = copy[copy.length - 1];
+          if (last?.role === 'assistant') last.content = `Lỗi: ${err.error || 'Không thể kết nối AI'}`;
+          return copy;
+        });
+        return;
+      }
 
       if (!response.body) throw new Error('No response body');
 
@@ -35,9 +60,7 @@ export function useSSEChat() {
 
             try {
               const data = JSON.parse(dataStr);
-              if (data.done) {
-                break;
-              }
+              if (data.done) break;
               if (data.content) {
                 setMessages((prev) => {
                   const newMessages = [...prev];

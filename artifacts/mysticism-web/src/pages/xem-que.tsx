@@ -3,14 +3,14 @@ import { Navbar } from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Hexagram, randomHexagram } from "@/lib/iching";
-import { useSSEChat } from "@/hooks/use-sse-chat";
+import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { IChingKnowledge } from "@/components/knowledge-base";
 
 export default function IChingPage() {
   const [hexagram, setHexagram] = useState<Hexagram | null>(null);
   const [isCasting, setIsCasting] = useState(false);
-  const { messages, streamResponse, isStreaming, setMessages } = useSSEChat();
+  const { messages, streamResponse, isStreaming, setMessages } = useAISSEChat();
 
   const handleCast = () => {
     setIsCasting(true);
