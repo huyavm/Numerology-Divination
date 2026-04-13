@@ -8,6 +8,7 @@ import NumerologyPage from "@/pages/than-so-hoc";
 import BatuPage from "@/pages/bat-tu";
 import IChingPage from "@/pages/xem-que";
 import AIChatPage from "@/pages/ai-chat";
+import CatHungPage from "@/pages/cat-hung";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/than-so-hoc" component={NumerologyPage} />
       <Route path="/bat-tu" component={BatuPage} />
       <Route path="/xem-que" component={IChingPage} />
+      <Route path="/cat-hung" component={CatHungPage} />
       <Route path="/ai-chat" component={AIChatPage} />
       <Route component={NotFound} />
     </Switch>

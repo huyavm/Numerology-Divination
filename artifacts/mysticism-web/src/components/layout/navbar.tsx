@@ -6,6 +6,7 @@ const navItems = [
   { href: "/than-so-hoc", label: "Thần số học" },
   { href: "/bat-tu", label: "Bát tự" },
   { href: "/xem-que", label: "Xem quẻ" },
+  { href: "/cat-hung", label: "Cát Hung" },
   { href: "/ai-chat", label: "Trợ lý AI" },
 ];
 
