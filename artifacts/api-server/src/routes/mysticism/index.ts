@@ -20,6 +20,9 @@ function getSystemPrompt(type: string): string {
   return SYSTEM_PROMPTS[type] || `Bạn là nhà huyền học uyên bác, trả lời bằng tiếng Việt với giọng văn sâu sắc và thấu đáo.`;
 }
 
+const DEFAULT_OPENAI_MODEL = "gpt-4o";
+const DEFAULT_GEMINI_MODEL = "gemini-2.0-flash";
+
 router.post("/mysticism/ai-interpret", async (req, res) => {
   const parsed = AiInterpretMysticismBody.safeParse(req.body);
   if (!parsed.success) {
@@ -33,6 +36,7 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
 
   const provider = (req.headers["x-ai-provider"] as string) || "default";
   const userApiKey = (req.headers["x-ai-key"] as string) || "";
+  const userModel = (req.headers["x-ai-model"] as string) || "";
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
@@ -40,10 +44,11 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
 
   try {
     if (provider === "gemini" && userApiKey) {
+      const model = userModel || DEFAULT_GEMINI_MODEL;
       const genAI = new GoogleGenerativeAI(userApiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+      const geminiModel = genAI.getGenerativeModel({ model });
 
-      const result = await model.generateContentStream([
+      const result = await geminiModel.generateContentStream([
         { role: "user", parts: [{ text: `${systemPrompt}\n\n${userMessage}` }] },
       ]);
 
@@ -54,10 +59,11 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
         }
       }
     } else if (provider === "openai" && userApiKey) {
+      const model = userModel || DEFAULT_OPENAI_MODEL;
       const client = new OpenAI({ apiKey: userApiKey });
 
       const stream = await client.chat.completions.create({
-        model: "gpt-4o",
+        model,
         max_tokens: 8192,
         messages: [
           { role: "system", content: systemPrompt },
@@ -92,7 +98,7 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
     }
   } catch (err: any) {
     const msg = err?.message || "Lỗi không xác định";
-    res.write(`data: ${JSON.stringify({ content: `\n\n*Lỗi: ${msg}*` })}\n\n`);
+    res.write(`data: ${JSON.stringify({ content: `\n\n*Lỗi kết nối AI: ${msg}*` })}\n\n`);
   }
 
   res.write(`data: ${JSON.stringify({ done: true })}\n\n`);

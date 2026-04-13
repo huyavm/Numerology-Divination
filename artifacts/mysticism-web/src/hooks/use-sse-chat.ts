@@ -3,6 +3,7 @@ import { useState } from 'react';
 export interface SSEHeaders {
   provider?: string;
   apiKey?: string;
+  model?: string;
 }
 
 export function useSSEChat(sseHeaders?: SSEHeaders) {
@@ -22,6 +23,9 @@ export function useSSEChat(sseHeaders?: SSEHeaders) {
       }
       if (sseHeaders?.apiKey) {
         headers['x-ai-key'] = sseHeaders.apiKey;
+      }
+      if (sseHeaders?.model) {
+        headers['x-ai-model'] = sseHeaders.model;
       }
 
       const response = await fetch(url, {
