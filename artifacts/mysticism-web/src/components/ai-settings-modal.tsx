@@ -9,21 +9,101 @@ interface Props {
   onClose: () => void;
 }
 
-const OPENAI_MODELS: { value: string; label: string; badge: string; desc: string }[] = [
-  { value: "gpt-4.1",        label: "GPT-4.1",        badge: "Mới nhất",       desc: "Model flagship mới nhất của OpenAI, mạnh mẽ và chính xác nhất" },
-  { value: "gpt-4.1-mini",   label: "GPT-4.1 Mini",   badge: "Nhanh & Tiết kiệm", desc: "Phiên bản nhỏ hơn của GPT-4.1, cân bằng tốc độ và chất lượng" },
-  { value: "gpt-4o",         label: "GPT-4o",          badge: "Phổ biến",       desc: "Đa năng, hỗ trợ văn bản, hình ảnh và âm thanh" },
-  { value: "gpt-4o-mini",    label: "GPT-4o Mini",     badge: "Tiết kiệm",      desc: "Nhanh hơn và rẻ hơn GPT-4o, phù hợp cho luận giải đơn giản" },
-  { value: "o3-mini",        label: "o3-mini",          badge: "Suy luận",       desc: "Model suy luận nhanh của OpenAI, giỏi phân tích logic và số học" },
-  { value: "o4-mini",        label: "o4-mini",          badge: "Suy luận mới",   desc: "Phiên bản suy luận mới nhất, cực nhanh và chính xác" },
+const OPENAI_MODELS: { value: string; label: string; badge: string; badgeColor: string; desc: string }[] = [
+  {
+    value: "gpt-5.4",
+    label: "GPT-5.4",
+    badge: "Flagship mới nhất",
+    badgeColor: "bg-yellow-500/20 text-yellow-300",
+    desc: "Model hàng đầu hiện tại của OpenAI. Suy luận mạnh mẽ, lập trình xuất sắc, hỗ trợ computer use. Context 1M token.",
+  },
+  {
+    value: "gpt-5.4-thinking",
+    label: "GPT-5.4 Thinking",
+    badge: "Suy luận sâu",
+    badgeColor: "bg-purple-500/20 text-purple-300",
+    desc: "Phiên bản suy luận chuyên sâu của GPT-5.4. Phân tích kỹ lưỡng, nghiên cứu phức tạp.",
+  },
+  {
+    value: "gpt-5.4-mini",
+    label: "GPT-5.4 Mini",
+    badge: "Nhanh & Tiết kiệm",
+    badgeColor: "bg-green-500/20 text-green-300",
+    desc: "Sức mạnh GPT-5.4 trong gói nhỏ gọn hơn. Lý tưởng cho khối lượng lớn, nhanh và kinh tế.",
+  },
+  {
+    value: "gpt-5.4-nano",
+    label: "GPT-5.4 Nano",
+    badge: "Siêu nhanh",
+    badgeColor: "bg-blue-500/20 text-blue-300",
+    desc: "Tối ưu cho tốc độ và chi phí. Phù hợp các tác vụ đơn giản, khối lượng rất lớn.",
+  },
+  {
+    value: "gpt-5.3",
+    label: "GPT-5.3",
+    badge: "Ổn định",
+    badgeColor: "bg-slate-500/20 text-slate-300",
+    desc: "Phiên bản 5.3 hội thoại nhanh. Phản hồi mượt mà, ổn định cho hầu hết tác vụ.",
+  },
+  {
+    value: "gpt-4.1",
+    label: "GPT-4.1",
+    badge: "Thế hệ trước",
+    badgeColor: "bg-slate-500/15 text-slate-400",
+    desc: "Thế hệ GPT-4 mới nhất. Vẫn mạnh mẽ trong lập trình, tuân thủ lệnh và xử lý văn bản dài.",
+  },
+  {
+    value: "gpt-4.1-mini",
+    label: "GPT-4.1 Mini",
+    badge: "Tiết kiệm",
+    badgeColor: "bg-slate-500/15 text-slate-400",
+    desc: "Model nhỏ gọn của dòng GPT-4.1. Nhanh, hiệu quả, chi phí thấp.",
+  },
 ];
 
-const GEMINI_MODELS: { value: string; label: string; badge: string; desc: string }[] = [
-  { value: "gemini-2.5-pro-preview-05-06", label: "Gemini 2.5 Pro",    badge: "Mạnh nhất",   desc: "Model mạnh nhất của Google, hỗ trợ suy luận nâng cao" },
-  { value: "gemini-2.5-flash-preview-04-17", label: "Gemini 2.5 Flash", badge: "Nhanh & Mới", desc: "Phiên bản 2.5 nhanh, cân bằng tốc độ và hiệu suất" },
-  { value: "gemini-2.0-flash",             label: "Gemini 2.0 Flash",   badge: "Ổn định",     desc: "Phiên bản 2.0 flash ổn định, đáng tin cậy và nhanh chóng" },
-  { value: "gemini-1.5-pro",               label: "Gemini 1.5 Pro",     badge: "Tin cậy",     desc: "Model 1.5 Pro ổn định với cửa sổ ngữ cảnh 1 triệu token" },
-  { value: "gemini-1.5-flash",             label: "Gemini 1.5 Flash",   badge: "Phổ biến",    desc: "Nhanh và tiết kiệm, phù hợp cho hầu hết tác vụ thông thường" },
+const GEMINI_MODELS: { value: string; label: string; badge: string; badgeColor: string; desc: string }[] = [
+  {
+    value: "gemini-3.1-pro-preview",
+    label: "Gemini 3.1 Pro",
+    badge: "Mới nhất (Preview)",
+    badgeColor: "bg-yellow-500/20 text-yellow-300",
+    desc: "Model thông minh nhất của Google. Suy luận nâng cao, agentic workflows, lập trình, context 1M token.",
+  },
+  {
+    value: "gemini-3-flash-preview",
+    label: "Gemini 3.1 Flash",
+    badge: "Nhanh & Mạnh (Preview)",
+    badgeColor: "bg-purple-500/20 text-purple-300",
+    desc: "Sức mạnh Pro trong tốc độ Flash. Cân bằng hoàn hảo giữa trí tuệ và độ trễ thấp.",
+  },
+  {
+    value: "gemini-3.1-flash-lite-preview",
+    label: "Gemini 3.1 Flash-Lite",
+    badge: "Tiết kiệm nhất (Preview)",
+    badgeColor: "bg-blue-500/20 text-blue-300",
+    desc: "Tối ưu chi phí, độ trễ thấp nhất. Lý tưởng cho khối lượng lớn.",
+  },
+  {
+    value: "gemini-2.5-pro",
+    label: "Gemini 2.5 Pro",
+    badge: "Ổn định - Khuyến nghị",
+    badgeColor: "bg-green-500/20 text-green-300",
+    desc: "Phiên bản stable mạnh nhất, sẵn sàng production. Suy luận thích ứng, context 1M token.",
+  },
+  {
+    value: "gemini-2.5-flash",
+    label: "Gemini 2.5 Flash",
+    badge: "Ổn định - Phổ biến",
+    badgeColor: "bg-green-500/15 text-green-400",
+    desc: "Phiên bản stable nhanh nhất, cân bằng trí tuệ và tốc độ. Kinh tế, đáng tin cậy.",
+  },
+  {
+    value: "gemini-2.5-flash-lite",
+    label: "Gemini 2.5 Flash-Lite",
+    badge: "Ổn định - Tiết kiệm",
+    badgeColor: "bg-slate-500/20 text-slate-300",
+    desc: "Stable, tối ưu cho quy mô lớn. Chi phí thấp nhất trong dòng 2.5.",
+  },
 ];
 
 const PROVIDER_INFO = {
@@ -48,12 +128,12 @@ function ModelSelector({
   models,
   value,
   onChange,
-  accentColor,
+  selectedBorderColor,
 }: {
   models: typeof OPENAI_MODELS;
   value: string;
   onChange: (v: string) => void;
-  accentColor: string;
+  selectedBorderColor: string;
 }) {
   return (
     <div className="grid gap-2">
@@ -66,19 +146,17 @@ function ModelSelector({
             onClick={() => onChange(m.value)}
             className={`w-full text-left rounded-lg border px-3 py-2.5 transition-all flex items-start gap-3 ${
               isSelected
-                ? `${accentColor} border-opacity-60`
+                ? `${selectedBorderColor} bg-white/5`
                 : "border-border/30 bg-background/20 hover:border-border/60"
             }`}
           >
             <div className={`w-3.5 h-3.5 rounded-full border-2 flex-shrink-0 mt-0.5 transition-all ${
-              isSelected ? "border-current bg-current" : "border-muted-foreground"
-            }`} style={{ color: isSelected ? undefined : undefined }} />
+              isSelected ? "border-primary bg-primary" : "border-muted-foreground"
+            }`} />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-foreground">{m.label}</span>
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
-                  isSelected ? "bg-current/20 text-current" : "bg-primary/10 text-primary/70"
-                }`}>{m.badge}</span>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${m.badgeColor}`}>{m.badge}</span>
               </div>
               <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">{m.desc}</p>
             </div>
@@ -205,7 +283,7 @@ export function AISettingsModal({ open, onClose }: Props) {
                   models={OPENAI_MODELS}
                   value={currentOpenAIModel}
                   onChange={(v) => setLocal((s) => ({ ...s, openaiModel: v }))}
-                  accentColor="border-green-500/50 bg-green-500/10 text-green-400"
+                  selectedBorderColor="border-green-500/50"
                 />
               </div>
             </>
@@ -246,7 +324,7 @@ export function AISettingsModal({ open, onClose }: Props) {
                   models={GEMINI_MODELS}
                   value={currentGeminiModel}
                   onChange={(v) => setLocal((s) => ({ ...s, geminiModel: v }))}
-                  accentColor="border-blue-500/50 bg-blue-500/10 text-blue-400"
+                  selectedBorderColor="border-blue-500/50"
                 />
               </div>
             </>
