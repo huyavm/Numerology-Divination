@@ -405,8 +405,114 @@ export function extractLastFourDigits(phone: string): string {
   return digitsOnly.slice(-4);
 }
 
+export function extractLastSixDigits(phone: string): string {
+  const digitsOnly = phone.replace(/\D/g, "");
+  return digitsOnly.slice(-6);
+}
+
 export function validateLicensePlate(num: string): string {
   return num.replace(/\D/g, "").slice(0, 5);
+}
+
+const VIET_NORM: Record<string, string> = {
+  à:"a",á:"a",â:"a",ã:"a",ả:"a",ạ:"a",ă:"a",ắ:"a",ặ:"a",ằ:"a",ẳ:"a",ẵ:"a",
+  ấ:"a",ầ:"a",ẩ:"a",ẫ:"a",ậ:"a",
+  è:"e",é:"e",ê:"e",ế:"e",ề:"e",ể:"e",ễ:"e",ệ:"e",ẻ:"e",ẽ:"e",ẹ:"e",
+  ì:"i",í:"i",ỉ:"i",ĩ:"i",ị:"i",
+  ò:"o",ó:"o",ô:"o",ố:"o",ồ:"o",ổ:"o",ỗ:"o",ộ:"o",ơ:"o",ớ:"o",ờ:"o",ở:"o",ỡ:"o",ợ:"o",ỏ:"o",õ:"o",ọ:"o",
+  ù:"u",ú:"u",ư:"u",ứ:"u",ừ:"u",ử:"u",ữ:"u",ự:"u",ủ:"u",ũ:"u",ụ:"u",
+  ỳ:"y",ý:"y",ỷ:"y",ỹ:"y",ỵ:"y",
+  đ:"d",
+};
+
+const LETTER_VALUES: Record<string, number> = {
+  a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,
+  j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,
+  s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8,
+};
+
+function normalizeVietnamese(str: string): string {
+  return str.toLowerCase().split("").map(ch => VIET_NORM[ch] ?? ch).join("");
+}
+
+function reduceToSingle(n: number): number {
+  while (n > 9) {
+    n = String(n).split("").reduce((s, d) => s + parseInt(d), 0);
+  }
+  return n;
+}
+
+export function computeNameNumber(name: string): number {
+  const normalized = normalizeVietnamese(name);
+  const sum = normalized.split("").reduce((s, ch) => {
+    const val = LETTER_VALUES[ch];
+    return val ? s + val : s;
+  }, 0);
+  return reduceToSingle(sum);
+}
+
+export function computePhoneEnergyNumber(digits: string): number {
+  const sum = digits.split("").reduce((s, d) => s + parseInt(d), 0);
+  return reduceToSingle(sum);
+}
+
+export interface CompatibilityResult {
+  nameNumber: number;
+  phoneNumber: number;
+  level: "perfect" | "good" | "neutral" | "clash";
+  label: string;
+  labelColor: string;
+  description: string;
+}
+
+const COMPATIBILITY_MAP: Record<number, { friends: number[]; clash: number[] }> = {
+  1: { friends: [1, 3, 5, 9],  clash: [6, 8]    },
+  2: { friends: [2, 4, 6, 8],  clash: [5, 7]    },
+  3: { friends: [1, 3, 6, 9],  clash: [4, 8]    },
+  4: { friends: [2, 4, 8],     clash: [1, 3, 7]  },
+  5: { friends: [1, 5, 7, 9],  clash: [2, 4, 6] },
+  6: { friends: [2, 3, 6, 9],  clash: [1, 5, 7] },
+  7: { friends: [5, 7, 9],     clash: [2, 4, 6] },
+  8: { friends: [2, 4, 8],     clash: [3, 7, 9] },
+  9: { friends: [1, 3, 5, 6, 9], clash: [4, 8]  },
+};
+
+const NUMBER_NAME: Record<number, string> = {
+  1:"Nhất",2:"Nhị",3:"Tam",4:"Tứ",5:"Ngũ",6:"Lục",7:"Thất",8:"Bát",9:"Cửu"
+};
+
+export function analyzeCompatibility(name: string, digits: string): CompatibilityResult {
+  const nameNumber = computeNameNumber(name);
+  const phoneNumber = computePhoneEnergyNumber(digits);
+
+  let level: CompatibilityResult["level"];
+  let label: string;
+  let labelColor: string;
+  let description: string;
+
+  if (nameNumber === phoneNumber) {
+    level = "perfect";
+    label = "Tuyệt Đối Tương Hợp";
+    labelColor = "text-yellow-400";
+    description = `Số mệnh ${NUMBER_NAME[nameNumber]} của chủ nhân cộng hưởng hoàn toàn với năng lượng ${NUMBER_NAME[phoneNumber]} của số điện thoại. Đây là sự kết hợp lý tưởng — số này như được sinh ra để dành cho bạn.`;
+  } else if (COMPATIBILITY_MAP[nameNumber]?.friends.includes(phoneNumber)) {
+    level = "good";
+    label = "Tương Hợp";
+    labelColor = "text-green-400";
+    description = `Số mệnh ${NUMBER_NAME[nameNumber]} hòa hợp với năng lượng ${NUMBER_NAME[phoneNumber]} của số điện thoại. Hai luồng năng lượng hỗ trợ nhau, giúp chủ nhân phát huy tối đa tiềm năng.`;
+  } else if (COMPATIBILITY_MAP[nameNumber]?.clash.includes(phoneNumber)) {
+    level = "clash";
+    label = "Xung Khắc";
+    labelColor = "text-red-400";
+    description = `Số mệnh ${NUMBER_NAME[nameNumber]} xung với năng lượng ${NUMBER_NAME[phoneNumber]} của số điện thoại. Hai luồng năng lượng đối nghịch có thể gây cản trở. Nên bổ sung vật phẩm phong thủy để hóa giải.`;
+  } else {
+    level = "neutral";
+    label = "Trung Tính";
+    labelColor = "text-blue-400";
+    description = `Số mệnh ${NUMBER_NAME[nameNumber]} và năng lượng ${NUMBER_NAME[phoneNumber]} của số điện thoại không đặc biệt tương hợp cũng không xung khắc. Hiệu quả phụ thuộc vào nỗ lực bản thân.`;
+  }
+
+  return { nameNumber, phoneNumber, level, label, labelColor, description };
 }
 
 export const LEVEL_CONFIG: Record<DigitInfo["level"], { bg: string; border: string; text: string; badge: string }> = {
