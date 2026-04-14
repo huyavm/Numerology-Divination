@@ -7,11 +7,8 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Cấu hình pnpm:
-# - minimum-release-age=0: bỏ giới hạn tuổi package khi build trong Docker
-# - supported-architectures: yêu cầu pnpm cài binary native cho cả x64 lẫn arm64 (glibc)
-#   Điều này giải quyết lỗi "@rollup/rollup-linux-arm64-gnu not found" trên ARM64 server
-RUN printf "minimum-release-age=0\nsupported-architectures-cpu=arm64+x64\nsupported-architectures-os=linux\nsupported-architectures-libc=glibc\n" > /root/.npmrc
+# Override minimumReleaseAge để pnpm install không bị chặn trong Docker
+RUN echo "minimum-release-age=0" > /root/.npmrc
 
 # Copy workspace manifest trước để tận dụng layer cache
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
@@ -22,8 +19,15 @@ COPY artifacts/mockup-sandbox/package.json      ./artifacts/mockup-sandbox/
 COPY artifacts/mysticism-web/package.json       ./artifacts/mysticism-web/
 COPY lib/                                       ./lib/
 
-# pnpm sẽ tự tải đúng binary ARM64 nhờ supported-architectures trong .npmrc
 RUN pnpm install --no-frozen-lockfile
+
+# pnpm-lock.yaml được tạo trên x64 nên không có entry cho rollup ARM binary.
+# Dùng pnpm add -w để thêm trực tiếp vào workspace root — rollup sẽ tìm thấy
+# qua node_modules/@rollup/rollup-linux-arm64-gnu khi chạy Vite build.
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ]; then \
+      pnpm add -w @rollup/rollup-linux-arm64-gnu; \
+    fi
 
 # Copy toàn bộ source code của frontend + shared libs
 COPY artifacts/mysticism-web/ ./artifacts/mysticism-web/
