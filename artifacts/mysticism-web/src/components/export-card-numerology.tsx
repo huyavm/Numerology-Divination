@@ -17,10 +17,18 @@ const BG2 = "#140d24";
 const TEXT = "#f0e6d0";
 const MUTED = "#9b8e78";
 const BORDER = "#2e2040";
+const FONT = '"Arial", "Helvetica Neue", Helvetica, sans-serif';
 
 export const NumerologyExportCard = forwardRef<HTMLDivElement, Props>(
   ({ name, dob, lifePath, soul, destiny, personality, aiText }, ref) => {
     const lp = getNumberMeaning(lifePath);
+
+    const numbers = [
+      { label: "So Duong Doi", value: lifePath, desc: getNumberMeaning(lifePath).description.slice(0, 120) + "…" },
+      { label: "So Su Menh", value: destiny, desc: getNumberMeaning(destiny).description.slice(0, 120) + "…" },
+      { label: "So Linh Hon", value: soul, desc: getNumberMeaning(soul).description.slice(0, 120) + "…" },
+      { label: "So Nhan Cach", value: personality, desc: getNumberMeaning(personality).description.slice(0, 120) + "…" },
+    ];
 
     return (
       <div
@@ -29,31 +37,28 @@ export const NumerologyExportCard = forwardRef<HTMLDivElement, Props>(
           width: 800,
           background: BG,
           color: TEXT,
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: FONT,
           padding: "40px",
           boxSizing: "border-box",
         }}
       >
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 32, borderBottom: `1px solid ${BORDER}`, paddingBottom: 24 }}>
-          <div style={{ color: GOLD, fontSize: 13, letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 6 }}>
-            HUYỀN BÍ · Thần Số Học
+          <div style={{ color: GOLD, fontSize: 12, letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: 6 }}>
+            HUYEN BI · THAN SO HOC
           </div>
           <div style={{ fontSize: 26, fontWeight: "bold", color: TEXT, marginBottom: 4 }}>{name}</div>
-          <div style={{ fontSize: 13, color: MUTED }}>Ngày sinh: {dob}</div>
+          <div style={{ fontSize: 13, color: MUTED }}>Ngay sinh: {dob}</div>
         </div>
 
-        {/* 4 numbers grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 28 }}>
-          {[
-            { label: "Số Đường Đời", value: lifePath, desc: lp.description.slice(0, 120) + "…" },
-            { label: "Số Sứ Mệnh", value: destiny, desc: getNumberMeaning(destiny).description.slice(0, 120) + "…" },
-            { label: "Số Linh Hồn", value: soul, desc: getNumberMeaning(soul).description.slice(0, 120) + "…" },
-            { label: "Số Nhân Cách", value: personality, desc: getNumberMeaning(personality).description.slice(0, 120) + "…" },
-          ].map((item) => (
+        {/* 4 numbers — 2 rows of 2 using flex */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 16, marginBottom: 28 }}>
+          {numbers.map((item) => (
             <div
               key={item.label}
               style={{
+                width: "calc(50% - 8px)",
+                boxSizing: "border-box",
                 background: BG2,
                 border: `1px solid ${BORDER}`,
                 borderRadius: 12,
@@ -88,7 +93,7 @@ export const NumerologyExportCard = forwardRef<HTMLDivElement, Props>(
           ))}
         </div>
 
-        {/* Strengths & challenges */}
+        {/* Strengths & challenges — flex instead of grid */}
         <div
           style={{
             background: BG2,
@@ -96,20 +101,20 @@ export const NumerologyExportCard = forwardRef<HTMLDivElement, Props>(
             borderRadius: 12,
             padding: "18px 20px",
             marginBottom: 24,
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
+            display: "flex",
             gap: 20,
           }}
         >
-          <div>
+          <div style={{ flex: 1 }}>
             <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>
-              Điểm mạnh số đường đời {lifePath}
+              Diem manh so {lifePath}
             </div>
             <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.7 }}>{lp.strengths.join(" · ")}</div>
           </div>
-          <div>
+          <div style={{ width: 1, background: BORDER, flexShrink: 0 }} />
+          <div style={{ flex: 1 }}>
             <div style={{ fontSize: 11, color: "#c06060", textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>
-              Thách thức cần vượt qua
+              Thach thuc can vuot qua
             </div>
             <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.7 }}>{lp.challenges.join(" · ")}</div>
           </div>
@@ -128,7 +133,7 @@ export const NumerologyExportCard = forwardRef<HTMLDivElement, Props>(
             }}
           >
             <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>
-              Luận giải AI
+              Luan Giai AI
             </div>
             <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
               {aiText.slice(0, 600)}{aiText.length > 600 ? "…" : ""}
@@ -139,7 +144,7 @@ export const NumerologyExportCard = forwardRef<HTMLDivElement, Props>(
         {/* Footer */}
         <div style={{ textAlign: "center", borderTop: `1px solid ${BORDER}`, paddingTop: 18 }}>
           <div style={{ fontSize: 11, color: MUTED }}>
-            Huyền Bí · Mọi luận giải chỉ mang tính tham khảo · {new Date().toLocaleDateString("vi-VN")}
+            Huyen Bi · Moi luan giai chi mang tinh tham khao · {new Date().toLocaleDateString("vi-VN")}
           </div>
         </div>
       </div>

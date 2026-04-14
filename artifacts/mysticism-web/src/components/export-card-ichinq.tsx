@@ -12,6 +12,7 @@ const BG2 = "#140d24";
 const TEXT = "#f0e6d0";
 const MUTED = "#9b8e78";
 const BORDER = "#2e2040";
+const FONT = '"Arial", "Helvetica Neue", Helvetica, sans-serif';
 
 export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
   ({ hexagram, aiText }, ref) => {
@@ -22,15 +23,15 @@ export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
           width: 800,
           background: BG,
           color: TEXT,
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: FONT,
           padding: "40px",
           boxSizing: "border-box",
         }}
       >
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 28, borderBottom: `1px solid ${BORDER}`, paddingBottom: 24 }}>
-          <div style={{ color: GOLD, fontSize: 13, letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 6 }}>
-            HUYỀN BÍ · Kinh Dịch I Ching
+          <div style={{ color: GOLD, fontSize: 12, letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: 6 }}>
+            HUYEN BI · KINH DICH I CHING
           </div>
         </div>
 
@@ -77,7 +78,7 @@ export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
           }}
         >
           <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 12 }}>
-            Ý Nghĩa Quẻ
+            Y Nghia Que
           </div>
           <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{hexagram.meaning}</div>
         </div>
@@ -95,7 +96,7 @@ export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
             }}
           >
             <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>
-              Luận giải AI
+              Luan Giai AI
             </div>
             <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
               {aiText.slice(0, 700)}{aiText.length > 700 ? "…" : ""}
@@ -106,7 +107,7 @@ export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
         {/* Footer */}
         <div style={{ textAlign: "center", borderTop: `1px solid ${BORDER}`, paddingTop: 18 }}>
           <div style={{ fontSize: 11, color: MUTED }}>
-            Huyền Bí · Mọi luận giải chỉ mang tính tham khảo · {new Date().toLocaleDateString("vi-VN")}
+            Huyen Bi · Moi luan giai chi mang tinh tham khao · {new Date().toLocaleDateString("vi-VN")}
           </div>
         </div>
       </div>
