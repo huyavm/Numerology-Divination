@@ -12,7 +12,7 @@ const BG2 = "#140d24";
 const TEXT = "#f0e6d0";
 const MUTED = "#9b8e78";
 const BORDER = "#2e2040";
-const FONT = '"Arial", "Helvetica Neue", Helvetica, sans-serif';
+const FONT = '"Arial Unicode MS", Arial, "Helvetica Neue", Helvetica, sans-serif';
 
 export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
   ({ hexagram, aiText }, ref) => {
@@ -31,7 +31,7 @@ export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 28, borderBottom: `1px solid ${BORDER}`, paddingBottom: 24 }}>
           <div style={{ color: GOLD, fontSize: 12, letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: 6 }}>
-            HUYEN BI · KINH DICH I CHING
+            Huyền Bí · Kinh Dịch I Ching
           </div>
         </div>
 
@@ -78,7 +78,7 @@ export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
           }}
         >
           <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 12 }}>
-            Y Nghia Que
+            Ý Nghĩa Quẻ
           </div>
           <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.8 }}>{hexagram.meaning}</div>
         </div>
@@ -96,7 +96,7 @@ export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
             }}
           >
             <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>
-              Luan Giai AI
+              Luận Giải AI
             </div>
             <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
               {aiText.slice(0, 700)}{aiText.length > 700 ? "…" : ""}
@@ -107,7 +107,7 @@ export const IChingExportCard = forwardRef<HTMLDivElement, Props>(
         {/* Footer */}
         <div style={{ textAlign: "center", borderTop: `1px solid ${BORDER}`, paddingTop: 18 }}>
           <div style={{ fontSize: 11, color: MUTED }}>
-            Huyen Bi · Moi luan giai chi mang tinh tham khao · {new Date().toLocaleDateString("vi-VN")}
+            Huyền Bí · Mọi luận giải chỉ mang tính tham khảo · {new Date().toLocaleDateString("vi-VN")}
           </div>
         </div>
       </div>

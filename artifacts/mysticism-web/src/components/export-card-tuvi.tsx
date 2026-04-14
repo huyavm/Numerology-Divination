@@ -13,7 +13,10 @@ const BG2 = "#140d24";
 const TEXT = "#f0e6d0";
 const MUTED = "#9b8e78";
 const BORDER = "#2e2040";
-const FONT = '"Arial", "Helvetica Neue", Helvetica, sans-serif';
+const FONT = '"Arial Unicode MS", Arial, "Helvetica Neue", Helvetica, sans-serif';
+
+// Card width 900px, padding 40px * 2 = 820px inner width
+const INNER = 820;
 
 export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
   ({ result, birthInfo, aiText }, ref) => {
@@ -22,6 +25,11 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
       { label: "Can Chi Năm", value: `${result.canNam} ${result.chiNam}`, sub: `Cung Mệnh: ${DIA_CHI[result.cungMenh]}` },
       { label: "Cung Thân", value: DIA_CHI[result.cungThanMenh], sub: "Cung Thân Mệnh" },
     ];
+
+    // 3 cols: (820 - 2*12) / 3 = 796/3 ≈ 265
+    const summaryColW = Math.floor((INNER - 24) / 3);
+    // 4 cols: (820 - 3*8) / 4 = 796/4 = 199
+    const palaceColW = Math.floor((INNER - 24) / 4);
 
     return (
       <div
@@ -38,24 +46,26 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
         {/* Header */}
         <div style={{ textAlign: "center", marginBottom: 28, borderBottom: `1px solid ${BORDER}`, paddingBottom: 24 }}>
           <div style={{ color: GOLD, fontSize: 12, letterSpacing: "0.35em", textTransform: "uppercase", marginBottom: 6 }}>
-            HUYEN BI · TU VI DAU SO
+            Huyền Bí · Tử Vi Đẩu Số
           </div>
-          <div style={{ fontSize: 24, fontWeight: "bold", color: TEXT, marginBottom: 6 }}>La So Tu Vi</div>
+          <div style={{ fontSize: 24, fontWeight: "bold", color: TEXT, marginBottom: 6 }}>Lá Số Tử Vi</div>
           <div style={{ fontSize: 13, color: MUTED }}>{birthInfo}</div>
         </div>
 
-        {/* Summary row — flex instead of grid */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 24 }}>
+        {/* Summary row — explicit pixel widths */}
+        <div style={{ display: "flex", gap: 12, marginBottom: 24, width: INNER }}>
           {summaryItems.map((item) => (
             <div
               key={item.label}
               style={{
-                flex: 1,
+                width: summaryColW,
+                flexShrink: 0,
                 background: BG2,
                 border: `1px solid ${BORDER}`,
                 borderRadius: 10,
                 padding: "14px 12px",
                 textAlign: "center",
+                boxSizing: "border-box",
               }}
             >
               <div style={{ fontSize: 10, color: MUTED, textTransform: "uppercase", letterSpacing: "0.12em", marginBottom: 6 }}>
@@ -70,6 +80,8 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
         {/* Mệnh description */}
         <div
           style={{
+            width: INNER,
+            boxSizing: "border-box",
             background: BG2,
             border: `1px solid ${BORDER}`,
             borderRadius: 10,
@@ -84,12 +96,12 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
           {result.menhDesc}
         </div>
 
-        {/* 12 Palaces grid — flex with wrap */}
+        {/* 12 Palaces — explicit pixel widths, 4 per row */}
         <div style={{ marginBottom: 24 }}>
           <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 12 }}>
-            12 Cung Menh
+            12 Cung Mệnh
           </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, width: INNER }}>
             {result.cungList.map((cung) => {
               const isMenh = cung.index === result.cungMenh;
               const isThan = cung.index === result.cungThanMenh;
@@ -99,14 +111,15 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
                 <div
                   key={cung.index}
                   style={{
-                    width: "calc(25% - 6px)",
+                    width: palaceColW,
+                    flexShrink: 0,
                     boxSizing: "border-box",
                     background: isMenh ? "rgba(201,162,39,0.1)" : BG2,
                     border: `1px solid ${isMenh ? GOLD : isThan ? "#d97706" : BORDER}`,
                     borderRadius: 8,
-                    padding: "10px",
+                    padding: "10px 8px",
                     position: "relative",
-                    minHeight: 90,
+                    minHeight: 88,
                   }}
                 >
                   {(isMenh || isThan) && (
@@ -124,7 +137,7 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
                         letterSpacing: "0.08em",
                       }}
                     >
-                      {isMenh ? "MENH" : "THAN"}
+                      {isMenh ? "MỆNH" : "THÂN"}
                     </div>
                   )}
                   <div style={{ fontSize: 9, color: MUTED, marginBottom: 3 }}>
@@ -138,11 +151,12 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
                       <span
                         key={s}
                         style={{
-                          fontSize: 9,
+                          fontSize: 8,
                           color: GOLD,
                           background: "rgba(201,162,39,0.15)",
                           borderRadius: 99,
-                          padding: "1px 5px",
+                          padding: "1px 4px",
+                          whiteSpace: "nowrap",
                         }}
                       >
                         {s}
@@ -152,11 +166,12 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
                       <span
                         key={s}
                         style={{
-                          fontSize: 9,
+                          fontSize: 8,
                           color: "#4ade80",
                           background: "rgba(74,222,128,0.08)",
                           borderRadius: 99,
-                          padding: "1px 5px",
+                          padding: "1px 4px",
+                          whiteSpace: "nowrap",
                         }}
                       >
                         {s}
@@ -173,6 +188,8 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
         {aiText && (
           <div
             style={{
+              width: INNER,
+              boxSizing: "border-box",
               background: BG2,
               border: `1px solid ${BORDER}`,
               borderLeft: `3px solid ${GOLD}`,
@@ -182,7 +199,7 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
             }}
           >
             <div style={{ fontSize: 11, color: GOLD, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>
-              Luan Giai AI
+              Luận Giải AI
             </div>
             <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
               {aiText.slice(0, 700)}{aiText.length > 700 ? "…" : ""}
@@ -193,7 +210,7 @@ export const TuViExportCard = forwardRef<HTMLDivElement, Props>(
         {/* Footer */}
         <div style={{ textAlign: "center", borderTop: `1px solid ${BORDER}`, paddingTop: 18 }}>
           <div style={{ fontSize: 11, color: MUTED }}>
-            Huyen Bi · Moi luan giai chi mang tinh tham khao · {new Date().toLocaleDateString("vi-VN")}
+            Huyền Bí · Mọi luận giải chỉ mang tính tham khảo · {new Date().toLocaleDateString("vi-VN")}
           </div>
         </div>
       </div>
