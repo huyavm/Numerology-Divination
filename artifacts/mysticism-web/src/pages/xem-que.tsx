@@ -4,19 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Hexagram, randomHexagram } from "@/lib/iching";
 import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
+import { useExportImage } from "@/hooks/use-export-image";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { IChingKnowledge } from "@/components/knowledge-base";
+import { IChingExportCard } from "@/components/export-card-ichinq";
+import { ExportDownloadBar } from "@/components/export-download-bar";
 
 export default function IChingPage() {
   const [hexagram, setHexagram] = useState<Hexagram | null>(null);
   const [isCasting, setIsCasting] = useState(false);
   const { messages, streamResponse, isStreaming, setMessages } = useAISSEChat();
+  const { exportRef, downloadAsImage, downloadAsText, isExporting } = useExportImage();
 
   const handleCast = () => {
     setIsCasting(true);
     setHexagram(null);
     setMessages([]);
-    // Mock animation delay
     setTimeout(() => {
       setHexagram(randomHexagram());
       setIsCasting(false);
@@ -25,17 +28,40 @@ export default function IChingPage() {
 
   const handleAskAI = () => {
     if (!hexagram) return;
-    
     const context = `Người này vừa gieo được quẻ: ${hexagram.name} (${hexagram.vietnameseName}). Mô tả: ${hexagram.description}. Ý nghĩa: ${hexagram.meaning}.`;
+    streamResponse("/api/mysticism/ai-interpret", { type: "iching", context });
+  };
 
-    streamResponse('/api/mysticism/ai-interpret', { type: "iching", context });
+  const aiText = messages.filter((m) => m.role === "assistant").map((m) => m.content).join("");
+
+  const buildTextContent = () => {
+    if (!hexagram) return "";
+    return [
+      `QUẺ: ${hexagram.symbol} ${hexagram.vietnameseName} (${hexagram.name})`,
+      "",
+      `MÔ TẢ: "${hexagram.description}"`,
+      "",
+      `Ý NGHĨA:\n${hexagram.meaning}`,
+      aiText ? `\nLUẬN GIẢI AI:\n${aiText}` : "",
+    ].join("\n");
   };
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
       <Navbar />
-      
+
+      {/* Hidden export card */}
+      <div style={{ position: "absolute", left: -9999, top: 0, pointerEvents: "none", zIndex: -1 }}>
+        {hexagram && (
+          <IChingExportCard
+            ref={exportRef}
+            hexagram={hexagram}
+            aiText={aiText || undefined}
+          />
+        )}
+      </div>
+
       <main className="flex-1 container mx-auto px-4 pt-24 pb-16 z-10 relative">
         <div className="max-w-4xl mx-auto space-y-12">
           <div className="text-center space-y-4">
@@ -45,10 +71,10 @@ export default function IChingPage() {
 
           <div className="flex flex-col items-center justify-center py-12">
             {!hexagram && (
-              <Button 
-                onClick={handleCast} 
+              <Button
+                onClick={handleCast}
                 disabled={isCasting}
-                className={`w-48 h-48 rounded-full bg-primary/20 hover:bg-primary/30 border-2 border-primary text-primary transition-all duration-500 flex flex-col items-center justify-center gap-4 ${isCasting ? 'animate-pulse scale-110 shadow-[0_0_60px_rgba(255,215,0,0.4)]' : 'shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:shadow-[0_0_40px_rgba(255,215,0,0.3)] hover:scale-105'}`}
+                className={`w-48 h-48 rounded-full bg-primary/20 hover:bg-primary/30 border-2 border-primary text-primary transition-all duration-500 flex flex-col items-center justify-center gap-4 ${isCasting ? "animate-pulse scale-110 shadow-[0_0_60px_rgba(255,215,0,0.4)]" : "shadow-[0_0_30px_rgba(255,215,0,0.1)] hover:shadow-[0_0_40px_rgba(255,215,0,0.3)] hover:scale-105"}`}
               >
                 {isCasting ? (
                   <span className="text-xl font-serif tracking-widest animate-bounce">ĐANG GIEO...</span>
@@ -59,7 +85,14 @@ export default function IChingPage() {
             )}
 
             {hexagram && !isCasting && (
-              <div className="w-full animate-in fade-in zoom-in duration-1000 space-y-8">
+              <div className="w-full animate-in fade-in zoom-in duration-1000 space-y-6">
+                {/* Export bar */}
+                <ExportDownloadBar
+                  onDownloadImage={() => downloadAsImage(`que-${hexagram.name.toLowerCase().replace(/\s+/g, "-")}`)}
+                  onDownloadText={() => downloadAsText(buildTextContent(), `que-${hexagram.name.toLowerCase().replace(/\s+/g, "-")}`)}
+                  isExporting={isExporting}
+                />
+
                 <Card className="bg-card/40 backdrop-blur-sm border-primary/40 shadow-2xl shadow-primary/10 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
                   <CardHeader className="text-center pb-0">
@@ -71,7 +104,7 @@ export default function IChingPage() {
                     <p className="text-xl font-medium text-foreground italic">"{hexagram.description}"</p>
                     <p className="text-base text-muted-foreground leading-relaxed">{hexagram.meaning}</p>
                     <div className="pt-8">
-                       <Button onClick={handleCast} variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
+                      <Button onClick={handleCast} variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
                         Gieo quẻ khác
                       </Button>
                     </div>
@@ -80,7 +113,7 @@ export default function IChingPage() {
 
                 <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl shadow-primary/5 mt-8">
                   <CardHeader>
-                    <CardTitle className="text-2xl text-primary flex items-center justify-between">
+                    <CardTitle className="text-2xl text-primary flex items-center justify-between flex-wrap gap-3">
                       <span>Hỏi AI về quẻ này</span>
                       <Button onClick={handleAskAI} disabled={isStreaming} variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
                         {isStreaming ? "Đang lắng nghe vũ trụ..." : "Luận giải chi tiết"}
@@ -88,20 +121,20 @@ export default function IChingPage() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {messages.filter(m => m.role === 'assistant').map((msg, i) => (
+                    {messages.filter((m) => m.role === "assistant").map((msg, i) => (
                       <div key={i} className="px-5 py-4 rounded-lg bg-background/40 border border-primary/15 shadow-inner">
                         {msg.content ? (
                           <MarkdownRenderer content={msg.content} />
                         ) : (
                           <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
-                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
-                            <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
+                            {[0, 150, 300].map((d) => (
+                              <span key={d} className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: `${d}ms` }} />
+                            ))}
                           </div>
                         )}
                       </div>
                     ))}
-                    {!messages.some(m => m.role === 'assistant') && !isStreaming && (
+                    {!messages.some((m) => m.role === "assistant") && !isStreaming && (
                       <p className="text-sm text-muted-foreground text-center italic py-8">Nhấn nút bên trên để AI luận giải thông điệp ẩn giấu trong quẻ Dịch.</p>
                     )}
                   </CardContent>

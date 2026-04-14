@@ -6,8 +6,11 @@ import { Label } from "@/components/ui/label";
 import { calculateTuVi, THIEN_CAN, DIA_CHI, NGU_HANH_COLOR, type TuViResult, type CungInfo } from "@/lib/tu-vi";
 import { solarToLunar } from "@/lib/lunar-calendar";
 import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
+import { useExportImage } from "@/hooks/use-export-image";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { ResultActions } from "@/components/result-actions";
+import { TuViExportCard } from "@/components/export-card-tuvi";
+import { ExportDownloadBar } from "@/components/export-download-bar";
 
 const CUONG_TUOC = ["Vượng", "Miếu", "Đắc", "Bình", "Hãm"];
 
@@ -69,6 +72,7 @@ export default function TuViPage() {
   const [selectedCung, setSelectedCung] = useState<CungInfo | null>(null);
   const [error, setError] = useState("");
   const { messages, streamResponse, isStreaming, setMessages } = useAISSEChat();
+  const { exportRef, downloadAsImage, downloadAsText, isExporting } = useExportImage();
 
   const handleCalculate = () => {
     setError("");
@@ -93,8 +97,39 @@ export default function TuViPage() {
 
   const aiText = messages.filter((m) => m.role === "assistant").map((m) => m.content).join("");
 
+  const buildTextContent = () => {
+    if (!result) return "";
+    const lines = [
+      `LÁ SỐ TỬ VI`,
+      `Ngày sinh: ${form.day}/${form.month}/${form.year} | Giờ: ${form.hour}:00 | Giới tính: ${form.gender === "nam" ? "Nam" : "Nữ"}`,
+      "",
+      `MỆNH CỤC: ${result.cuccDesc} | Ngũ hành: ${result.nguHanhCuc}`,
+      `Can Chi năm: ${result.canNam} ${result.chiNam}`,
+      `${result.menhDesc}`,
+      "",
+      "12 CUNG MỆNH:",
+      ...result.cungList.map((c) => {
+        const stars = c.stars.map((s) => s.name).join(", ");
+        return `  ${c.name} (${c.thienCan} ${c.diaChi}): ${stars || "—"}`;
+      }),
+      aiText ? `\nLUẬN GIẢI AI:\n${aiText}` : "",
+    ];
+    return lines.join("\n");
+  };
+
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background">
+      {/* Hidden export card */}
+      <div style={{ position: "absolute", left: -9999, top: 0, pointerEvents: "none", zIndex: -1 }}>
+        {result && (
+          <TuViExportCard
+            ref={exportRef}
+            result={result}
+            birthInfo={`${form.day}/${form.month}/${form.year} giờ ${form.hour}:00 — ${form.gender === "nam" ? "Nam" : "Nữ"}`}
+            aiText={aiText || undefined}
+          />
+        )}
+      </div>
       <Navbar />
       <main className="flex-1 pt-20 pb-16 px-4">
         <div className="max-w-6xl mx-auto space-y-8">
@@ -151,6 +186,12 @@ export default function TuViPage() {
           {/* Result */}
           {result && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              {/* Export bar */}
+              <ExportDownloadBar
+                onDownloadImage={() => downloadAsImage(`tu-vi-${form.day}-${form.month}-${form.year}`)}
+                onDownloadText={() => downloadAsText(buildTextContent(), `tu-vi-${form.day}-${form.month}-${form.year}`)}
+                isExporting={isExporting}
+              />
               {/* Summary */}
               <div className="grid sm:grid-cols-3 gap-4">
                 <InfoCard label="Mệnh Cục" value={result.cuccDesc} sub={`Ngũ Hành: ${result.nguHanhCuc}`} />

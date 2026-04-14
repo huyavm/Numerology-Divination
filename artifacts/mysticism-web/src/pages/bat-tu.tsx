@@ -6,9 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { computeBatu, Pillar, NguyenHanhItem } from "@/lib/batu";
 import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
+import { useExportImage } from "@/hooks/use-export-image";
 import { Progress } from "@/components/ui/progress";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { BatuKnowledge } from "@/components/knowledge-base";
+import { BatuExportCard } from "@/components/export-card-batu";
+import { ExportDownloadBar } from "@/components/export-download-bar";
 
 export default function BatuPage() {
   const [date, setDate] = useState("");
@@ -22,6 +25,7 @@ export default function BatuPage() {
   } | null>(null);
 
   const { messages, streamResponse, isStreaming } = useAISSEChat();
+  const { exportRef, downloadAsImage, downloadAsText, isExporting } = useExportImage();
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,17 +35,51 @@ export default function BatuPage() {
 
   const handleAskAI = () => {
     if (!results) return;
-    
-    const context = `Lá số Bát Tự. Trụ Năm: ${results.nam.thienCan} ${results.nam.diaChi} (${results.nam.nguHanh}). Trụ Tháng: ${results.thang.thienCan} ${results.thang.diaChi} (${results.thang.nguHanh}). Trụ Ngày: ${results.ngay.thienCan} ${results.ngay.diaChi} (${results.ngay.nguHanh}). Trụ Giờ: ${results.gio.thienCan} ${results.gio.diaChi} (${results.gio.nguHanh}). Phân tích ngũ hành: ${results.nguHanhAnalysis.map(x => `${x.element}: ${x.percentage}%`).join(", ")}.`;
+    const context = `Lá số Bát Tự. Trụ Năm: ${results.nam.thienCan} ${results.nam.diaChi} (${results.nam.nguHanh}). Trụ Tháng: ${results.thang.thienCan} ${results.thang.diaChi} (${results.thang.nguHanh}). Trụ Ngày: ${results.ngay.thienCan} ${results.ngay.diaChi} (${results.ngay.nguHanh}). Trụ Giờ: ${results.gio.thienCan} ${results.gio.diaChi} (${results.gio.nguHanh}). Phân tích ngũ hành: ${results.nguHanhAnalysis.map((x) => `${x.element}: ${x.percentage}%`).join(", ")}.`;
+    streamResponse("/api/mysticism/ai-interpret", { type: "batu", context });
+  };
 
-    streamResponse('/api/mysticism/ai-interpret', { type: "batu", context });
+  const aiText = messages.filter((m) => m.role === "assistant").map((m) => m.content).join("");
+
+  const buildTextContent = () => {
+    if (!results) return "";
+    return [
+      `Ngày sinh: ${date} | Giờ sinh: ${time}`,
+      "",
+      "TỨ TRỤ:",
+      `Trụ Giờ:   ${results.gio.thienCan} ${results.gio.diaChi} (${results.gio.nguHanh})`,
+      `Trụ Ngày:  ${results.ngay.thienCan} ${results.ngay.diaChi} (${results.ngay.nguHanh})`,
+      `Trụ Tháng: ${results.thang.thienCan} ${results.thang.diaChi} (${results.thang.nguHanh})`,
+      `Trụ Năm:   ${results.nam.thienCan} ${results.nam.diaChi} (${results.nam.nguHanh})`,
+      "",
+      "PHÂN TÍCH NGŨ HÀNH:",
+      ...results.nguHanhAnalysis.map((x) => `${x.element}: ${x.percentage}%`),
+      aiText ? `\nLUẬN GIẢI AI:\n${aiText}` : "",
+    ].join("\n");
   };
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
       <Navbar />
-      
+
+      {/* Hidden export card */}
+      <div style={{ position: "absolute", left: -9999, top: 0, pointerEvents: "none", zIndex: -1 }}>
+        {results && (
+          <BatuExportCard
+            ref={exportRef}
+            date={date}
+            time={time}
+            gio={results.gio}
+            ngay={results.ngay}
+            thang={results.thang}
+            nam={results.nam}
+            nguHanhAnalysis={results.nguHanhAnalysis}
+            aiText={aiText || undefined}
+          />
+        )}
+      </div>
+
       <main className="flex-1 container mx-auto px-4 pt-24 pb-16 z-10 relative">
         <div className="max-w-4xl mx-auto space-y-12">
           <div className="text-center space-y-4">
@@ -75,12 +113,19 @@ export default function BatuPage() {
 
           {results && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+              {/* Export bar */}
+              <ExportDownloadBar
+                onDownloadImage={() => downloadAsImage(`bat-tu-${date.replace(/\//g, "-")}`)}
+                onDownloadText={() => downloadAsText(buildTextContent(), `bat-tu-${date.replace(/\//g, "-")}`)}
+                isExporting={isExporting}
+              />
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
                   { title: "Trụ Giờ", data: results.gio },
                   { title: "Trụ Ngày", data: results.ngay },
                   { title: "Trụ Tháng", data: results.thang },
-                  { title: "Trụ Năm", data: results.nam }
+                  { title: "Trụ Năm", data: results.nam },
                 ].map((pillar, idx) => (
                   <Card key={idx} className="bg-card/40 backdrop-blur-sm border-primary/30 text-center py-6">
                     <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-widest mb-4">{pillar.title}</h3>
@@ -108,7 +153,7 @@ export default function BatuPage() {
 
               <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl shadow-primary/5 mt-8">
                 <CardHeader>
-                  <CardTitle className="text-2xl text-primary flex items-center justify-between">
+                  <CardTitle className="text-2xl text-primary flex items-center justify-between flex-wrap gap-3">
                     <span>Hỏi AI về lá số của bạn</span>
                     <Button onClick={handleAskAI} disabled={isStreaming} variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
                       {isStreaming ? "Đang lắng nghe vũ trụ..." : "Luận giải lá số"}
@@ -116,20 +161,20 @@ export default function BatuPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {messages.filter(m => m.role === 'assistant').map((msg, i) => (
+                  {messages.filter((m) => m.role === "assistant").map((msg, i) => (
                     <div key={i} className="px-5 py-4 rounded-lg bg-background/40 border border-primary/15 shadow-inner">
                       {msg.content ? (
                         <MarkdownRenderer content={msg.content} />
                       ) : (
                         <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0ms" }} />
-                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "150ms" }} />
-                          <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: "300ms" }} />
+                          {[0, 150, 300].map((d) => (
+                            <span key={d} className="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style={{ animationDelay: `${d}ms` }} />
+                          ))}
                         </div>
                       )}
                     </div>
                   ))}
-                  {!messages.some(m => m.role === 'assistant') && !isStreaming && (
+                  {!messages.some((m) => m.role === "assistant") && !isStreaming && (
                     <p className="text-sm text-muted-foreground text-center italic py-8">Nhấn nút bên trên để AI phân tích chuyên sâu về bát tự của bạn.</p>
                   )}
                 </CardContent>
