@@ -12,8 +12,8 @@ WORKDIR /app
 # - supported-architectures: pnpm tự cài binary native đúng platform (arm64 + x64)
 RUN printf "minimum-release-age=0\nsupported-architectures-cpu=arm64+x64\nsupported-architectures-os=linux\nsupported-architectures-libc=glibc\n" > /root/.npmrc
 
-# Copy workspace manifest trước để tận dụng layer cache
-COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+# Copy workspace manifest và tsconfig root trước để tận dụng layer cache
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml tsconfig.base.json tsconfig.json ./
 
 # Copy tất cả package.json trong workspace (cần cho pnpm workspaces)
 COPY artifacts/api-server/package.json          ./artifacts/api-server/
