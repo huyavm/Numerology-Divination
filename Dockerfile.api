@@ -7,8 +7,10 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Override minimumReleaseAge để pnpm install không bị chặn trong Docker
-RUN echo "minimum-release-age=0" > /root/.npmrc
+# Cấu hình pnpm:
+# - minimum-release-age=0: bỏ giới hạn tuổi package khi build trong Docker
+# - supported-architectures: pnpm tự cài binary native đúng platform (arm64 + x64)
+RUN printf "minimum-release-age=0\nsupported-architectures-cpu=arm64+x64\nsupported-architectures-os=linux\nsupported-architectures-libc=glibc\n" > /root/.npmrc
 
 # Copy workspace manifest trước để tận dụng layer cache
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
@@ -27,7 +29,7 @@ RUN ARCH=$(uname -m) && \
       echo "Patched pnpm-workspace.yaml for ARM64"; \
     fi
 
-# --no-frozen-lockfile để pnpm tự giải quyết binary phù hợp với platform hiện tại
+# pnpm sẽ tự tải đúng binary ARM64 nhờ supported-architectures trong .npmrc
 RUN pnpm install --no-frozen-lockfile
 
 # Copy source code api-server
