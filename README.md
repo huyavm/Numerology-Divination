@@ -1,11 +1,10 @@
 # Huyền Bí — Ứng dụng Huyền Học Việt Nam
 
-> Nền tảng huyền học toàn diện: Thần số học, Bát Tự Tứ Trụ, Kinh Dịch I Ching, Cát Hung, Lịch Vạn Niên, Tử Vi Đẩu Số và Trợ lý AI — giao diện tiếng Việt, chủ đề huyền bí tối màu.
+> Nền tảng huyền học toàn diện: Thần số học, Bát Tự Tứ Trụ, Kinh Dịch I Ching, Cát Hung, Lịch Vạn Niên, Tử Vi Đẩu Số và Trợ lý AI — giao diện tiếng Việt, chủ đề tối huyền bí.
 
-![Huyền Bí](https://img.shields.io/badge/Huy%E1%BB%81n%20B%C3%AD-v1.0-c9a227?style=for-the-badge&labelColor=0d0818)
+![Huyền Bí](https://img.shields.io/badge/Huy%E1%BB%87n%20B%C3%AD-v2.0-c9a227?style=for-the-badge&labelColor=0d0818)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript)
-![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat-square&logo=vite)
 ![Express](https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)
 
@@ -16,20 +15,17 @@
 - [Giới thiệu](#giới-thiệu)
 - [Tính năng](#tính-năng)
 - [Kiến trúc](#kiến-trúc)
-- [Cài đặt](#cài-đặt)
-- [Cấu hình môi trường](#cấu-hình-môi-trường)
-- [Chạy ứng dụng](#chạy-ứng-dụng)
-- [Cấu trúc thư mục](#cấu-trúc-thư-mục)
+- [Cài lên server thông thường](#cài-lên-server-thông-thường)
+- [Cài bằng Docker](#cài-bằng-docker)
+- [Cấu hình AI (Admin Panel)](#cấu-hình-ai-admin-panel)
 - [API](#api)
-- [Xuất kết quả](#xuất-kết-quả)
-- [AI Provider](#ai-provider)
-- [Đóng góp](#đóng-góp)
+- [Cấu trúc thư mục](#cấu-trúc-thư-mục)
 
 ---
 
 ## Giới thiệu
 
-**Huyền Bí** là ứng dụng web huyền học Việt Nam đầy đủ tính năng, bao gồm 7 mô-đun tra cứu từ thần số học, tử vi đẩu số đến lịch âm dương vạn niên. Toàn bộ giao diện bằng tiếng Việt, thiết kế chủ đề tối huyền bí (indigo sâu + vàng cổ điển), hỗ trợ xuất kết quả ra file PNG/TXT và tích hợp trợ lý AI phân tích.
+**Huyền Bí** là ứng dụng web huyền học Việt Nam đầy đủ tính năng, gồm 7 mô-đun tra cứu, trợ lý AI hỗ trợ streaming, và hệ thống quản trị key AI dùng chung với giới hạn lượt gọi theo IP.
 
 ---
 
@@ -39,22 +35,21 @@
 
 | Mô-đun | Đường dẫn | Mô tả |
 |--------|-----------|-------|
-| **Thần Số Học** | `/than-so-hoc` | Tính số Đường đời, Linh hồn, Sứ mệnh, Nhân cách từ tên và ngày sinh |
-| **Bát Tự Tứ Trụ** | `/bat-tu` | Lập lá số Tứ Trụ (Năm–Tháng–Ngày–Giờ), phân tích Ngũ Hành vượng/suy |
-| **Xem Quẻ I Ching** | `/xem-que` | Gieo quẻ Kinh Dịch ngẫu nhiên hoặc theo số, luận giải 64 quẻ |
-| **Cát Hung** | `/cat-hung` | Phân tích số điện thoại và biển số xe theo phong thủy |
-| **Lịch Vạn Niên** | `/lich-van-nien` | Tra cứu ngày âm lịch, Can Chi, giờ Hoàng Đạo/Hắc Đạo; phạm vi 1900–2100 |
-| **Tử Vi Đẩu Số** | `/tu-vi` | Lập lá số Tử Vi 12 cung, xác định 14 chính tinh và Mệnh Cục |
-| **Trợ lý AI** | `/ai-chat` | Chat huyền học với AI, lưu lịch sử hội thoại, gợi ý câu hỏi mẫu |
+| **Thần Số Học** | `/than-so-hoc` | Số Đường đời, Linh hồn, Sứ mệnh, Nhân cách |
+| **Bát Tự Tứ Trụ** | `/bat-tu` | 4 trụ Năm–Tháng–Ngày–Giờ, phân tích Ngũ Hành |
+| **Xem Quẻ I Ching** | `/xem-que` | 64 quẻ Kinh Dịch, gieo quẻ và luận giải |
+| **Cát Hung** | `/cat-hung` | Phân tích số điện thoại, biển số xe |
+| **Lịch Vạn Niên** | `/lich-van-nien` | Âm lịch, Can Chi, Hoàng Đạo/Hắc Đạo (1900–2100) |
+| **Tử Vi Đẩu Số** | `/tu-vi` | 12 cung Tử Vi, 14 chính tinh, Mệnh Cục |
+| **Trợ lý AI** | `/ai-chat` | Chat huyền học với AI, lưu lịch sử hội thoại |
 
 ### Tính năng chung
 
-- **Chủ đề Sáng/Tối** — Chuyển đổi Light/Dark mode, lưu vào localStorage
-- **Xuất PNG & TXT** — Tải về ảnh kết quả chất lượng cao (2× retina) hoặc file văn bản
+- **Chủ đề Sáng/Tối** — Light/Dark mode, lưu localStorage
+- **Xuất PNG & TXT** — Ảnh chất lượng cao 2× retina hoặc file văn bản
 - **Phân tích AI** — Giải nghĩa kết quả bằng AI với streaming SSE
-- **Lịch sử tra cứu** — Lưu tối đa 50 mục tra cứu gần nhất vào localStorage
-- **Responsive** — Tương thích mobile, tablet và desktop
-- **PWA-ready** — Có `manifest.json`, meta tags, Open Graph
+- **Key AI dùng chung** — Admin cấu hình key qua giao diện web, có giới hạn lượt gọi theo IP
+- **Responsive** — Tương thích mobile, tablet, desktop
 
 ---
 
@@ -63,27 +58,31 @@
 ```
 monorepo (pnpm workspaces)
 ├── artifacts/
-│   ├── mysticism-web/     # React + Vite frontend (port $PORT)
-│   └── api-server/        # Express 5 backend (port $PORT)
-├── packages/
-│   ├── db/                # Drizzle ORM schema + migrations
-│   └── api-spec/          # OpenAPI spec + Orval codegen
-└── README.md
+│   ├── mysticism-web/     # React 19 + Vite 6 frontend
+│   └── api-server/        # Express 5 backend
+├── docker/
+│   └── nginx.conf         # Nginx reverse proxy config
+├── Dockerfile.api
+├── Dockerfile.web
+└── docker-compose.yml
 ```
 
 - **Frontend**: React 19 + Vite 6 + TypeScript + Tailwind CSS + shadcn/ui
-- **Backend**: Express 5 + Drizzle ORM + PostgreSQL + Zod validation
-- **AI**: Hỗ trợ OpenAI, Google Gemini và Replit AI Integrations (mặc định)
-- **Export**: html2canvas — render DOM ra canvas rồi download PNG
+- **Backend**: Express 5 + PostgreSQL + Zod validation
+- **AI**: OpenAI (GPT) hoặc Google Gemini — key dùng chung (lưu DB) hoặc key riêng của người dùng
+- **DB**: PostgreSQL — lưu hội thoại AI, cấu hình admin, log lượt gọi AI
+- **Migration**: Tự động chạy khi server khởi động, không cần thao tác thủ công
 
 ---
 
-## Cài đặt
+## Cài lên server thông thường
+
+Phù hợp khi bạn đã có server Linux/macOS với Node.js và PostgreSQL.
 
 ### Yêu cầu
 
-| Công cụ | Phiên bản tối thiểu |
-|---------|---------------------|
+| Công cụ | Phiên bản |
+|---------|-----------|
 | Node.js | 20+ |
 | pnpm | 10+ |
 | PostgreSQL | 14+ |
@@ -101,61 +100,294 @@ cd Numerology-Divination
 pnpm install
 ```
 
-### Bước 3 — Tạo database
+### Bước 3 — Tạo database PostgreSQL
 
 ```bash
-# Tạo database PostgreSQL
-createdb huyenbi
-
-# Đẩy schema lên database
-pnpm --filter @workspace/db run push
+# Tạo database (đăng nhập vào psql trước nếu cần)
+psql -U postgres -c "CREATE DATABASE huyenbi;"
+psql -U postgres -c "CREATE USER huyenbi WITH PASSWORD 'your_password';"
+psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE huyenbi TO huyenbi;"
 ```
 
----
+### Bước 4 — Tạo file .env
 
-## Cấu hình môi trường
+```bash
+cp .env.example .env
+```
 
-Tạo file `.env` tại thư mục gốc (hoặc set trực tiếp trong shell):
+Mở `.env` và điền `DATABASE_URL`:
 
 ```env
-# Database
-DATABASE_URL=postgresql://username:password@localhost:5432/huyenbi
-
-# AI — chỉ cần nếu dùng Replit AI Integrations
-AI_INTEGRATIONS_OPENAI_BASE_URL=https://...
-AI_INTEGRATIONS_OPENAI_API_KEY=...
-
-# Port cho từng service (tuỳ chỉnh nếu cần)
-# Mặc định: api-server=3001, mysticism-web=5173
-PORT=3001   # cho api-server
-PORT=5173   # cho mysticism-web
+DATABASE_URL=postgresql://huyenbi:your_password@localhost:5432/huyenbi
+PORT_API=3001
+PORT_WEB=5173
 ```
 
-> **Lưu ý**: Nếu bạn không dùng Replit AI Integrations, vẫn có thể dùng ứng dụng bình thường. Người dùng có thể nhập API key OpenAI hoặc Google Gemini trực tiếp trong giao diện cài đặt AI (biểu tượng AI trên navbar).
+> Các bảng database sẽ được tạo tự động khi backend khởi động lần đầu.
+
+### Bước 5 — Build
+
+```bash
+# Build backend (esbuild → dist/)
+pnpm --filter @workspace/api-server run build
+
+# Build frontend (Vite → dist/public/)
+pnpm --filter @workspace/mysticism-web run build
+```
+
+### Bước 6 — Chạy production
+
+#### Cách 1: Dùng PM2 (khuyến nghị)
+
+```bash
+npm install -g pm2
+
+# Chạy backend
+PORT=3001 DATABASE_URL=<your-db-url> \
+  pm2 start artifacts/api-server/dist/index.mjs \
+  --name huyen-bi-api
+
+# Chạy frontend (serve static files)
+npm install -g serve
+pm2 start "serve -s artifacts/mysticism-web/dist/public -l 5173" \
+  --name huyen-bi-web
+
+# Lưu để tự khởi động lại khi reboot
+pm2 save
+pm2 startup
+```
+
+#### Cách 2: Dùng systemd (Ubuntu/Debian)
+
+Tạo file `/etc/systemd/system/huyen-bi-api.service`:
+
+```ini
+[Unit]
+Description=Huyen Bi API Server
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/Numerology-Divination
+ExecStart=/usr/bin/node artifacts/api-server/dist/index.mjs
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3001
+Environment=DATABASE_URL=postgresql://huyenbi:your_password@localhost:5432/huyenbi
+
+[Install]
+WantedBy=multi-user.target
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable huyen-bi-api
+sudo systemctl start huyen-bi-api
+```
+
+#### Cách 3: Nginx làm reverse proxy cho frontend + API
+
+Thêm config Nginx `/etc/nginx/sites-available/huyenbi`:
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    root /var/www/Numerology-Divination/artifacts/mysticism-web/dist/public;
+    index index.html;
+
+    # Cache static assets
+    location ~* \.(js|css|woff2?|png|jpg|ico|svg)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # Proxy API — hỗ trợ SSE streaming
+    location /api/ {
+        proxy_pass         http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header   Connection "";
+        proxy_buffering    off;
+        proxy_cache        off;
+        chunked_transfer_encoding on;
+        proxy_set_header   Host              $host;
+        proxy_set_header   X-Real-IP         $remote_addr;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_read_timeout 300s;
+        proxy_send_timeout 300s;
+    }
+
+    # SPA fallback
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+```bash
+sudo ln -s /etc/nginx/sites-available/huyenbi /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+```
 
 ---
 
-## Chạy ứng dụng
+## Cài bằng Docker
 
-### Chế độ Development
+Phù hợp để triển khai nhanh — một lệnh là chạy cả stack (Postgres + API + Nginx).
 
-```bash
-# Chạy cả frontend và backend song song
-pnpm run dev
+### Yêu cầu
 
-# Hoặc chạy riêng từng service
-pnpm --filter @workspace/api-server run dev    # Backend: http://localhost:3001
-pnpm --filter @workspace/mysticism-web run dev # Frontend: http://localhost:5173
+- Docker 24+
+- Docker Compose v2+
+
+### Cấu trúc Docker
+
+```
+docker-compose.yml
+├── postgres    — PostgreSQL 16 (lưu trữ dữ liệu)
+├── api         — Express 5 backend (Dockerfile.api)
+│                 Build: esbuild → dist/index.mjs
+│                 Migration DB chạy tự động khi khởi động
+└── web         — Nginx 1.27 (Dockerfile.web)
+                  Build: Vite → static files
+                  Proxy: /api/* → api:3001
 ```
 
-### Chế độ Production
+### Bước 1 — Clone repo
 
 ```bash
-# Build toàn bộ
-pnpm run build
+git clone https://github.com/huyavm/Numerology-Divination.git
+cd Numerology-Divination
+```
 
-# Chạy backend sau khi build
-node artifacts/api-server/dist/index.js
+### Bước 2 — Tạo file .env
+
+```bash
+cp .env.example .env
+```
+
+Chỉnh sửa `.env` — tối thiểu đổi mật khẩu database:
+
+```env
+POSTGRES_PASSWORD=mat_khau_manh_cua_ban
+WEB_PORT=80
+```
+
+> Không cần điền API key AI ở đây — key AI được cấu hình qua Admin Panel trong giao diện web sau khi deploy.
+
+### Bước 3 — Build và chạy
+
+```bash
+docker compose up --build -d
+```
+
+Mở trình duyệt: **http://localhost** (hoặc `http://your-server-ip`)
+
+> Lần đầu build mất 3–5 phút. Các lần sau nhanh hơn nhờ Docker layer cache.
+
+### Lệnh thường dùng
+
+```bash
+# Xem log real-time tất cả service
+docker compose logs -f
+
+# Xem log từng service
+docker compose logs -f api
+docker compose logs -f web
+docker compose logs -f postgres
+
+# Rebuild và restart sau khi thay đổi code
+docker compose up --build -d
+
+# Chỉ rebuild một service
+docker compose up --build -d api
+
+# Dừng tất cả (giữ data)
+docker compose down
+
+# Dừng và xoá toàn bộ data (cẩn thận!)
+docker compose down -v
+```
+
+### Thay đổi port
+
+Nếu cổng 80 đã bị chiếm, sửa trong `.env`:
+
+```env
+WEB_PORT=8080
+```
+
+### Chạy sau reverse proxy (Nginx/Traefik sẵn có)
+
+```yaml
+# docker-compose.override.yml
+services:
+  web:
+    ports: []
+    expose:
+      - "80"
+```
+
+---
+
+## Cấu hình AI (Admin Panel)
+
+Ứng dụng hỗ trợ **3 chế độ AI**:
+
+| Chế độ | Mô tả | Ai cần cấu hình? |
+|--------|-------|-----------------|
+| **Key hệ thống** | Dùng key chung do admin cài — người dùng không cần nhập gì | Admin |
+| **OpenAI** | Người dùng tự nhập OpenAI API key | Người dùng |
+| **Google Gemini** | Người dùng tự nhập Gemini API key | Người dùng |
+
+### Cách cấu hình Key hệ thống (Admin)
+
+1. Vào ứng dụng → nhấn nút **AI** trên thanh điều hướng
+2. Nhấn **Cài đặt AI** → cuộn xuống phần **Cài đặt Admin**
+3. Nhập mật khẩu admin *(lần đầu nhập bất kỳ mật khẩu nào → tự đặt làm mật khẩu admin)*
+4. Chọn **Provider** (OpenAI hoặc Gemini), nhập **API Key**, chọn **Model**
+5. Đặt **giới hạn lượt gọi theo IP** (mặc định: 20/giờ, 100/ngày)
+6. Nhấn **Lưu cấu hình Admin**
+
+Sau khi cấu hình, tất cả người dùng có thể chọn **Key hệ thống** mà không cần nhập key riêng.
+
+### Các model được hỗ trợ
+
+| Provider | Model mặc định | Các model khác |
+|----------|---------------|----------------|
+| OpenAI | `gpt-4.1` | `gpt-4.1-mini`, `gpt-4o`, `gpt-4o-mini` |
+| Google Gemini | `gemini-2.5-pro` | `gemini-2.0-flash`, `gemini-1.5-pro` |
+
+---
+
+## API
+
+Base URL: `http://localhost:3001`
+
+### Endpoints chính
+
+| Method | Endpoint | Mô tả |
+|--------|----------|-------|
+| `GET` | `/api/healthz` | Kiểm tra server |
+| `GET` | `/api/config/public` | Thông tin cấu hình public (server có key không, rate limit) |
+| `POST` | `/api/admin/config` | Cập nhật cấu hình admin (cần mật khẩu) |
+| `GET` | `/api/admin/usage` | Thống kê lượt gọi AI theo IP |
+| `GET` | `/api/openai/conversations` | Danh sách hội thoại AI |
+| `POST` | `/api/openai/conversations` | Tạo hội thoại mới |
+| `GET` | `/api/openai/conversations/:id/messages` | Tin nhắn trong hội thoại |
+| `POST` | `/api/openai/conversations/:id/messages` | Gửi tin nhắn (SSE streaming) |
+| `POST` | `/api/mysticism/ai-interpret` | Phân tích huyền học bằng AI (SSE streaming) |
+
+### Headers AI
+
+```
+x-ai-provider: server | openai | gemini
+x-ai-key: <API key của bạn>      (chỉ khi dùng openai/gemini)
+x-ai-model: gpt-4.1 | gemini-2.5-pro | ...
 ```
 
 ---
@@ -164,208 +396,39 @@ node artifacts/api-server/dist/index.js
 
 ```
 artifacts/mysticism-web/src/
-├── pages/
-│   ├── home.tsx             # Trang chủ
-│   ├── than-so-hoc.tsx      # Thần Số Học
-│   ├── bat-tu.tsx           # Bát Tự Tứ Trụ
-│   ├── xem-que.tsx          # Xem Quẻ I Ching
-│   ├── cat-hung.tsx         # Cát Hung
-│   ├── lich-van-nien.tsx    # Lịch Vạn Niên
-│   ├── tu-vi.tsx            # Tử Vi Đẩu Số
-│   └── ai-chat.tsx          # Trợ lý AI
+├── pages/               # Các trang (home, than-so-hoc, bat-tu, ...)
 ├── components/
-│   ├── layout/              # Navbar, Footer
-│   ├── ui/                  # shadcn/ui components
-│   ├── knowledge-base.tsx   # Accordion tra cứu kiến thức
-│   ├── export-card-*.tsx    # Thẻ xuất PNG cho từng mô-đun
-│   ├── export-download-bar.tsx
-│   └── result-actions.tsx
+│   ├── layout/          # Navbar, Footer
+│   ├── ui/              # shadcn/ui components
+│   └── export-card-*.tsx
 ├── lib/
-│   ├── lunar-calendar.ts    # Chuyển đổi Dương↔Âm lịch (thuật toán Ho Ngoc Duc)
-│   ├── tu-vi.ts             # Tính toán 12 cung Tử Vi + 14 chính tinh
-│   ├── numerology.ts        # Công thức Thần Số Học
-│   ├── batu.ts              # Bát Tự + Ngũ Hành
-│   ├── iching.ts            # 64 quẻ Kinh Dịch
-│   ├── cat-hung.ts          # Phân tích số Cát Hung
-│   └── history.ts           # Quản lý lịch sử localStorage
-├── hooks/
-│   ├── use-export-image.ts  # html2canvas download hook
-│   └── use-ai-sse-chat.ts   # SSE streaming với AI
+│   ├── lunar-calendar.ts   # Chuyển đổi Dương↔Âm (Ho Ngoc Duc)
+│   ├── tu-vi.ts            # 12 cung Tử Vi + 14 chính tinh
+│   ├── numerology.ts       # Thần Số Học
+│   ├── batu.ts             # Bát Tự + Ngũ Hành
+│   ├── iching.ts           # 64 quẻ Kinh Dịch
+│   └── cat-hung.ts         # Phân tích Cát Hung
 └── contexts/
-    ├── theme.tsx            # ThemeProvider Light/Dark
+    ├── theme.tsx            # Light/Dark mode
     └── ai-settings.tsx      # AI provider context
 
 artifacts/api-server/src/
-├── routes/
-│   ├── ai.ts                # SSE chat + AI interpret endpoints
-│   └── conversations.ts     # CRUD hội thoại AI
-└── index.ts                 # Express app entry
+├── lib/
+│   ├── migrate.ts       # Auto-migration các bảng DB khi khởi động
+│   ├── server-config.ts # Đọc/ghi cấu hình từ DB
+│   └── rate-limit.ts    # Kiểm tra + ghi log rate limit theo IP
+└── routes/
+    ├── mysticism/       # SSE AI interpret
+    ├── conversations/   # CRUD hội thoại
+    ├── config/          # /api/config/public
+    └── admin/           # /api/admin/config, /api/admin/usage
 ```
-
----
-
-## API
-
-Base URL: `http://localhost:3001`
-
-| Method | Endpoint | Mô tả |
-|--------|----------|-------|
-| `GET` | `/api/healthz` | Kiểm tra server |
-| `GET` | `/api/openai/conversations` | Danh sách hội thoại AI |
-| `POST` | `/api/openai/conversations` | Tạo hội thoại mới |
-| `GET` | `/api/openai/conversations/:id/messages` | Tin nhắn trong hội thoại |
-| `POST` | `/api/openai/conversations/:id/messages` | Gửi tin nhắn (SSE streaming) |
-| `POST` | `/api/mysticism/ai-interpret` | Phân tích huyền học bằng AI (SSE streaming) |
-
-### Headers cho AI tùy chỉnh
-
-Khi gọi API với AI provider riêng, truyền thêm headers:
-
-```
-x-ai-provider: openai | gemini | replit
-x-ai-key: <API key của bạn>
-x-ai-model: gpt-5.4 | gemini-2.5-pro | ...
-```
-
----
-
-## Xuất kết quả
-
-Các trang **Thần Số Học**, **Bát Tự**, **Xem Quẻ** và **Tử Vi** hỗ trợ xuất kết quả:
-
-- **PNG** — Ảnh chất lượng cao (tỷ lệ 2×) với thiết kế thương hiệu đen/vàng, phông chữ hỗ trợ tiếng Việt đầy đủ dấu
-- **TXT** — File văn bản thuần túy, dễ chia sẻ và lưu trữ
-
-Kỹ thuật xuất sử dụng `html2canvas` với card ẩn ngoài màn hình, áp dụng Flexbox và màu inline để tránh lỗi render dấu tiếng Việt.
-
----
-
-## AI Provider
-
-Ứng dụng hỗ trợ 3 nhà cung cấp AI:
-
-| Provider | Model mặc định | Cần API key? |
-|----------|---------------|-------------|
-| **Replit AI** | gpt-5.2 | Không (tự động khi deploy trên Replit) |
-| **OpenAI** | gpt-5.4 | Có — nhập trong giao diện |
-| **Google Gemini** | gemini-2.5-pro | Có — nhập trong giao diện |
-
-Cài đặt AI được lưu vào localStorage với key `huyen-bi-ai-settings`.
-
----
-
-## Docker
-
-### Yêu cầu
-- Docker 24+
-- Docker Compose v2+
-
-### Cấu trúc Docker
-
-```
-docker-compose.yml
-├── postgres    — PostgreSQL 16 (lưu trữ hội thoại AI)
-├── api         — Express 5 backend (Dockerfile.api)
-│                 Build: esbuild bundle → dist/index.mjs
-└── web         — Nginx 1.27 (Dockerfile.web)
-                  Build: Vite → static files
-                  Proxy: /api/* → api:3001
-```
-
-### Chạy nhanh
-
-```bash
-# 1. Clone repo
-git clone https://github.com/huyavm/Numerology-Divination.git
-cd Numerology-Divination
-
-# 2. Tạo file .env từ mẫu
-cp .env.example .env
-# Chỉnh sửa .env nếu cần (mật khẩu database, API keys, ...)
-
-# 3. Build và khởi động tất cả service
-docker compose up --build -d
-
-# 4. Chạy migration database (chỉ lần đầu)
-# Chạy từ máy local với DATABASE_URL trỏ vào postgres container:
-DATABASE_URL=postgresql://huyenbi:huyenbi_secret@localhost:5432/huyenbi \
-  pnpm --filter @workspace/db run push
-```
-
-> Mở trình duyệt: **http://localhost**
-
-### Lệnh thường dùng
-
-```bash
-# Xem log real-time
-docker compose logs -f
-
-# Xem log từng service
-docker compose logs -f api
-docker compose logs -f web
-
-# Restart 1 service (sau khi thay đổi code)
-docker compose up --build -d api
-docker compose up --build -d web
-
-# Dừng tất cả
-docker compose down
-
-# Dừng và xoá toàn bộ data (cẩn thận!)
-docker compose down -v
-```
-
-### Biến môi trường quan trọng
-
-| Biến | Mặc định | Mô tả |
-|------|----------|-------|
-| `POSTGRES_DB` | `huyenbi` | Tên database |
-| `POSTGRES_USER` | `huyenbi` | Username PostgreSQL |
-| `POSTGRES_PASSWORD` | `huyenbi_secret` | Mật khẩu PostgreSQL |
-| `WEB_PORT` | `80` | Cổng web expose ra ngoài |
-| `OPENAI_API_KEY` | *(trống)* | OpenAI API key (tuỳ chọn) |
-| `GEMINI_API_KEY` | *(trống)* | Google Gemini API key (tuỳ chọn) |
-
-### Thay đổi port
-
-Nếu cổng 80 đã bị chiếm:
-
-```bash
-# Trong .env
-WEB_PORT=8080
-
-# Hoặc ghi đè trực tiếp
-WEB_PORT=8080 docker compose up -d
-```
-
-### Chạy sau reverse proxy (Nginx/Traefik)
-
-Nếu đã có reverse proxy phía trước, chỉ cần expose cổng 80 nội bộ:
-
-```yaml
-# docker-compose.override.yml
-services:
-  web:
-    ports: []          # Bỏ expose cổng trực tiếp
-    expose:
-      - "80"           # Chỉ expose nội bộ cho reverse proxy
-```
-
----
-
-## Đóng góp
-
-1. Fork repo này
-2. Tạo branch mới: `git checkout -b feature/ten-tinh-nang`
-3. Commit thay đổi: `git commit -m "Thêm tính năng X"`
-4. Push lên branch: `git push origin feature/ten-tinh-nang`
-5. Tạo Pull Request
 
 ---
 
 ## Giấy phép
 
-MIT License — xem file [LICENSE](LICENSE) để biết thêm chi tiết.
+MIT License
 
 ---
 
