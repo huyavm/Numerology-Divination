@@ -19,9 +19,15 @@ COPY artifacts/mockup-sandbox/package.json      ./artifacts/mockup-sandbox/
 COPY artifacts/mysticism-web/package.json       ./artifacts/mysticism-web/
 COPY lib/                                       ./lib/
 
-# --no-frozen-lockfile để pnpm tự cài binary phù hợp với platform hiện tại
-# Cần thiết trên ARM64 để cài @rollup/rollup-linux-arm64-musl (dùng bởi Vite)
+# --no-frozen-lockfile để pnpm tự giải quyết deps
 RUN pnpm install --no-frozen-lockfile
+
+# Trên ARM64 Alpine (musl): lockfile được tạo trên x64 nên thiếu rollup ARM binary
+# Dùng npm để cài thẳng vào node_modules, rollup sẽ tìm thấy qua node resolution
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ]; then \
+      npm install --no-save --prefix /app @rollup/rollup-linux-arm64-musl; \
+    fi
 
 # Copy toàn bộ source code của frontend + shared libs
 COPY artifacts/mysticism-web/ ./artifacts/mysticism-web/
