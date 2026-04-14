@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
+import { hourToCanChi } from "@/lib/form-utils";
 import { calculateTuVi, THIEN_CAN, DIA_CHI, NGU_HANH_COLOR, type TuViResult, type CungInfo } from "@/lib/tu-vi";
 import { TuViKnowledge } from "@/components/knowledge-base";
 import { solarToLunar } from "@/lib/lunar-calendar";
@@ -68,19 +69,32 @@ function CungCard({ cung, isMenh, isThan, onClick, selected }: {
 }
 
 export default function TuViPage() {
-  const [form, setForm] = useState({ year: "", month: "", day: "", hour: "12", gender: "nam" as "nam" | "nu" });
+  const [dateInput, setDateInput] = useState("");
+  const [form, setForm] = useState({ year: "", month: "", day: "", hour: "6", gender: "nam" as "nam" | "nu" });
   const [result, setResult] = useState<TuViResult | null>(null);
   const [selectedCung, setSelectedCung] = useState<CungInfo | null>(null);
   const [error, setError] = useState("");
   const { messages, streamResponse, isStreaming, setMessages } = useAISSEChat();
   const { exportRef, downloadAsImage, downloadAsText, isExporting } = useExportImage();
 
+  const handleDateChange = (val: string) => {
+    setDateInput(val);
+    if (val) {
+      const [y, m, d] = val.split("-");
+      setForm((f) => ({ ...f, year: String(parseInt(y)), month: String(parseInt(m)), day: String(parseInt(d)) }));
+    } else {
+      setForm((f) => ({ ...f, year: "", month: "", day: "" }));
+    }
+  };
+
+  const selectedHourInt = parseInt(form.hour);
+
   const handleCalculate = () => {
     setError("");
     const { year, month, day, hour, gender } = form;
     const y = parseInt(year), m = parseInt(month), d = parseInt(day), h = parseInt(hour);
-    if (!y || !m || !d || m < 1 || m > 12 || d < 1 || d > 31) {
-      setError("Vui lòng nhập ngày sinh hợp lệ.");
+    if (!dateInput || !y || !m || !d || m < 1 || m > 12 || d < 1 || d > 31) {
+      setError("Vui lòng chọn ngày sinh hợp lệ.");
       return;
     }
     const lunar = solarToLunar(d, m, y);
@@ -145,41 +159,102 @@ export default function TuViPage() {
           {/* Input Form */}
           <div className="max-w-2xl mx-auto border border-primary/25 bg-card/30 rounded-2xl p-6 space-y-5 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
             <h2 className="text-lg font-semibold text-primary">Nhập thông tin</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Ngày sinh DL</Label>
-                <Input value={form.day} onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
-                  placeholder="DD" maxLength={2} className="text-center" />
+
+            <div className="grid sm:grid-cols-2 gap-5">
+              {/* Ngày sinh — native date picker */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                  <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth={1.8}/><line x1="16" y1="2" x2="16" y2="6" strokeWidth={1.8}/><line x1="8" y1="2" x2="8" y2="6" strokeWidth={1.8}/><line x1="3" y1="10" x2="21" y2="10" strokeWidth={1.8}/></svg>
+                  Ngày sinh (dương lịch)
+                </Label>
+                <div className="relative">
+                  <input
+                    type="date"
+                    value={dateInput}
+                    onChange={(e) => handleDateChange(e.target.value)}
+                    min="1900-01-01"
+                    max={new Date().toISOString().split("T")[0]}
+                    className={cn(
+                      "flex h-10 w-full rounded-md border bg-background/50 px-3 py-2 pl-10 text-sm [color-scheme:dark] transition-all duration-200 outline-none",
+                      dateInput ? "border-green-500/50 focus:ring-1 focus:ring-green-500/30"
+                        : "border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                    )}
+                  />
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth={1.8}/><line x1="16" y1="2" x2="16" y2="6" strokeWidth={1.8}/><line x1="8" y1="2" x2="8" y2="6" strokeWidth={1.8}/><line x1="3" y1="10" x2="21" y2="10" strokeWidth={1.8}/></svg>
+                </div>
+                {dateInput && (
+                  <p className="text-xs text-muted-foreground">
+                    Dương lịch: <span className="text-primary/80 font-medium">{form.day}/{form.month}/{form.year}</span>
+                  </p>
+                )}
               </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Tháng sinh</Label>
-                <Input value={form.month} onChange={(e) => setForm((f) => ({ ...f, month: e.target.value }))}
-                  placeholder="MM" maxLength={2} className="text-center" />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Năm sinh</Label>
-                <Input value={form.year} onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
-                  placeholder="YYYY" maxLength={4} className="text-center" />
-              </div>
-              <div className="space-y-1.5">
-                <Label className="text-xs text-muted-foreground">Giờ sinh (0-23)</Label>
-                <Input value={form.hour} onChange={(e) => setForm((f) => ({ ...f, hour: e.target.value }))}
-                  placeholder="HH" maxLength={2} className="text-center" />
+
+              {/* Giờ sinh — dropdown với Can Chi */}
+              <div className="space-y-2">
+                <Label className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                  <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth={1.8}/><polyline points="12 6 12 12 16 14" strokeWidth={1.8}/></svg>
+                  Giờ sinh
+                </Label>
+                <div className="relative">
+                  <select
+                    value={form.hour}
+                    onChange={(e) => setForm((f) => ({ ...f, hour: e.target.value }))}
+                    className="flex h-10 w-full appearance-none rounded-md border border-green-500/50 bg-background/50 px-3 py-2 pl-10 pr-8 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-green-500/30 transition-all duration-200"
+                  >
+                    {Array.from({ length: 24 }, (_, h) => (
+                      <option key={h} value={String(h)}>
+                        {String(h).padStart(2, "0")}:00 — {hourToCanChi(h)}
+                      </option>
+                    ))}
+                  </select>
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth={1.8}/><polyline points="12 6 12 12 16 14" strokeWidth={1.8}/></svg>
+                  <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9" strokeWidth={1.8}/></svg>
+                </div>
+                <p className="text-xs text-primary/70">
+                  <span className="text-primary font-semibold">✦</span> {hourToCanChi(selectedHourInt)}
+                </p>
               </div>
             </div>
-            <div className="space-y-1.5">
-              <Label className="text-xs text-muted-foreground">Giới tính</Label>
+
+            {/* Giới tính */}
+            <div className="space-y-2">
+              <Label className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg>
+                Giới tính
+              </Label>
               <div className="flex gap-3">
-                {["nam", "nu"].map((g) => (
-                  <button key={g} onClick={() => setForm((f) => ({ ...f, gender: g as "nam" | "nu" }))}
-                    className={`flex-1 py-2 rounded-lg border text-sm font-medium transition-all ${form.gender === g ? "border-primary bg-primary/20 text-primary" : "border-border/50 text-muted-foreground hover:border-primary/30"}`}>
-                    {g === "nam" ? "Nam" : "Nữ"}
+                {[
+                  { value: "nam", label: "Nam", icon: "♂" },
+                  { value: "nu", label: "Nữ", icon: "♀" },
+                ].map((g) => (
+                  <button
+                    key={g.value}
+                    type="button"
+                    onClick={() => setForm((f) => ({ ...f, gender: g.value as "nam" | "nu" }))}
+                    className={cn(
+                      "flex-1 py-2.5 rounded-lg border text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2",
+                      form.gender === g.value
+                        ? "border-primary bg-primary/20 text-primary shadow-sm shadow-primary/20"
+                        : "border-border/50 text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                    )}
+                  >
+                    <span className="text-base">{g.icon}</span>{g.label}
                   </button>
                 ))}
               </div>
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            <Button onClick={handleCalculate} className="w-full bg-primary text-primary-foreground font-semibold">
+
+            {error && (
+              <p className="text-sm text-red-400 flex items-center gap-1.5">
+                <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
+                {error}
+              </p>
+            )}
+            <Button
+              onClick={handleCalculate}
+              disabled={!dateInput}
+              className="w-full bg-primary text-primary-foreground font-semibold disabled:opacity-40"
+            >
               Lập Lá Số Tử Vi
             </Button>
           </div>

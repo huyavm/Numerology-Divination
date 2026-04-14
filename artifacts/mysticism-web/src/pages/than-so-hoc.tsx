@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { computeLifePathNumber, computeSoulNumber, computeDestinyNumber, computePersonalityNumber, getNumberMeaning } from "@/lib/numerology";
@@ -11,10 +10,15 @@ import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { NumerologyKnowledge } from "@/components/knowledge-base";
 import { NumerologyExportCard } from "@/components/export-card-numerology";
 import { ExportDownloadBar } from "@/components/export-download-bar";
+import { cn } from "@/lib/utils";
+import { dateInputToDisplay, validateName, validateDateDisplay } from "@/lib/form-utils";
 
 export default function NumerologyPage() {
   const [name, setName] = useState("");
   const [dob, setDob] = useState("");
+  const [dobInput, setDobInput] = useState("");
+  const [errors, setErrors] = useState({ name: "", dob: "" });
+  const [touched, setTouched] = useState({ name: false, dob: false });
   const [results, setResults] = useState<{
     lifePath: number;
     soul: number;
@@ -25,9 +29,26 @@ export default function NumerologyPage() {
   const { messages, streamResponse, isStreaming } = useAISSEChat();
   const { exportRef, downloadAsImage, downloadAsText, isExporting } = useExportImage();
 
+  const handleNameChange = (val: string) => {
+    const upper = val.toUpperCase();
+    setName(upper);
+    if (touched.name) setErrors((e) => ({ ...e, name: validateName(upper) }));
+  };
+
+  const handleDateChange = (val: string) => {
+    setDobInput(val);
+    const display = dateInputToDisplay(val);
+    setDob(display);
+    if (touched.dob) setErrors((e) => ({ ...e, dob: validateDateDisplay(display) }));
+  };
+
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !dob) return;
+    const nameErr = validateName(name);
+    const dobErr = validateDateDisplay(dob);
+    setErrors({ name: nameErr, dob: dobErr });
+    setTouched({ name: true, dob: true });
+    if (nameErr || dobErr) return;
     setResults({
       lifePath: computeLifePathNumber(dob),
       soul: computeSoulNumber(name),
@@ -100,21 +121,74 @@ export default function NumerologyPage() {
           <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl shadow-primary/5">
             <CardHeader>
               <CardTitle className="text-2xl text-primary">Nhập thông tin</CardTitle>
-              <CardDescription>Nhập đầy đủ họ tên và ngày sinh theo định dạng DD/MM/YYYY.</CardDescription>
+              <CardDescription>Họ tên đầy đủ và ngày sinh dương lịch để tính các con số huyền học.</CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleCalculate} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
+                  {/* Họ tên */}
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-primary-foreground">Họ và tên</Label>
-                    <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Ví dụ: NGUYỄN VĂN A" className="bg-background/50 border-border/50 focus:border-primary/50 text-foreground" required />
+                    <Label htmlFor="name" className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                      <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                      Họ và tên đầy đủ
+                    </Label>
+                    <div className="relative">
+                      <input
+                        id="name"
+                        type="text"
+                        value={name}
+                        onChange={(e) => handleNameChange(e.target.value)}
+                        onBlur={() => { setTouched((t) => ({ ...t, name: true })); setErrors((e) => ({ ...e, name: validateName(name) })); }}
+                        placeholder="NGUYỄN VĂN A"
+                        className={cn(
+                          "flex h-10 w-full rounded-md border bg-background/50 px-3 py-2 pl-10 text-sm uppercase tracking-wider transition-all duration-200 outline-none",
+                          "placeholder:text-muted-foreground/50 placeholder:normal-case placeholder:tracking-normal",
+                          touched.name && errors.name ? "border-red-500/70 focus:ring-1 focus:ring-red-500/40"
+                            : name && !errors.name ? "border-green-500/50 focus:ring-1 focus:ring-green-500/30"
+                            : "border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                        )}
+                      />
+                      <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    </div>
+                    {touched.name && errors.name && <p className="text-xs text-red-400 flex items-center gap-1"><svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>{errors.name}</p>}
+                    {name && !errors.name && <p className="text-xs text-green-400 flex items-center gap-1"><svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>Tên hợp lệ</p>}
                   </div>
+
+                  {/* Ngày sinh */}
                   <div className="space-y-2">
-                    <Label htmlFor="dob" className="text-primary-foreground">Ngày sinh (DD/MM/YYYY)</Label>
-                    <Input id="dob" value={dob} onChange={(e) => setDob(e.target.value)} placeholder="Ví dụ: 01/01/1990" className="bg-background/50 border-border/50 focus:border-primary/50 text-foreground" required />
+                    <Label htmlFor="dob" className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                      <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth={1.8}/><line x1="16" y1="2" x2="16" y2="6" strokeWidth={1.8}/><line x1="8" y1="2" x2="8" y2="6" strokeWidth={1.8}/><line x1="3" y1="10" x2="21" y2="10" strokeWidth={1.8}/></svg>
+                      Ngày sinh (dương lịch)
+                    </Label>
+                    <div className="relative">
+                      <input
+                        id="dob"
+                        type="date"
+                        value={dobInput}
+                        onChange={(e) => { handleDateChange(e.target.value); setTouched((t) => ({ ...t, dob: true })); }}
+                        onBlur={() => { setTouched((t) => ({ ...t, dob: true })); setErrors((e) => ({ ...e, dob: validateDateDisplay(dob) })); }}
+                        min="1900-01-01"
+                        max={new Date().toISOString().split("T")[0]}
+                        className={cn(
+                          "flex h-10 w-full rounded-md border bg-background/50 px-3 py-2 pl-10 text-sm [color-scheme:dark] transition-all duration-200 outline-none",
+                          "placeholder:text-muted-foreground/50",
+                          touched.dob && errors.dob ? "border-red-500/70 focus:ring-1 focus:ring-red-500/40"
+                            : dobInput ? "border-green-500/50 focus:ring-1 focus:ring-green-500/30"
+                            : "border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                        )}
+                      />
+                      <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth={1.8}/><line x1="16" y1="2" x2="16" y2="6" strokeWidth={1.8}/><line x1="8" y1="2" x2="8" y2="6" strokeWidth={1.8}/><line x1="3" y1="10" x2="21" y2="10" strokeWidth={1.8}/></svg>
+                    </div>
+                    {touched.dob && errors.dob && <p className="text-xs text-red-400 flex items-center gap-1"><svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>{errors.dob}</p>}
+                    {dobInput && !errors.dob && <p className="text-xs text-muted-foreground">Dương lịch: <span className="text-primary/80 font-medium">{dob}</span></p>}
                   </div>
                 </div>
-                <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold tracking-wider">
+
+                <Button
+                  type="submit"
+                  disabled={!!(!name || !dobInput)}
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold tracking-wider disabled:opacity-40"
+                >
                   LUẬN GIẢI
                 </Button>
               </form>

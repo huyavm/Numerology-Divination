@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import { formatPhoneDisplay, dateInputToDisplay } from "@/lib/form-utils";
 import {
   analyzeCatHung,
   analyzeFullPhone,
@@ -337,7 +338,21 @@ export default function CatHungPage() {
   const [phone, setPhone] = useState("");
   const [ownerName, setOwnerName] = useState("");
   const [dob, setDob] = useState("");
+  const [dobInput, setDobInput] = useState("");
   const [phoneMode, setPhoneMode] = useState<PhoneMode>("6");
+
+  const handlePhoneChange = (val: string) => {
+    const formatted = formatPhoneDisplay(val);
+    setPhone(formatted);
+  };
+
+  const handleDobChange = (val: string) => {
+    setDobInput(val);
+    setDob(dateInputToDisplay(val));
+  };
+
+  const phoneDigits = phone.replace(/\D/g, "");
+  const phoneTarget = phoneMode === "6" ? 6 : 10;
   const [phoneState, setPhoneState] = useState<PhoneState | null>(null);
 
   const [plate, setPlate] = useState("");
@@ -429,43 +444,85 @@ export default function CatHungPage() {
 
                   <form onSubmit={handlePhoneSubmit} className="space-y-4">
                     <div className="grid md:grid-cols-2 gap-4">
+                      {/* Số điện thoại với auto-format + counter */}
                       <div className="space-y-1.5">
-                        <Label htmlFor="phone" className="text-primary-foreground">Số điện thoại</Label>
-                        <Input
-                          id="phone"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="Ví dụ: 0901 234 567"
-                          className="bg-background/50 border-border/50 focus:border-primary/50 text-foreground"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-1.5">
-                        <Label htmlFor="ownerName" className="text-primary-foreground">
-                          Họ tên chủ sở hữu <span className="text-muted-foreground font-normal">(tùy chọn)</span>
+                        <Label htmlFor="phone" className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                          <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                          Số điện thoại
                         </Label>
-                        <Input
-                          id="ownerName"
-                          value={ownerName}
-                          onChange={(e) => setOwnerName(e.target.value)}
-                          placeholder="Ví dụ: Nguyễn Văn An"
-                          className="bg-background/50 border-border/50 focus:border-primary/50 text-foreground"
-                        />
+                        <div className="relative">
+                          <input
+                            id="phone"
+                            type="tel"
+                            value={phone}
+                            onChange={(e) => handlePhoneChange(e.target.value)}
+                            placeholder="0901 234 567"
+                            maxLength={12}
+                            className={cn(
+                              "flex h-10 w-full rounded-md border bg-background/50 px-3 py-2 pl-10 pr-16 text-sm font-mono tracking-widest transition-all duration-200 outline-none",
+                              phoneDigits.length >= phoneTarget ? "border-green-500/60 focus:ring-1 focus:ring-green-500/30"
+                                : phone ? "border-primary/40 focus:ring-1 focus:ring-primary/20"
+                                : "border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                            )}
+                            required
+                          />
+                          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                          <span className={cn(
+                            "absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono tabular-nums",
+                            phoneDigits.length >= phoneTarget ? "text-green-400" : "text-muted-foreground/50"
+                          )}>
+                            {phoneDigits.length}/{phoneTarget}
+                          </span>
+                        </div>
+                        {phoneDigits.length > 0 && phoneDigits.length < phoneTarget && (
+                          <p className="text-xs text-amber-400/80">Còn thiếu {phoneTarget - phoneDigits.length} chữ số</p>
+                        )}
+                        {phoneDigits.length >= phoneTarget && (
+                          <p className="text-xs text-green-400 flex items-center gap-1"><svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/></svg>Đủ số — sẵn sàng phân tích</p>
+                        )}
+                      </div>
+
+                      {/* Họ tên (tùy chọn) */}
+                      <div className="space-y-1.5">
+                        <Label htmlFor="ownerName" className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                          <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                          Họ tên chủ sở hữu
+                          <span className="text-muted-foreground font-normal text-xs">(tùy chọn)</span>
+                        </Label>
+                        <div className="relative">
+                          <input
+                            id="ownerName"
+                            type="text"
+                            value={ownerName}
+                            onChange={(e) => setOwnerName(e.target.value)}
+                            placeholder="Nguyễn Văn An"
+                            className="flex h-10 w-full rounded-md border border-border/50 bg-background/50 px-3 py-2 pl-10 text-sm transition-all duration-200 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 placeholder:text-muted-foreground/50"
+                          />
+                          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        </div>
                       </div>
                     </div>
 
+                    {/* Ngày sinh (tùy chọn, chỉ mode 10 số) */}
                     {phoneMode === "10" && (
                       <div className="space-y-1.5">
-                        <Label htmlFor="dob" className="text-primary-foreground">
-                          Ngày tháng năm sinh <span className="text-muted-foreground font-normal">(tùy chọn — để kiểm tra tương hợp theo số đường đời)</span>
+                        <Label className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                          <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth={1.8}/><line x1="16" y1="2" x2="16" y2="6" strokeWidth={1.8}/><line x1="8" y1="2" x2="8" y2="6" strokeWidth={1.8}/><line x1="3" y1="10" x2="21" y2="10" strokeWidth={1.8}/></svg>
+                          Ngày sinh
+                          <span className="text-muted-foreground font-normal text-xs">(tùy chọn — kiểm tra tương hợp theo số đường đời)</span>
                         </Label>
-                        <Input
-                          id="dob"
-                          value={dob}
-                          onChange={(e) => setDob(e.target.value)}
-                          placeholder="Ví dụ: 15/08/1990"
-                          className="bg-background/50 border-border/50 focus:border-primary/50 text-foreground"
-                        />
+                        <div className="relative">
+                          <input
+                            type="date"
+                            value={dobInput}
+                            onChange={(e) => handleDobChange(e.target.value)}
+                            min="1900-01-01"
+                            max={new Date().toISOString().split("T")[0]}
+                            className="flex h-10 w-full rounded-md border border-border/50 bg-background/50 px-3 py-2 pl-10 text-sm [color-scheme:dark] transition-all duration-200 outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                          />
+                          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" strokeWidth={1.8}/><line x1="16" y1="2" x2="16" y2="6" strokeWidth={1.8}/><line x1="8" y1="2" x2="8" y2="6" strokeWidth={1.8}/><line x1="3" y1="10" x2="21" y2="10" strokeWidth={1.8}/></svg>
+                        </div>
+                        {dobInput && <p className="text-xs text-muted-foreground">Dương lịch: <span className="text-primary/80 font-medium">{dob}</span></p>}
                       </div>
                     )}
 
@@ -533,17 +590,33 @@ export default function CatHungPage() {
                 <CardContent>
                   <form onSubmit={handlePlateSubmit} className="flex gap-3">
                     <div className="flex-1 space-y-1.5">
-                      <Label htmlFor="plate" className="text-primary-foreground">Số biển xe (4-5 chữ số)</Label>
-                      <Input
-                        id="plate"
-                        value={plate}
-                        onChange={(e) => setPlate(e.target.value.replace(/\D/g, "").slice(0, 5))}
-                        placeholder="Ví dụ: 56789 hoặc 8868"
-                        className="bg-background/50 border-border/50 focus:border-primary/50 text-foreground font-mono text-lg tracking-widest"
-                        maxLength={5}
-                        required
-                      />
-                      <p className="text-xs text-muted-foreground">Chỉ nhập chữ số (4-5 ký tự)</p>
+                      <Label htmlFor="plate" className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                        <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2" strokeWidth={1.8}/><path strokeWidth={1.8} d="M7 10h.01M17 10h.01M7 14h.01M17 14h.01"/></svg>
+                        Số biển xe (4–5 chữ số cuối)
+                      </Label>
+                      <div className="relative">
+                        <input
+                          id="plate"
+                          type="text"
+                          inputMode="numeric"
+                          value={plate}
+                          onChange={(e) => setPlate(e.target.value.replace(/\D/g, "").slice(0, 5))}
+                          placeholder="56789 hoặc 8868"
+                          maxLength={5}
+                          required
+                          className={cn(
+                            "flex h-10 w-full rounded-md border bg-background/50 px-3 py-2 pl-10 pr-12 text-sm font-mono text-lg tracking-[0.25em] transition-all duration-200 outline-none",
+                            plate.length >= 4 ? "border-green-500/60 focus:ring-1 focus:ring-green-500/30"
+                              : plate ? "border-primary/40 focus:ring-1 focus:ring-primary/20"
+                              : "border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                          )}
+                        />
+                        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2" strokeWidth={1.8}/><path strokeWidth={1.8} d="M7 10h.01M17 10h.01M7 14h.01M17 14h.01"/></svg>
+                        <span className={cn("absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono tabular-nums", plate.length >= 4 ? "text-green-400" : "text-muted-foreground/50")}>
+                          {plate.length}/5
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Chỉ nhập chữ số (4–5 ký tự)</p>
                     </div>
                     <div className="flex items-center pb-5">
                       <Button
