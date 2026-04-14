@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { buildMonthCalendar, formatLunar, getGioHoangDao, type DayInfo } from "@/lib/lunar-calendar";
 
@@ -18,6 +18,9 @@ export default function LichVanNienPage() {
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth() + 1);
   const [selected, setSelected] = useState<DayInfo | null>(null);
+  const [jumpDate, setJumpDate] = useState("");
+  const [showPicker, setShowPicker] = useState(false);
+  const [pendingDay, setPendingDay] = useState<number | null>(null);
 
   const calendar = useMemo(() => buildMonthCalendar(year, month), [year, month]);
 
@@ -31,6 +34,49 @@ export default function LichVanNienPage() {
   const nextMonth = () => {
     if (month === 12) { setMonth(1); setYear((y) => y + 1); }
     else setMonth((m) => m + 1);
+  };
+
+  const goToToday = () => {
+    const t = new Date();
+    setYear(t.getFullYear());
+    setMonth(t.getMonth() + 1);
+    setSelected(null);
+    setShowPicker(false);
+  };
+
+  const handleJumpDate = () => {
+    if (!jumpDate) return;
+    const d = new Date(jumpDate);
+    if (isNaN(d.getTime())) return;
+    setYear(d.getFullYear());
+    setMonth(d.getMonth() + 1);
+    setSelected(null);
+    setPendingDay(d.getDate());
+    setShowPicker(false);
+  };
+
+  // Auto-select the target day once the calendar rebuilds for the new month
+  useEffect(() => {
+    if (pendingDay !== null && calendar.length > 0) {
+      const found = calendar.find((d) => d.solar.getDate() === pendingDay);
+      if (found) {
+        setSelected(found);
+        setPendingDay(null);
+      }
+    }
+  }, [calendar, pendingDay]);
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setMonth(Number(e.target.value));
+    setSelected(null);
+  };
+
+  const handleYearInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = parseInt(e.target.value);
+    if (!isNaN(v) && v >= 1900 && v <= 2100) {
+      setYear(v);
+      setSelected(null);
+    }
   };
 
   const todayInfo = calendar.find((d) => {
@@ -57,13 +103,59 @@ export default function LichVanNienPage() {
             {/* Calendar */}
             <div className="lg:col-span-2 border border-primary/20 rounded-2xl bg-card/30 overflow-hidden">
               {/* Nav */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-primary/10 bg-primary/5">
-                <button onClick={prevMonth} className="w-9 h-9 rounded-full border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/10 transition-colors">‹</button>
-                <div className="text-center">
-                  <div className="text-xl font-bold text-foreground">{MONTH_NAMES[month]} {year}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">Dương Lịch</div>
+              <div className="border-b border-primary/10 bg-primary/5">
+                <div className="flex items-center justify-between px-4 py-3 gap-2">
+                  <button onClick={prevMonth} className="w-9 h-9 rounded-full border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/10 transition-colors shrink-0">‹</button>
+
+                  {/* Month + Year selectors */}
+                  <div className="flex items-center gap-2 flex-1 justify-center">
+                    <select
+                      value={month}
+                      onChange={handleMonthChange}
+                      className="bg-background/60 border border-primary/30 text-foreground text-sm rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/50 cursor-pointer"
+                    >
+                      {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
+                        <option key={m} value={m}>{MONTH_NAMES[m]}</option>
+                      ))}
+                    </select>
+                    <input
+                      type="number"
+                      value={year}
+                      onChange={handleYearInput}
+                      min={1900}
+                      max={2100}
+                      className="bg-background/60 border border-primary/30 text-foreground text-sm rounded-lg px-2 py-1.5 w-20 text-center focus:outline-none focus:ring-1 focus:ring-primary/50"
+                    />
+                  </div>
+
+                  <button onClick={nextMonth} className="w-9 h-9 rounded-full border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/10 transition-colors shrink-0">›</button>
                 </div>
-                <button onClick={nextMonth} className="w-9 h-9 rounded-full border border-primary/30 flex items-center justify-center text-primary hover:bg-primary/10 transition-colors">›</button>
+
+                {/* Jump to date + Today button */}
+                <div className="flex items-center gap-2 px-4 pb-3">
+                  <div className="flex flex-1 items-center gap-1.5 bg-background/40 border border-primary/20 rounded-lg px-3 py-1.5">
+                    <span className="text-xs text-muted-foreground whitespace-nowrap">Chọn ngày:</span>
+                    <input
+                      type="date"
+                      value={jumpDate}
+                      onChange={(e) => setJumpDate(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && handleJumpDate()}
+                      className="flex-1 bg-transparent text-sm text-foreground focus:outline-none min-w-0"
+                    />
+                    <button
+                      onClick={handleJumpDate}
+                      className="text-xs text-primary hover:text-primary/80 font-medium px-1 transition-colors"
+                    >
+                      Xem
+                    </button>
+                  </div>
+                  <button
+                    onClick={goToToday}
+                    className="text-xs px-3 py-1.5 rounded-lg border border-primary/30 text-primary hover:bg-primary/10 transition-colors whitespace-nowrap shrink-0"
+                  >
+                    Hôm nay
+                  </button>
+                </div>
               </div>
 
               {/* Day of week header */}

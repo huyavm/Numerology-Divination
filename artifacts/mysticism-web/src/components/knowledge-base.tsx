@@ -300,6 +300,116 @@ export function IChingKnowledge() {
   );
 }
 
+export function TuViKnowledge() {
+  return (
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">Nguồn tri thức — Tử Vi Đẩu Số</p>
+
+      <KBSection title="Tử Vi Đẩu Số là gì?">
+        <p className="leading-relaxed">
+          <strong className="text-primary">Tử Vi Đẩu Số</strong> (紫微斗數) là hệ thống chiêm tinh cổ truyền Trung Hoa, tương truyền do đạo sĩ <em>Trần Đoàn</em> (陳摶) thời Ngũ Đại (thế kỷ X) sáng lập. Hệ thống dựa trên ngày giờ sinh âm lịch để bố trí <strong className="text-primary">14 Chính Tinh</strong> và hàng chục phụ tinh vào <strong className="text-primary">12 Cung</strong>, tạo nên một "lá số" phản ánh vận mệnh trọn đời.
+        </p>
+        <KBGrid
+          items={[
+            { label: "14", value: "Chính Tinh chủ đạo", color: "text-primary" },
+            { label: "12", value: "Cung Mệnh", color: "text-primary" },
+            { label: "100+", value: "Phụ tinh & Sát tinh", color: "text-primary" },
+            { label: "5", value: "Mệnh Cục Ngũ Hành", color: "text-primary" },
+          ]}
+        />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Khác với Bát Tự (dùng dương lịch), Tử Vi sử dụng <strong>ngày tháng năm âm lịch</strong> và <strong>giờ sinh</strong> để xác định vị trí cung mệnh và an sao. Phiên bản này sử dụng thuật toán đơn giản hóa phù hợp cho tham khảo phổ thông.
+        </p>
+      </KBSection>
+
+      <KBSection title="12 Cung Mệnh">
+        <p className="leading-relaxed mb-2">Mỗi cung ứng với một lĩnh vực quan trọng trong cuộc đời. Cung Mệnh là cung quan trọng nhất, cung Thân cho thấy ảnh hưởng ngoại cảnh.</p>
+        <KBTable
+          headers={["Cung", "Lĩnh vực", "Ý nghĩa chính"]}
+          rows={[
+            ["Mệnh", "Bản thân", "Tính cách, ngoại hình, vận mệnh tổng quan"],
+            ["Phụ Mẫu", "Cha mẹ & Bề trên", "Quan hệ cha mẹ, ông chủ, văn bằng, tài liệu"],
+            ["Phúc Đức", "Phúc phần & Tâm linh", "Phúc báu tích lũy, cuộc sống tinh thần, an nhiên"],
+            ["Điền Trạch", "Bất động sản", "Nhà cửa, đất đai, môi trường sống"],
+            ["Quan Lộc", "Sự nghiệp", "Công việc, địa vị, quyền lực, danh vọng"],
+            ["Nô Bộc", "Bạn bè & Cấp dưới", "Nhân viên, bạn hữu, hợp tác viên"],
+            ["Thiên Di", "Di chuyển & Ngoại giao", "Du lịch, xuất ngoại, quan hệ xã hội bên ngoài"],
+            ["Tật Ách", "Sức khỏe & Tai nạn", "Bệnh tật, rủi ro thân thể, nghịch cảnh"],
+            ["Tài Bạch", "Tài chính", "Thu nhập, chi tiêu, khả năng kiếm tiền"],
+            ["Tử Tức", "Con cái & Sáng tạo", "Con cái, đệ tử, dự án sáng tạo"],
+            ["Phu Thê", "Hôn nhân & Tình cảm", "Vợ/chồng, đối tác, tình duyên"],
+            ["Huynh Đệ", "Anh chị em & Đồng nghiệp", "Anh em ruột, bạn đồng hành, đồng nghiệp"],
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="14 Chính Tinh">
+        <p className="leading-relaxed mb-2">
+          14 Chính Tinh được chia thành hai nhóm: <strong className="text-primary">Tử Vi hệ</strong> (7 sao cung trên) và <strong className="text-primary">Thiên Phủ hệ</strong> (7 sao cung dưới).
+        </p>
+        <KBTable
+          headers={["Sao", "Ngũ Hành", "Nhóm", "Đặc tính"]}
+          rows={[
+            ["Tử Vi", "Thổ", "Tử Vi hệ", "Đế vương, quyền lực, lãnh đạo, địa vị cao"],
+            ["Thiên Cơ", "Mộc", "Tử Vi hệ", "Trí tuệ, mưu lược, linh hoạt, tư duy sáng tạo"],
+            ["Thái Dương", "Hỏa", "Tử Vi hệ", "Ánh sáng, phú quý, nam giới, hào phóng"],
+            ["Vũ Khúc", "Kim", "Tử Vi hệ", "Tài phú, cứng rắn, quyết đoán, vật chất"],
+            ["Thiên Đồng", "Thủy", "Tử Vi hệ", "Phúc đức, hòa thuận, thư thái, hưởng thụ"],
+            ["Liêm Trinh", "Hỏa", "Tử Vi hệ", "Nguyên tắc, đạo đức, thị phi, văn học"],
+            ["Thiên Phủ", "Thổ", "Thiên Phủ hệ", "Kho tàng, bảo vệ, ổn định, giàu có"],
+            ["Thái Âm", "Thủy", "Thiên Phủ hệ", "Trực giác, nữ giới, cảm xúc, nghệ thuật"],
+            ["Tham Lang", "Thủy/Mộc", "Thiên Phủ hệ", "Đa dục, hấp dẫn, tài năng đa diện"],
+            ["Cự Môn", "Thủy", "Thiên Phủ hệ", "Ngôn từ, tranh luận, khẩu thiệt, thị phi"],
+            ["Thiên Tướng", "Thủy", "Thiên Phủ hệ", "Quan chức, pháp luật, công bằng, tổ chức"],
+            ["Thiên Lương", "Mộc", "Thiên Phủ hệ", "Y dược, đạo đức, thọ mạng, nhân từ"],
+            ["Thất Sát", "Kim/Hỏa", "Thiên Phủ hệ", "Dũng khí, chinh phạt, thử thách, đột phá"],
+            ["Phá Quân", "Thủy", "Thiên Phủ hệ", "Cải tổ, phá cách, cách mạng, đột biến"],
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Mệnh Cục — 5 Cục Ngũ Hành">
+        <p className="leading-relaxed mb-2">
+          Mệnh Cục xác định "vận tốc" an sao và màu sắc năng lượng bản mệnh, được tính từ Nạp Âm của can chi năm sinh.
+        </p>
+        <KBGrid
+          items={[
+            { label: "Thủy Nhị Cục", value: "Cục số 2", sub: "Thủy: trí tuệ, linh hoạt, thích nghi", color: "text-blue-400" },
+            { label: "Mộc Tam Cục", value: "Cục số 3", sub: "Mộc: phát triển, sinh sôi, hướng thượng", color: "text-green-400" },
+            { label: "Kim Tứ Cục", value: "Cục số 4", sub: "Kim: cứng rắn, kiên định, quyết đoán", color: "text-slate-300" },
+            { label: "Thổ Ngũ Cục", value: "Cục số 5", sub: "Thổ: vững chắc, bao dung, trung tâm", color: "text-yellow-500" },
+            { label: "Hỏa Lục Cục", value: "Cục số 6", sub: "Hỏa: nhiệt huyết, rực rỡ, hào phóng", color: "text-red-400" },
+          ]}
+        />
+        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+          Số của cục (2–6) là bước nhảy dùng để đặt sao Tử Vi vào đúng cung tương ứng với ngày sinh âm lịch.
+        </p>
+      </KBSection>
+
+      <KBSection title="Cách đọc lá số cơ bản">
+        <div className="space-y-3">
+          <div>
+            <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mb-1.5">Bước 1 — Xác định Cung Mệnh & Cung Thân</p>
+            <p className="text-xs text-foreground/75 leading-relaxed">Cung Mệnh = vị trí chứa sao an theo tháng sinh và giờ sinh. Cung Thân = vị trí ảnh hưởng của ngoại cảnh và hoàn cảnh sống. Hai cung này là trọng tâm phân tích đầu tiên.</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mb-1.5">Bước 2 — Xem Chính Tinh trong Cung Mệnh</p>
+            <p className="text-xs text-foreground/75 leading-relaxed">Chính tinh tọa mệnh quyết định phần lớn tính cách và vận mệnh. Sao vượng địa (đặc biệt trong cung tương sinh) mang lực mạnh hơn sao hãm địa (cung tương khắc).</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mb-1.5">Bước 3 — Phân tích từng cung theo lĩnh vực</p>
+            <p className="text-xs text-foreground/75 leading-relaxed">Nhấn vào từng cung trong lá số để xem chi tiết các sao bên trong và ý nghĩa của từng sao với lĩnh vực đó. Cung Quan Lộc (sự nghiệp), Tài Bạch (tài chính) và Phu Thê (hôn nhân) thường được quan tâm nhất.</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mb-1.5">Bước 4 — Kết hợp AI luận giải</p>
+            <p className="text-xs text-foreground/75 leading-relaxed">Sau khi chọn một cung cụ thể, nhấn "Luận giải AI" để nhận phân tích chuyên sâu về cung đó trong bối cảnh toàn bộ lá số.</p>
+          </div>
+        </div>
+      </KBSection>
+    </div>
+  );
+}
+
 export function CatHungKnowledge() {
   return (
     <div className="space-y-3">

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { calculateTuVi, THIEN_CAN, DIA_CHI, NGU_HANH_COLOR, type TuViResult, type CungInfo } from "@/lib/tu-vi";
+import { TuViKnowledge } from "@/components/knowledge-base";
 import { solarToLunar } from "@/lib/lunar-calendar";
 import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
 import { useExportImage } from "@/hooks/use-export-image";
@@ -285,6 +286,11 @@ export default function TuViPage() {
               )}
             </div>
           )}
+          {/* Knowledge Base */}
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+            <TuViKnowledge />
+          </div>
+
         </div>
       </main>
     </div>
