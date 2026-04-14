@@ -1,7 +1,7 @@
 # ============================================================
 # Stage 1: Builder — cài deps + build Vite frontend
 # ============================================================
-FROM node:24-alpine AS builder
+FROM node:20-slim AS builder
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
@@ -22,11 +22,11 @@ COPY lib/                                       ./lib/
 # --no-frozen-lockfile để pnpm tự giải quyết deps
 RUN pnpm install --no-frozen-lockfile
 
-# Trên ARM64 Alpine (musl): lockfile được tạo trên x64 nên thiếu rollup ARM binary
-# Dùng npm để cài thẳng vào node_modules, rollup sẽ tìm thấy qua node resolution
+# Trên ARM64 Debian/slim (glibc): lockfile x64 thiếu rollup ARM gnu binary
+# node:20-slim dùng glibc nên cần bản -gnu (không phải -musl như Alpine)
 RUN ARCH=$(uname -m) && \
     if [ "$ARCH" = "aarch64" ]; then \
-      npm install --no-save --prefix /app @rollup/rollup-linux-arm64-musl; \
+      npm install --no-save --prefix /app @rollup/rollup-linux-arm64-gnu; \
     fi
 
 # Copy toàn bộ source code của frontend + shared libs
