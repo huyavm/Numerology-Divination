@@ -9,145 +9,30 @@ interface Props {
   onClose: () => void;
 }
 
-const OPENAI_MODELS: { value: string; label: string; badge: string; badgeColor: string; desc: string }[] = [
-  {
-    value: "gpt-5.4",
-    label: "GPT-5.4",
-    badge: "Flagship mới nhất",
-    badgeColor: "bg-yellow-500/20 text-yellow-300",
-    desc: "Model hàng đầu hiện tại của OpenAI. Suy luận mạnh mẽ, lập trình xuất sắc, hỗ trợ computer use. Context 1M token.",
-  },
-  {
-    value: "gpt-5.4-thinking",
-    label: "GPT-5.4 Thinking",
-    badge: "Suy luận sâu",
-    badgeColor: "bg-purple-500/20 text-purple-300",
-    desc: "Phiên bản suy luận chuyên sâu của GPT-5.4. Phân tích kỹ lưỡng, nghiên cứu phức tạp.",
-  },
-  {
-    value: "gpt-5.4-mini",
-    label: "GPT-5.4 Mini",
-    badge: "Nhanh & Tiết kiệm",
-    badgeColor: "bg-green-500/20 text-green-300",
-    desc: "Sức mạnh GPT-5.4 trong gói nhỏ gọn hơn. Lý tưởng cho khối lượng lớn, nhanh và kinh tế.",
-  },
-  {
-    value: "gpt-5.4-nano",
-    label: "GPT-5.4 Nano",
-    badge: "Siêu nhanh",
-    badgeColor: "bg-blue-500/20 text-blue-300",
-    desc: "Tối ưu cho tốc độ và chi phí. Phù hợp các tác vụ đơn giản, khối lượng rất lớn.",
-  },
-  {
-    value: "gpt-5.3",
-    label: "GPT-5.3",
-    badge: "Ổn định",
-    badgeColor: "bg-slate-500/20 text-slate-300",
-    desc: "Phiên bản 5.3 hội thoại nhanh. Phản hồi mượt mà, ổn định cho hầu hết tác vụ.",
-  },
-  {
-    value: "gpt-4.1",
-    label: "GPT-4.1",
-    badge: "Thế hệ trước",
-    badgeColor: "bg-slate-500/15 text-slate-400",
-    desc: "Thế hệ GPT-4 mới nhất. Vẫn mạnh mẽ trong lập trình, tuân thủ lệnh và xử lý văn bản dài.",
-  },
-  {
-    value: "gpt-4.1-mini",
-    label: "GPT-4.1 Mini",
-    badge: "Tiết kiệm",
-    badgeColor: "bg-slate-500/15 text-slate-400",
-    desc: "Model nhỏ gọn của dòng GPT-4.1. Nhanh, hiệu quả, chi phí thấp.",
-  },
+const OPENAI_MODELS = [
+  { value: "gpt-4.1", label: "GPT-4.1", badge: "Khuyến nghị", badgeColor: "bg-green-500/20 text-green-300", desc: "Model OpenAI ổn định nhất hiện tại. Mạnh mẽ, tuân thủ lệnh tốt, xử lý văn bản dài." },
+  { value: "gpt-4.1-mini", label: "GPT-4.1 Mini", badge: "Tiết kiệm", badgeColor: "bg-green-500/15 text-green-400", desc: "Nhanh, hiệu quả, chi phí thấp hơn." },
+  { value: "gpt-4o", label: "GPT-4o", badge: "Đa phương tiện", badgeColor: "bg-blue-500/20 text-blue-300", desc: "Model đa phương tiện. Suy luận cân bằng, phổ biến." },
+  { value: "gpt-4o-mini", label: "GPT-4o Mini", badge: "Siêu nhanh", badgeColor: "bg-slate-500/20 text-slate-300", desc: "Tốc độ cao, chi phí thấp nhất." },
 ];
 
-const GEMINI_MODELS: { value: string; label: string; badge: string; badgeColor: string; desc: string }[] = [
-  {
-    value: "gemini-3.1-pro-preview",
-    label: "Gemini 3.1 Pro",
-    badge: "Mới nhất (Preview)",
-    badgeColor: "bg-yellow-500/20 text-yellow-300",
-    desc: "Model thông minh nhất của Google. Suy luận nâng cao, agentic workflows, lập trình, context 1M token.",
-  },
-  {
-    value: "gemini-3-flash-preview",
-    label: "Gemini 3.1 Flash",
-    badge: "Nhanh & Mạnh (Preview)",
-    badgeColor: "bg-purple-500/20 text-purple-300",
-    desc: "Sức mạnh Pro trong tốc độ Flash. Cân bằng hoàn hảo giữa trí tuệ và độ trễ thấp.",
-  },
-  {
-    value: "gemini-3.1-flash-lite-preview",
-    label: "Gemini 3.1 Flash-Lite",
-    badge: "Tiết kiệm nhất (Preview)",
-    badgeColor: "bg-blue-500/20 text-blue-300",
-    desc: "Tối ưu chi phí, độ trễ thấp nhất. Lý tưởng cho khối lượng lớn.",
-  },
-  {
-    value: "gemini-2.5-pro",
-    label: "Gemini 2.5 Pro",
-    badge: "Ổn định - Khuyến nghị",
-    badgeColor: "bg-green-500/20 text-green-300",
-    desc: "Phiên bản stable mạnh nhất, sẵn sàng production. Suy luận thích ứng, context 1M token.",
-  },
-  {
-    value: "gemini-2.5-flash",
-    label: "Gemini 2.5 Flash",
-    badge: "Ổn định - Phổ biến",
-    badgeColor: "bg-green-500/15 text-green-400",
-    desc: "Phiên bản stable nhanh nhất, cân bằng trí tuệ và tốc độ. Kinh tế, đáng tin cậy.",
-  },
-  {
-    value: "gemini-2.5-flash-lite",
-    label: "Gemini 2.5 Flash-Lite",
-    badge: "Ổn định - Tiết kiệm",
-    badgeColor: "bg-slate-500/20 text-slate-300",
-    desc: "Stable, tối ưu cho quy mô lớn. Chi phí thấp nhất trong dòng 2.5.",
-  },
+const GEMINI_MODELS = [
+  { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro", badge: "Khuyến nghị", badgeColor: "bg-green-500/20 text-green-300", desc: "Phiên bản stable mạnh nhất, sẵn sàng production. Suy luận thích ứng, context 1M token." },
+  { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash", badge: "Nhanh & Phổ biến", badgeColor: "bg-blue-500/20 text-blue-300", desc: "Cân bằng trí tuệ và tốc độ. Kinh tế, đáng tin cậy." },
+  { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite", badge: "Tiết kiệm", badgeColor: "bg-slate-500/20 text-slate-300", desc: "Tối ưu chi phí, độ trễ thấp nhất." },
 ];
 
-const PROVIDER_INFO = {
-  openai: {
-    label: "OpenAI ChatGPT",
-    desc: "Sử dụng khóa API OpenAI của bạn.",
-    color: "border-green-500/60 bg-green-500/10",
-  },
-  gemini: {
-    label: "Google Gemini",
-    desc: "Sử dụng khóa API Google AI của bạn.",
-    color: "border-blue-500/60 bg-blue-500/10",
-  },
-};
-
-function ModelSelector({
-  models,
-  value,
-  onChange,
-  selectedBorderColor,
-}: {
-  models: typeof OPENAI_MODELS;
-  value: string;
-  onChange: (v: string) => void;
-  selectedBorderColor: string;
+function ModelSelector({ models, value, onChange, selectedBorderColor }: {
+  models: typeof OPENAI_MODELS; value: string; onChange: (v: string) => void; selectedBorderColor: string;
 }) {
   return (
     <div className="grid gap-2">
       {models.map((m) => {
         const isSelected = value === m.value;
         return (
-          <button
-            key={m.value}
-            type="button"
-            onClick={() => onChange(m.value)}
-            className={`w-full text-left rounded-lg border px-3 py-2.5 transition-all flex items-start gap-3 ${
-              isSelected
-                ? `${selectedBorderColor} bg-white/5`
-                : "border-border/30 bg-background/20 hover:border-border/60"
-            }`}
-          >
-            <div className={`w-3.5 h-3.5 rounded-full border-2 flex-shrink-0 mt-0.5 transition-all ${
-              isSelected ? "border-primary bg-primary" : "border-muted-foreground"
-            }`} />
+          <button key={m.value} type="button" onClick={() => onChange(m.value)}
+            className={`w-full text-left rounded-lg border px-3 py-2.5 transition-all flex items-start gap-3 ${isSelected ? `${selectedBorderColor} bg-white/5` : "border-border/30 bg-background/20 hover:border-border/60"}`}>
+            <div className={`w-3.5 h-3.5 rounded-full border-2 flex-shrink-0 mt-0.5 ${isSelected ? "border-primary bg-primary" : "border-muted-foreground"}`} />
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-semibold text-foreground">{m.label}</span>
@@ -163,77 +48,114 @@ function ModelSelector({
 }
 
 export function AISettingsModal({ open, onClose }: Props) {
-  const { settings, updateSettings } = useAISettings();
+  const { settings, updateSettings, serverInfo, reloadServerInfo } = useAISettings();
   const [local, setLocal] = useState({ ...settings });
   const [showOpenAIKey, setShowOpenAIKey] = useState(false);
   const [showGeminiKey, setShowGeminiKey] = useState(false);
+  const [showAdminSection, setShowAdminSection] = useState(false);
+
+  // Admin state
+  const [adminPassword, setAdminPassword] = useState("");
+  const [showAdminPw, setShowAdminPw] = useState(false);
+  const [adminApiKey, setAdminApiKey] = useState("");
+  const [showAdminApiKey, setShowAdminApiKey] = useState(false);
+  const [adminProvider, setAdminProvider] = useState(serverInfo?.provider ?? "openai");
+  const [adminModel, setAdminModel] = useState(serverInfo?.model ?? DEFAULT_OPENAI_MODEL);
+  const [adminRateLimitHour, setAdminRateLimitHour] = useState(serverInfo?.rateLimitPerHour ?? 20);
+  const [adminRateLimitDay, setAdminRateLimitDay] = useState(serverInfo?.rateLimitPerDay ?? 100);
+  const [adminStatus, setAdminStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [adminMsg, setAdminMsg] = useState("");
 
   if (!open) return null;
 
-  const handleSave = () => {
-    updateSettings(local);
-    onClose();
-  };
+  const handleSave = () => { updateSettings(local); onClose(); };
 
   const handleReset = () => {
-    const reset = {
-      provider: "openai" as AIProvider,
-      openaiKey: "",
-      geminiKey: "",
-      openaiModel: DEFAULT_OPENAI_MODEL,
-      geminiModel: DEFAULT_GEMINI_MODEL,
-    };
-    setLocal(reset);
-    updateSettings(reset);
-    onClose();
+    const reset = { provider: "server" as AIProvider, openaiKey: "", geminiKey: "", openaiModel: DEFAULT_OPENAI_MODEL, geminiModel: DEFAULT_GEMINI_MODEL };
+    setLocal(reset); updateSettings(reset); onClose();
   };
 
   const setProvider = (p: AIProvider) => setLocal((v) => ({ ...v, provider: p }));
 
   const currentOpenAIModel = local.openaiModel || DEFAULT_OPENAI_MODEL;
   const currentGeminiModel = local.geminiModel || DEFAULT_GEMINI_MODEL;
-  const selectedOpenAILabel = OPENAI_MODELS.find((m) => m.value === currentOpenAIModel)?.label ?? currentOpenAIModel;
-  const selectedGeminiLabel = GEMINI_MODELS.find((m) => m.value === currentGeminiModel)?.label ?? currentGeminiModel;
+
+  const handleAdminSave = async () => {
+    if (!adminPassword) { setAdminMsg("Nhập mật khẩu admin."); setAdminStatus("error"); return; }
+    setAdminStatus("loading"); setAdminMsg("");
+    try {
+      const res = await fetch("/api/admin/config", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminPassword,
+          provider: adminProvider,
+          apiKey: adminApiKey,
+          model: adminModel,
+          rateLimitPerHour: adminRateLimitHour,
+          rateLimitPerDay: adminRateLimitDay,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAdminStatus("success");
+        setAdminMsg(serverInfo?.adminConfigured ? "Cập nhật thành công." : "Cấu hình thành công. Mật khẩu admin đã được đặt.");
+        setAdminApiKey("");
+        await reloadServerInfo();
+      } else {
+        setAdminStatus("error");
+        setAdminMsg(data.error ?? "Lỗi không xác định.");
+      }
+    } catch {
+      setAdminStatus("error"); setAdminMsg("Không thể kết nối máy chủ.");
+    }
+  };
+
+  const PROVIDER_OPTIONS: { value: AIProvider; label: string; desc: string; color: string }[] = [
+    {
+      value: "server",
+      label: "Key hệ thống",
+      desc: serverInfo?.serverKeyConfigured
+        ? `Dùng key của máy chủ — ${serverInfo.rateLimitPerHour} lượt/giờ, ${serverInfo.rateLimitPerDay} lượt/ngày`
+        : "Chưa cấu hình — liên hệ quản trị viên",
+      color: "border-primary/60 bg-primary/10",
+    },
+    { value: "openai", label: "OpenAI ChatGPT", desc: "Dùng API key OpenAI của bạn.", color: "border-green-500/60 bg-green-500/10" },
+    { value: "gemini", label: "Google Gemini", desc: "Dùng API key Google AI của bạn.", color: "border-blue-500/60 bg-blue-500/10" },
+  ];
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full max-w-lg bg-background border border-primary/30 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
+
+        {/* Header */}
         <div className="p-6 pb-4 border-b border-primary/10">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-primary">Cài đặt AI</h2>
-              <p className="text-sm text-muted-foreground mt-0.5">Chọn nhà cung cấp, model và nhập khóa API.</p>
+              <p className="text-sm text-muted-foreground mt-0.5">Chọn nhà cung cấp và nhập khóa API.</p>
             </div>
             <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-xl leading-none p-1">✕</button>
           </div>
         </div>
 
         <div className="overflow-y-auto flex-1 p-6 space-y-6">
+
+          {/* Provider selection */}
           <div className="space-y-2">
-            <p className="text-xs uppercase tracking-widest text-muted-foreground">Nhà cung cấp</p>
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">Nguồn AI</p>
             <div className="grid gap-2">
-              {(["openai", "gemini"] as AIProvider[]).map((p) => {
-                const info = PROVIDER_INFO[p];
-                const isActive = local.provider === p;
-                const sublabel =
-                  p === "openai" ? `Model: ${selectedOpenAILabel}` :
-                  `Model: ${selectedGeminiLabel}`;
+              {PROVIDER_OPTIONS.map((p) => {
+                const isActive = local.provider === p.value;
                 return (
-                  <button
-                    key={p}
-                    onClick={() => setProvider(p)}
-                    className={`w-full text-left rounded-xl border-2 px-4 py-3 transition-all ${
-                      isActive ? info.color : "border-border/40 bg-card/20 hover:border-primary/30"
-                    }`}
-                  >
+                  <button key={p.value} onClick={() => setProvider(p.value)}
+                    className={`w-full text-left rounded-xl border-2 px-4 py-3 transition-all ${isActive ? p.color : "border-border/40 bg-card/20 hover:border-primary/30"}`}>
                     <div className="flex items-center gap-3">
-                      <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-all ${
-                        isActive ? "border-primary bg-primary" : "border-muted-foreground"
-                      }`} />
+                      <div className={`w-4 h-4 rounded-full border-2 flex-shrink-0 transition-all ${isActive ? "border-primary bg-primary" : "border-muted-foreground"}`} />
                       <div>
-                        <div className="font-semibold text-sm text-foreground">{info.label}</div>
-                        <div className="text-xs text-muted-foreground mt-0.5">{isActive ? sublabel : info.desc}</div>
+                        <div className="font-semibold text-sm text-foreground">{p.label}</div>
+                        <div className="text-xs text-muted-foreground mt-0.5">{p.desc}</div>
                       </div>
                     </div>
                   </button>
@@ -242,93 +164,144 @@ export function AISettingsModal({ open, onClose }: Props) {
             </div>
           </div>
 
+          {/* OpenAI key + model */}
           {local.provider === "openai" && (
             <>
               <div className="space-y-2">
                 <Label htmlFor="openai-key" className="text-sm text-foreground/80">Khóa API OpenAI</Label>
                 <div className="relative">
-                  <Input
-                    id="openai-key"
-                    type={showOpenAIKey ? "text" : "password"}
-                    value={local.openaiKey}
+                  <Input id="openai-key" type={showOpenAIKey ? "text" : "password"} value={local.openaiKey}
                     onChange={(e) => setLocal((v) => ({ ...v, openaiKey: e.target.value }))}
-                    placeholder="sk-..."
-                    className="bg-background/50 border-border/50 focus:border-primary/50 pr-20"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowOpenAIKey((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground"
-                  >
+                    placeholder="sk-..." className="bg-background/50 border-border/50 focus:border-primary/50 pr-20" />
+                  <button type="button" onClick={() => setShowOpenAIKey((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground">
                     {showOpenAIKey ? "Ẩn" : "Hiện"}
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Lấy khóa tại{" "}
-                  <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
-                    platform.openai.com/api-keys
-                  </a>
-                </p>
+                <p className="text-xs text-muted-foreground">Lấy khóa tại <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">platform.openai.com/api-keys</a></p>
               </div>
-
               <div className="space-y-2">
                 <p className="text-xs uppercase tracking-widest text-muted-foreground">Chọn model OpenAI</p>
-                <ModelSelector
-                  models={OPENAI_MODELS}
-                  value={currentOpenAIModel}
-                  onChange={(v) => setLocal((s) => ({ ...s, openaiModel: v }))}
-                  selectedBorderColor="border-green-500/50"
-                />
+                <ModelSelector models={OPENAI_MODELS} value={currentOpenAIModel} onChange={(v) => setLocal((s) => ({ ...s, openaiModel: v }))} selectedBorderColor="border-green-500/50" />
               </div>
             </>
           )}
 
+          {/* Gemini key + model */}
           {local.provider === "gemini" && (
             <>
               <div className="space-y-2">
                 <Label htmlFor="gemini-key" className="text-sm text-foreground/80">Khóa API Google AI (Gemini)</Label>
                 <div className="relative">
-                  <Input
-                    id="gemini-key"
-                    type={showGeminiKey ? "text" : "password"}
-                    value={local.geminiKey}
+                  <Input id="gemini-key" type={showGeminiKey ? "text" : "password"} value={local.geminiKey}
                     onChange={(e) => setLocal((v) => ({ ...v, geminiKey: e.target.value }))}
-                    placeholder="AIza..."
-                    className="bg-background/50 border-border/50 focus:border-primary/50 pr-20"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowGeminiKey((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground"
-                  >
+                    placeholder="AIza..." className="bg-background/50 border-border/50 focus:border-primary/50 pr-20" />
+                  <button type="button" onClick={() => setShowGeminiKey((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground">
                     {showGeminiKey ? "Ẩn" : "Hiện"}
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Lấy khóa tại{" "}
-                  <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
-                    aistudio.google.com/app/apikey
-                  </a>
-                </p>
+                <p className="text-xs text-muted-foreground">Lấy khóa tại <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">aistudio.google.com/app/apikey</a></p>
               </div>
-
               <div className="space-y-2">
                 <p className="text-xs uppercase tracking-widest text-muted-foreground">Chọn model Gemini</p>
-                <ModelSelector
-                  models={GEMINI_MODELS}
-                  value={currentGeminiModel}
-                  onChange={(v) => setLocal((s) => ({ ...s, geminiModel: v }))}
-                  selectedBorderColor="border-blue-500/50"
-                />
+                <ModelSelector models={GEMINI_MODELS} value={currentGeminiModel} onChange={(v) => setLocal((s) => ({ ...s, geminiModel: v }))} selectedBorderColor="border-blue-500/50" />
               </div>
             </>
           )}
 
+          {/* Privacy notice */}
           <div className="bg-primary/5 border border-primary/15 rounded-lg px-4 py-3 text-xs text-muted-foreground leading-relaxed">
-            Khóa API được lưu cục bộ trong trình duyệt và chỉ gửi đến máy chủ khi thực hiện luận giải AI. Chúng tôi không lưu trữ khóa của bạn.
+            Khóa API cá nhân được lưu trong trình duyệt và chỉ gửi đến máy chủ khi gọi AI. Chúng tôi không lưu trữ khóa của bạn.
+          </div>
+
+          {/* Admin section */}
+          <div className="border border-border/30 rounded-xl overflow-hidden">
+            <button onClick={() => setShowAdminSection((v) => !v)}
+              className="w-full flex items-center justify-between px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors">
+              <span className="font-medium">Cài đặt Admin (Key hệ thống)</span>
+              <span className="text-xs opacity-60">{showAdminSection ? "Thu gọn" : "Mở rộng"}</span>
+            </button>
+
+            {showAdminSection && (
+              <div className="px-4 pb-4 space-y-4 border-t border-border/20 pt-4">
+                {!serverInfo?.adminConfigured && (
+                  <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-3 py-2 text-xs text-yellow-300">
+                    Chưa có admin. Lần đầu nhập mật khẩu sẽ tự động đặt làm mật khẩu admin.
+                  </div>
+                )}
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-foreground/70">Mật khẩu Admin</Label>
+                  <div className="relative">
+                    <Input type={showAdminPw ? "text" : "password"} value={adminPassword}
+                      onChange={(e) => setAdminPassword(e.target.value)} placeholder="Mật khẩu admin..."
+                      className="bg-background/50 border-border/50 text-sm pr-16" />
+                    <button type="button" onClick={() => setShowAdminPw((v) => !v)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground">{showAdminPw ? "Ẩn" : "Hiện"}</button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-foreground/70">Nhà cung cấp</Label>
+                    <select value={adminProvider} onChange={(e) => setAdminProvider(e.target.value)}
+                      className="w-full bg-background/50 border border-border/50 rounded-md px-3 py-2 text-sm text-foreground">
+                      <option value="openai">OpenAI</option>
+                      <option value="gemini">Gemini</option>
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-foreground/70">Model</Label>
+                    <Input value={adminModel} onChange={(e) => setAdminModel(e.target.value)}
+                      placeholder="gpt-4.1" className="bg-background/50 border-border/50 text-sm" />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-foreground/70">
+                    API Key{serverInfo?.serverKeyConfigured ? " (để trống = giữ nguyên)" : ""}
+                  </Label>
+                  <div className="relative">
+                    <Input type={showAdminApiKey ? "text" : "password"} value={adminApiKey}
+                      onChange={(e) => setAdminApiKey(e.target.value)} placeholder="sk-... hoặc AIza..."
+                      className="bg-background/50 border-border/50 text-sm pr-16" />
+                    <button type="button" onClick={() => setShowAdminApiKey((v) => !v)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground hover:text-foreground">{showAdminApiKey ? "Ẩn" : "Hiện"}</button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-foreground/70">Giới hạn / giờ</Label>
+                    <Input type="number" min={1} max={1000} value={adminRateLimitHour}
+                      onChange={(e) => setAdminRateLimitHour(Number(e.target.value))}
+                      className="bg-background/50 border-border/50 text-sm" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-foreground/70">Giới hạn / ngày</Label>
+                    <Input type="number" min={1} max={10000} value={adminRateLimitDay}
+                      onChange={(e) => setAdminRateLimitDay(Number(e.target.value))}
+                      className="bg-background/50 border-border/50 text-sm" />
+                  </div>
+                </div>
+
+                {adminMsg && (
+                  <div className={`text-xs px-3 py-2 rounded-lg ${adminStatus === "success" ? "bg-green-500/15 text-green-300 border border-green-500/30" : "bg-red-500/15 text-red-300 border border-red-500/30"}`}>
+                    {adminMsg}
+                  </div>
+                )}
+
+                <Button onClick={handleAdminSave} disabled={adminStatus === "loading"}
+                  className="w-full bg-primary/20 text-primary hover:bg-primary/30 border border-primary/40 text-sm">
+                  {adminStatus === "loading" ? "Đang lưu..." : "Lưu cấu hình Admin"}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
 
+        {/* Footer */}
         <div className="p-6 pt-4 border-t border-primary/10 flex gap-3">
           <Button onClick={handleSave} className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold">
             Lưu cài đặt

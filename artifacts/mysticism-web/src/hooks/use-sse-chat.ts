@@ -21,10 +21,11 @@ export function useSSEChat(sseHeaders?: SSEHeaders) {
       if (sseHeaders?.provider) {
         headers['x-ai-provider'] = sseHeaders.provider;
       }
-      if (sseHeaders?.apiKey) {
+      // Không gửi x-ai-key khi dùng server key
+      if (sseHeaders?.apiKey && sseHeaders.provider !== 'server') {
         headers['x-ai-key'] = sseHeaders.apiKey;
       }
-      if (sseHeaders?.model) {
+      if (sseHeaders?.model && sseHeaders.provider !== 'server') {
         headers['x-ai-model'] = sseHeaders.model;
       }
 

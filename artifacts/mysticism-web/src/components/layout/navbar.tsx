@@ -17,7 +17,7 @@ const navItems = [
 ];
 
 const PROVIDER_BADGE: Record<string, { label: string; color: string }> = {
-  default: { label: "AI", color: "bg-primary/20 text-primary border-primary/40" },
+  server: { label: "AI", color: "bg-primary/20 text-primary border-primary/40" },
   openai: { label: "GPT", color: "bg-green-500/20 text-green-400 border-green-500/40" },
   gemini: { label: "Gem", color: "bg-blue-500/20 text-blue-400 border-blue-500/40" },
 };
@@ -48,7 +48,7 @@ export function Navbar() {
   const { settings, isConfigured } = useAISettings();
   const { theme, toggleTheme } = useTheme();
 
-  const badge = PROVIDER_BADGE[settings.provider];
+  const badge = PROVIDER_BADGE[settings.provider] ?? PROVIDER_BADGE["server"];
 
   return (
     <>

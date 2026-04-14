@@ -75,8 +75,11 @@ export default function AIChatPage() {
     try {
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       headers["x-ai-provider"] = settings.provider;
-      if (activeKey) headers["x-ai-key"] = activeKey;
-      if (activeModel) headers["x-ai-model"] = activeModel;
+      // Không gửi key/model khi dùng server key
+      if (settings.provider !== "server") {
+        if (activeKey) headers["x-ai-key"] = activeKey;
+        if (activeModel) headers["x-ai-model"] = activeModel;
+      }
 
       const response = await fetch(`/api/openai/conversations/${activeConvId}/messages`, {
         method: "POST",
@@ -137,7 +140,11 @@ export default function AIChatPage() {
     }
   };
 
-  const providerLabel = settings.provider === "gemini" ? `Gemini · ${activeModel}` : `GPT · ${activeModel}`;
+  const providerLabel = settings.provider === "server"
+    ? "Key hệ thống"
+    : settings.provider === "gemini"
+      ? `Gemini · ${activeModel}`
+      : `GPT · ${activeModel}`;
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">

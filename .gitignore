@@ -13,8 +13,7 @@ node_modules
 
 # attached assets
 .attached_assets
-# attached_assets
-.attached_assets
+
 # IDEs and editors
 /.idea
 .project

@@ -15,7 +15,7 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Validation**: Zod (`zod/v4`), `drizzle-zod`
 - **API codegen**: Orval (from OpenAPI spec)
 - **Build**: esbuild (CJS bundle)
-- **AI**: OpenAI via Replit AI Integrations (gpt-5.2); supports OpenAI GPT-5.4 and Gemini 3.1 via user-provided keys
+- **AI**: User-provided OpenAI / Gemini keys; or server-side key stored in DB with per-IP rate limiting
 
 ## Artifacts
 

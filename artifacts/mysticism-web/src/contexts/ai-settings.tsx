@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
-export type AIProvider = "openai" | "gemini";
+export type AIProvider = "server" | "openai" | "gemini";
 
 export interface AISettings {
   provider: AIProvider;
@@ -10,12 +10,23 @@ export interface AISettings {
   geminiModel: string;
 }
 
+export interface ServerInfo {
+  serverKeyConfigured: boolean;
+  provider: string;
+  model: string;
+  rateLimitPerHour: number;
+  rateLimitPerDay: number;
+  adminConfigured: boolean;
+}
+
 interface AISettingsContextValue {
   settings: AISettings;
   updateSettings: (next: Partial<AISettings>) => void;
   activeKey: string;
   activeModel: string;
   isConfigured: boolean;
+  serverInfo: ServerInfo | null;
+  reloadServerInfo: () => Promise<void>;
 }
 
 const STORAGE_KEY = "huyen-bi-ai-settings";
@@ -24,7 +35,7 @@ export const DEFAULT_OPENAI_MODEL = "gpt-4.1";
 export const DEFAULT_GEMINI_MODEL = "gemini-2.5-pro";
 
 const defaultSettings: AISettings = {
-  provider: "openai",
+  provider: "server",
   openaiKey: "",
   geminiKey: "",
   openaiModel: DEFAULT_OPENAI_MODEL,
@@ -36,8 +47,8 @@ function loadSettings(): AISettings {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultSettings;
     const saved = JSON.parse(raw);
-    // Nếu settings cũ dùng "default" thì chuyển sang "openai"
-    if (saved.provider === "default") saved.provider = "openai";
+    // migrate cũ "default" → "server"
+    if (saved.provider === "default") saved.provider = "server";
     return { ...defaultSettings, ...saved };
   } catch {
     return defaultSettings;
@@ -50,10 +61,24 @@ const AISettingsContext = createContext<AISettingsContextValue>({
   activeKey: "",
   activeModel: "",
   isConfigured: false,
+  serverInfo: null,
+  reloadServerInfo: async () => {},
 });
 
 export function AISettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<AISettings>(loadSettings);
+  const [serverInfo, setServerInfo] = useState<ServerInfo | null>(null);
+
+  const reloadServerInfo = async () => {
+    try {
+      const res = await fetch("/api/config/public");
+      if (res.ok) setServerInfo(await res.json());
+    } catch {}
+  };
+
+  useEffect(() => {
+    reloadServerInfo();
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
@@ -66,19 +91,26 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
   const activeKey =
     settings.provider === "openai"
       ? settings.openaiKey
-      : settings.geminiKey;
+      : settings.provider === "gemini"
+        ? settings.geminiKey
+        : "";
 
   const activeModel =
     settings.provider === "openai"
       ? settings.openaiModel || DEFAULT_OPENAI_MODEL
-      : settings.geminiModel || DEFAULT_GEMINI_MODEL;
+      : settings.provider === "gemini"
+        ? settings.geminiModel || DEFAULT_GEMINI_MODEL
+        : serverInfo?.model || DEFAULT_OPENAI_MODEL;
 
   const isConfigured =
-    (settings.provider === "openai" && !!settings.openaiKey.trim()) ||
-    (settings.provider === "gemini" && !!settings.geminiKey.trim());
+    settings.provider === "server"
+      ? (serverInfo?.serverKeyConfigured ?? false)
+      : settings.provider === "openai"
+        ? !!settings.openaiKey.trim()
+        : !!settings.geminiKey.trim();
 
   return (
-    <AISettingsContext.Provider value={{ settings, updateSettings, activeKey, activeModel, isConfigured }}>
+    <AISettingsContext.Provider value={{ settings, updateSettings, activeKey, activeModel, isConfigured, serverInfo, reloadServerInfo }}>
       {children}
     </AISettingsContext.Provider>
   );

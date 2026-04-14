@@ -2,6 +2,8 @@ import { Router } from "express";
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AiInterpretMysticismBody } from "@workspace/api-zod";
+import { getManyConfig } from "../../lib/server-config";
+import { checkAndLogUsage, getClientIP } from "../../lib/rate-limit";
 
 const router = Router();
 
@@ -16,7 +18,7 @@ const SYSTEM_PROMPTS: Record<string, string> = {
 };
 
 function getSystemPrompt(type: string): string {
-  return SYSTEM_PROMPTS[type] || `Bạn là nhà huyền học uyên bác, trả lời bằng tiếng Việt với giọng văn sâu sắc và thấu đáo.`;
+  return SYSTEM_PROMPTS[type] ?? `Bạn là nhà huyền học uyên bác, trả lời bằng tiếng Việt với giọng văn sâu sắc và thấu đáo.`;
 }
 
 const DEFAULT_OPENAI_MODEL = "gpt-4.1";
@@ -42,23 +44,51 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
   res.setHeader("Connection", "keep-alive");
 
   try {
-    if (provider === "gemini" && userApiKey) {
-      const model = userModel || DEFAULT_GEMINI_MODEL;
-      const genAI = new GoogleGenerativeAI(userApiKey);
-      const geminiModel = genAI.getGenerativeModel({ model, systemInstruction: systemPrompt });
+    // Xác định API key sẽ dùng
+    let resolvedKey = userApiKey;
+    let resolvedProvider = provider;
+    let resolvedModel = userModel;
+    let usingServerKey = false;
 
+    if (provider === "server" || !userApiKey) {
+      const cfg = await getManyConfig(["ai_api_key", "ai_provider", "ai_model"]);
+      if (!cfg.ai_api_key) {
+        res.write(`data: ${JSON.stringify({ content: "Hệ thống chưa cấu hình API key. Vui lòng nhập API key của bạn trong phần Cài đặt AI, hoặc liên hệ quản trị viên để cấu hình key hệ thống." })}\n\n`);
+        res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+        res.end();
+        return;
+      }
+      resolvedKey = cfg.ai_api_key;
+      resolvedProvider = cfg.ai_provider ?? "openai";
+      resolvedModel = userModel || cfg.ai_model || DEFAULT_OPENAI_MODEL;
+      usingServerKey = true;
+    }
+
+    // Kiểm tra rate limit khi dùng server key
+    if (usingServerKey) {
+      const ip = getClientIP(req);
+      const rl = await checkAndLogUsage(ip);
+      if (!rl.allowed) {
+        res.write(`data: ${JSON.stringify({ content: `Bạn đã đạt giới hạn sử dụng AI. Giới hạn: ${rl.limitPerHour} lượt/giờ, ${rl.limitPerDay} lượt/ngày. Vui lòng thử lại sau hoặc nhập API key riêng trong phần Cài đặt AI.` })}\n\n`);
+        res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+        res.end();
+        return;
+      }
+    }
+
+    if (resolvedProvider === "gemini") {
+      const model = resolvedModel || DEFAULT_GEMINI_MODEL;
+      const genAI = new GoogleGenerativeAI(resolvedKey);
+      const geminiModel = genAI.getGenerativeModel({ model, systemInstruction: systemPrompt });
       const result = await geminiModel.generateContentStream(userMessage);
 
       for await (const chunk of result.stream) {
         const text = chunk.text();
-        if (text) {
-          res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
-        }
+        if (text) res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
       }
-    } else if (userApiKey) {
-      const model = userModel || DEFAULT_OPENAI_MODEL;
-      const client = new OpenAI({ apiKey: userApiKey });
-
+    } else {
+      const model = resolvedModel || DEFAULT_OPENAI_MODEL;
+      const client = new OpenAI({ apiKey: resolvedKey });
       const stream = await client.chat.completions.create({
         model,
         max_completion_tokens: 8192,
@@ -71,12 +101,8 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
 
       for await (const chunk of stream) {
         const content = chunk.choices[0]?.delta?.content;
-        if (content) {
-          res.write(`data: ${JSON.stringify({ content })}\n\n`);
-        }
+        if (content) res.write(`data: ${JSON.stringify({ content })}\n\n`);
       }
-    } else {
-      res.write(`data: ${JSON.stringify({ content: "Vui lòng nhập API key trong phần Cài đặt AI (biểu tượng trên thanh điều hướng) để sử dụng tính năng luận giải AI. Hỗ trợ OpenAI và Google Gemini." })}\n\n`);
     }
   } catch (err: any) {
     const msg = err?.message || "Lỗi không xác định";
