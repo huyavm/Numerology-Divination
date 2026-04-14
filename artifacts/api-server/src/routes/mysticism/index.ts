@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { openai as replitOpenAI } from "@workspace/integrations-openai-ai-server";
 import OpenAI from "openai";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AiInterpretMysticismBody } from "@workspace/api-zod";
@@ -20,7 +19,7 @@ function getSystemPrompt(type: string): string {
   return SYSTEM_PROMPTS[type] || `Bạn là nhà huyền học uyên bác, trả lời bằng tiếng Việt với giọng văn sâu sắc và thấu đáo.`;
 }
 
-const DEFAULT_OPENAI_MODEL = "gpt-5.4";
+const DEFAULT_OPENAI_MODEL = "gpt-4.1";
 const DEFAULT_GEMINI_MODEL = "gemini-2.5-pro";
 
 router.post("/mysticism/ai-interpret", async (req, res) => {
@@ -34,7 +33,7 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
   const systemPrompt = getSystemPrompt(type);
   const userMessage = question ? `${context}\n\nCâu hỏi của tôi: ${question}` : context;
 
-  const provider = (req.headers["x-ai-provider"] as string) || "default";
+  const provider = (req.headers["x-ai-provider"] as string) || "openai";
   const userApiKey = (req.headers["x-ai-key"] as string) || "";
   const userModel = (req.headers["x-ai-model"] as string) || "";
 
@@ -46,11 +45,9 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
     if (provider === "gemini" && userApiKey) {
       const model = userModel || DEFAULT_GEMINI_MODEL;
       const genAI = new GoogleGenerativeAI(userApiKey);
-      const geminiModel = genAI.getGenerativeModel({ model });
+      const geminiModel = genAI.getGenerativeModel({ model, systemInstruction: systemPrompt });
 
-      const result = await geminiModel.generateContentStream([
-        { role: "user", parts: [{ text: `${systemPrompt}\n\n${userMessage}` }] },
-      ]);
+      const result = await geminiModel.generateContentStream(userMessage);
 
       for await (const chunk of result.stream) {
         const text = chunk.text();
@@ -58,7 +55,7 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
           res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
         }
       }
-    } else if (provider === "openai" && userApiKey) {
+    } else if (userApiKey) {
       const model = userModel || DEFAULT_OPENAI_MODEL;
       const client = new OpenAI({ apiKey: userApiKey });
 
@@ -78,25 +75,8 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
           res.write(`data: ${JSON.stringify({ content })}\n\n`);
         }
       }
-    } else if (replitOpenAI) {
-      const stream = await replitOpenAI.chat.completions.create({
-        model: "gpt-5.2",
-        max_completion_tokens: 8192,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userMessage },
-        ],
-        stream: true,
-      });
-
-      for await (const chunk of stream) {
-        const content = chunk.choices[0]?.delta?.content;
-        if (content) {
-          res.write(`data: ${JSON.stringify({ content })}\n\n`);
-        }
-      }
     } else {
-      res.write(`data: ${JSON.stringify({ content: "Chưa cấu hình AI provider. Vui lòng vào phần cài đặt AI (biểu tượng AI trên navbar) và nhập OpenAI hoặc Gemini API key để sử dụng tính năng này." })}\n\n`);
+      res.write(`data: ${JSON.stringify({ content: "Vui lòng nhập API key trong phần Cài đặt AI (biểu tượng trên thanh điều hướng) để sử dụng tính năng luận giải AI. Hỗ trợ OpenAI và Google Gemini." })}\n\n`);
     }
   } catch (err: any) {
     const msg = err?.message || "Lỗi không xác định";

@@ -1,10 +1,16 @@
 import { Router } from "express";
 import { db, conversations as conversationsTable, messages as messagesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
-import { openai } from "@workspace/integrations-openai-ai-server";
+import OpenAI from "openai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CreateOpenaiConversationBody, SendOpenaiMessageBody } from "@workspace/api-zod";
 
 const router = Router();
+
+const SYSTEM_PROMPT = `Bạn là một nhà huyền học uyên bác, am tường Thần số học (Numerology), Bát tự Tứ Trụ, Kinh Dịch (I Ching), và các phép huyền bí phương Đông và phương Tây. Bạn trả lời bằng tiếng Việt, với giọng văn sâu sắc, thấu đáo nhưng vẫn gần gũi. Hãy trả lời như một người thầy thông thái đang khai sáng cho người học trò.`;
+
+const DEFAULT_OPENAI_MODEL = "gpt-4.1";
+const DEFAULT_GEMINI_MODEL = "gemini-2.5-pro";
 
 router.get("/openai/conversations", async (req, res) => {
   const convs = await db
@@ -118,10 +124,12 @@ router.post("/openai/conversations/:id/messages", async (req, res) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
 
-  const systemPrompt = `Bạn là một nhà huyền học uyên bác, am tường Thần số học (Numerology), Bát tự Tứ Trụ, Kinh Dịch (I Ching), và các phép huyền bí phương Đông và phương Tây. Bạn trả lời bằng tiếng Việt, với giọng văn sâu sắc, thấu đáo nhưng vẫn gần gũi. Hãy trả lời như một người thầy thông thái đang khai sáng cho người học trò.`;
+  const provider = (req.headers["x-ai-provider"] as string) || "openai";
+  const userApiKey = (req.headers["x-ai-key"] as string) || "";
+  const userModel = (req.headers["x-ai-model"] as string) || "";
 
   const chatMessages = [
-    { role: "system" as const, content: systemPrompt },
+    { role: "system" as const, content: SYSTEM_PROMPT },
     ...prevMessages.map((m) => ({
       role: m.role as "user" | "assistant",
       content: m.content,
@@ -129,28 +137,57 @@ router.post("/openai/conversations/:id/messages", async (req, res) => {
     { role: "user" as const, content: parsed.data.content },
   ];
 
-  if (!openai) {
-    res.write(`data: ${JSON.stringify({ content: "Replit AI chưa được cấu hình. Vui lòng dùng OpenAI hoặc Gemini API key trong phần cài đặt AI." })}\n\n`);
-    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
-    res.end();
-    return;
-  }
-
   let fullResponse = "";
 
-  const stream = await openai.chat.completions.create({
-    model: "gpt-5.2",
-    max_completion_tokens: 8192,
-    messages: chatMessages,
-    stream: true,
-  });
+  try {
+    if (provider === "gemini" && userApiKey) {
+      const model = userModel || DEFAULT_GEMINI_MODEL;
+      const genAI = new GoogleGenerativeAI(userApiKey);
+      const geminiModel = genAI.getGenerativeModel({ model });
 
-  for await (const chunk of stream) {
-    const content = chunk.choices[0]?.delta?.content;
-    if (content) {
-      fullResponse += content;
-      res.write(`data: ${JSON.stringify({ content })}\n\n`);
+      const geminiMessages = chatMessages
+        .filter((m) => m.role !== "system")
+        .map((m) => ({ role: m.role === "assistant" ? "model" : "user", parts: [{ text: m.content }] }));
+
+      const systemInstruction = SYSTEM_PROMPT;
+      const modelWithSystem = genAI.getGenerativeModel({ model, systemInstruction });
+      const chat = modelWithSystem.startChat({ history: geminiMessages.slice(0, -1) });
+      const result = await chat.sendMessageStream(parsed.data.content);
+
+      for await (const chunk of result.stream) {
+        const text = chunk.text();
+        if (text) {
+          fullResponse += text;
+          res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
+        }
+      }
+    } else if (userApiKey) {
+      const model = userModel || DEFAULT_OPENAI_MODEL;
+      const client = new OpenAI({ apiKey: userApiKey });
+
+      const stream = await client.chat.completions.create({
+        model,
+        max_tokens: 8192,
+        messages: chatMessages,
+        stream: true,
+      });
+
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content;
+        if (content) {
+          fullResponse += content;
+          res.write(`data: ${JSON.stringify({ content })}\n\n`);
+        }
+      }
+    } else {
+      const msg = "Vui lòng nhập OpenAI hoặc Gemini API key trong phần Cài đặt AI (biểu tượng trên thanh điều hướng) để sử dụng tính năng chat.";
+      res.write(`data: ${JSON.stringify({ content: msg })}\n\n`);
+      fullResponse = msg;
     }
+  } catch (err: any) {
+    const msg = `Lỗi kết nối AI: ${err?.message || "Lỗi không xác định"}`;
+    res.write(`data: ${JSON.stringify({ content: `\n\n*${msg}*` })}\n\n`);
+    fullResponse += `\n\n*${msg}*`;
   }
 
   await db.insert(messagesTable).values({

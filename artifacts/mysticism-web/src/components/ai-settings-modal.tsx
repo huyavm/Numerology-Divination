@@ -107,19 +107,14 @@ const GEMINI_MODELS: { value: string; label: string; badge: string; badgeColor: 
 ];
 
 const PROVIDER_INFO = {
-  default: {
-    label: "Mặc định (Replit AI)",
-    desc: "Sử dụng AI tích hợp sẵn của hệ thống. Không cần khóa API.",
-    color: "border-primary/60 bg-primary/10",
-  },
   openai: {
     label: "OpenAI ChatGPT",
-    desc: "Sử dụng khóa API OpenAI riêng.",
+    desc: "Sử dụng khóa API OpenAI của bạn.",
     color: "border-green-500/60 bg-green-500/10",
   },
   gemini: {
     label: "Google Gemini",
-    desc: "Sử dụng khóa API Google AI riêng.",
+    desc: "Sử dụng khóa API Google AI của bạn.",
     color: "border-blue-500/60 bg-blue-500/10",
   },
 };
@@ -182,7 +177,7 @@ export function AISettingsModal({ open, onClose }: Props) {
 
   const handleReset = () => {
     const reset = {
-      provider: "default" as AIProvider,
+      provider: "openai" as AIProvider,
       openaiKey: "",
       geminiKey: "",
       openaiModel: DEFAULT_OPENAI_MODEL,
@@ -218,13 +213,12 @@ export function AISettingsModal({ open, onClose }: Props) {
           <div className="space-y-2">
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Nhà cung cấp</p>
             <div className="grid gap-2">
-              {(["default", "openai", "gemini"] as AIProvider[]).map((p) => {
+              {(["openai", "gemini"] as AIProvider[]).map((p) => {
                 const info = PROVIDER_INFO[p];
                 const isActive = local.provider === p;
                 const sublabel =
                   p === "openai" ? `Model: ${selectedOpenAILabel}` :
-                  p === "gemini" ? `Model: ${selectedGeminiLabel}` :
-                  "gpt-5.2";
+                  `Model: ${selectedGeminiLabel}`;
                 return (
                   <button
                     key={p}

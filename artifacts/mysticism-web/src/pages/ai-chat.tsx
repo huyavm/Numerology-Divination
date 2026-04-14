@@ -74,7 +74,7 @@ export default function AIChatPage() {
 
     try {
       const headers: Record<string, string> = { "Content-Type": "application/json" };
-      if (settings.provider !== "default") headers["x-ai-provider"] = settings.provider;
+      headers["x-ai-provider"] = settings.provider;
       if (activeKey) headers["x-ai-key"] = activeKey;
       if (activeModel) headers["x-ai-model"] = activeModel;
 
@@ -137,8 +137,7 @@ export default function AIChatPage() {
     }
   };
 
-  const providerLabel = settings.provider === "openai" ? `GPT · ${activeModel}` :
-    settings.provider === "gemini" ? `Gemini · ${activeModel}` : "Replit AI";
+  const providerLabel = settings.provider === "gemini" ? `Gemini · ${activeModel}` : `GPT · ${activeModel}`;
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">

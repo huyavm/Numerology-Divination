@@ -18,7 +18,7 @@ export function useSSEChat(sseHeaders?: SSEHeaders) {
     try {
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
 
-      if (sseHeaders?.provider && sseHeaders.provider !== 'default') {
+      if (sseHeaders?.provider) {
         headers['x-ai-provider'] = sseHeaders.provider;
       }
       if (sseHeaders?.apiKey) {

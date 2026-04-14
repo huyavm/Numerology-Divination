@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
-export type AIProvider = "default" | "openai" | "gemini";
+export type AIProvider = "openai" | "gemini";
 
 export interface AISettings {
   provider: AIProvider;
@@ -20,11 +20,11 @@ interface AISettingsContextValue {
 
 const STORAGE_KEY = "huyen-bi-ai-settings";
 
-export const DEFAULT_OPENAI_MODEL = "gpt-5.4";
+export const DEFAULT_OPENAI_MODEL = "gpt-4.1";
 export const DEFAULT_GEMINI_MODEL = "gemini-2.5-pro";
 
 const defaultSettings: AISettings = {
-  provider: "default",
+  provider: "openai",
   openaiKey: "",
   geminiKey: "",
   openaiModel: DEFAULT_OPENAI_MODEL,
@@ -35,7 +35,10 @@ function loadSettings(): AISettings {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return defaultSettings;
-    return { ...defaultSettings, ...JSON.parse(raw) };
+    const saved = JSON.parse(raw);
+    // Nếu settings cũ dùng "default" thì chuyển sang "openai"
+    if (saved.provider === "default") saved.provider = "openai";
+    return { ...defaultSettings, ...saved };
   } catch {
     return defaultSettings;
   }
@@ -63,19 +66,14 @@ export function AISettingsProvider({ children }: { children: ReactNode }) {
   const activeKey =
     settings.provider === "openai"
       ? settings.openaiKey
-      : settings.provider === "gemini"
-        ? settings.geminiKey
-        : "";
+      : settings.geminiKey;
 
   const activeModel =
     settings.provider === "openai"
       ? settings.openaiModel || DEFAULT_OPENAI_MODEL
-      : settings.provider === "gemini"
-        ? settings.geminiModel || DEFAULT_GEMINI_MODEL
-        : "";
+      : settings.geminiModel || DEFAULT_GEMINI_MODEL;
 
   const isConfigured =
-    settings.provider === "default" ||
     (settings.provider === "openai" && !!settings.openaiKey.trim()) ||
     (settings.provider === "gemini" && !!settings.geminiKey.trim());
 
