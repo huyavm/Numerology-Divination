@@ -129,6 +129,13 @@ router.post("/openai/conversations/:id/messages", async (req, res) => {
     { role: "user" as const, content: parsed.data.content },
   ];
 
+  if (!openai) {
+    res.write(`data: ${JSON.stringify({ content: "Replit AI chưa được cấu hình. Vui lòng dùng OpenAI hoặc Gemini API key trong phần cài đặt AI." })}\n\n`);
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
+    return;
+  }
+
   let fullResponse = "";
 
   const stream = await openai.chat.completions.create({

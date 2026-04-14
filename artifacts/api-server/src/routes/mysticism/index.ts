@@ -78,7 +78,7 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
           res.write(`data: ${JSON.stringify({ content })}\n\n`);
         }
       }
-    } else {
+    } else if (replitOpenAI) {
       const stream = await replitOpenAI.chat.completions.create({
         model: "gpt-5.2",
         max_completion_tokens: 8192,
@@ -95,6 +95,8 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
           res.write(`data: ${JSON.stringify({ content })}\n\n`);
         }
       }
+    } else {
+      res.write(`data: ${JSON.stringify({ content: "Chưa cấu hình AI provider. Vui lòng vào phần cài đặt AI (biểu tượng AI trên navbar) và nhập OpenAI hoặc Gemini API key để sử dụng tính năng này." })}\n\n`);
     }
   } catch (err: any) {
     const msg = err?.message || "Lỗi không xác định";
