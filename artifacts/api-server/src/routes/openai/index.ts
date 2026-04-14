@@ -167,7 +167,7 @@ router.post("/openai/conversations/:id/messages", async (req, res) => {
 
       const stream = await client.chat.completions.create({
         model,
-        max_tokens: 8192,
+        max_completion_tokens: 8192,
         messages: chatMessages,
         stream: true,
       });

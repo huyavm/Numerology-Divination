@@ -61,7 +61,7 @@ router.post("/mysticism/ai-interpret", async (req, res) => {
 
       const stream = await client.chat.completions.create({
         model,
-        max_tokens: 8192,
+        max_completion_tokens: 8192,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userMessage },
