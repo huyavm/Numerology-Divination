@@ -1,7 +1,7 @@
 # ============================================================
 # Stage 1: Builder — cài deps + build api-server
 # ============================================================
-FROM --platform=linux/amd64 node:24-alpine AS builder
+FROM node:24-alpine AS builder
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
@@ -19,8 +19,16 @@ COPY artifacts/mockup-sandbox/package.json      ./artifacts/mockup-sandbox/
 COPY artifacts/mysticism-web/package.json       ./artifacts/mysticism-web/
 COPY lib/                                       ./lib/
 
-# Cài toàn bộ dependencies workspace
-RUN pnpm install --frozen-lockfile
+# Trên ARM64: xoá các dòng override loại trừ esbuild ARM binary
+# (pnpm-workspace.yaml được thiết kế cho x64 Replit, cần patch để build trên ARM)
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ]; then \
+      sed -i '/"esbuild>@esbuild\/linux-arm/d' pnpm-workspace.yaml && \
+      echo "Patched pnpm-workspace.yaml for ARM64"; \
+    fi
+
+# --no-frozen-lockfile để pnpm tự giải quyết binary phù hợp với platform hiện tại
+RUN pnpm install --no-frozen-lockfile
 
 # Copy source code api-server
 COPY artifacts/api-server/ ./artifacts/api-server/
@@ -31,7 +39,7 @@ RUN pnpm --filter @workspace/api-server run build
 # ============================================================
 # Stage 2: Runner — image production tối giản
 # ============================================================
-FROM --platform=linux/amd64 node:24-alpine AS runner
+FROM node:24-alpine AS runner
 
 WORKDIR /app
 
