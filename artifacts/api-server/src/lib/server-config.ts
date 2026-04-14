@@ -2,7 +2,7 @@ import { pool } from "@workspace/db";
 
 const DEFAULTS: Record<string, string> = {
   ai_provider: "openai",
-  ai_model: "gpt-4.1",
+  ai_model: "gpt-5.4-nano",
   rate_limit_per_hour: "20",
   rate_limit_per_day: "100",
 };

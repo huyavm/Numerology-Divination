@@ -81,7 +81,7 @@ const MODULES = [
     title: "Trợ Lý AI",
     subtitle: "Huyền Học Thông Tuệ",
     desc: "Trò chuyện trực tiếp với AI chuyên gia về huyền học. Đặt câu hỏi về tâm linh, số mệnh, phong thủy và nhận tư vấn sâu sắc từ trí tuệ nhân tạo.",
-    tags: ["Tư vấn tâm linh", "GPT-5.4", "Gemini 3", "Hỏi đáp"],
+    tags: ["Tư vấn tâm linh", "GPT-5.4 Nano", "Gemini 3.0 Flash", "Hỏi đáp"],
     accent: "from-sky-600/20 to-sky-500/5 border-sky-500/30 hover:border-sky-400/60",
     tagColor: "bg-sky-500/10 text-sky-300/80",
     symbolColor: "text-sky-400/80",
@@ -97,7 +97,7 @@ const FEATURES = [
   {
     icon: "◉",
     title: "AI Giải Mã Chuyên Sâu",
-    desc: "Sử dụng GPT-5.4 và Gemini 3.1 được định hướng chuyên biệt về huyền học để đưa ra phân tích sâu sắc và cá nhân hóa hoàn toàn.",
+    desc: "Sử dụng GPT-5.4 và Gemini 3.0 được định hướng chuyên biệt về huyền học để đưa ra phân tích sâu sắc và cá nhân hóa hoàn toàn.",
   },
   {
     icon: "◎",
@@ -185,7 +185,7 @@ export default function Home() {
             {[
               { val: "7", label: "Hệ thống huyền học" },
               { val: "64", label: "Quẻ Dịch" },
-              { val: "AI", label: "GPT-5.4 & Gemini 3.1" },
+              { val: "AI", label: "GPT-5.4 & Gemini 3.0" },
             ].map((s) => (
               <div key={s.label} className="text-center">
                 <div className="text-3xl font-bold text-primary">{s.val}</div>

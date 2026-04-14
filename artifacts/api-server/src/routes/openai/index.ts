@@ -11,8 +11,8 @@ const router = Router();
 
 const SYSTEM_PROMPT = `Bạn là một nhà huyền học uyên bác, am tường Thần số học (Numerology), Bát tự Tứ Trụ, Kinh Dịch (I Ching), và các phép huyền bí phương Đông và phương Tây. Bạn trả lời bằng tiếng Việt, với giọng văn sâu sắc, thấu đáo nhưng vẫn gần gũi. Hãy trả lời như một người thầy thông thái đang khai sáng cho người học trò.`;
 
-const DEFAULT_OPENAI_MODEL = "gpt-4.1";
-const DEFAULT_GEMINI_MODEL = "gemini-2.5-pro";
+const DEFAULT_OPENAI_MODEL = "gpt-5.4-nano";
+const DEFAULT_GEMINI_MODEL = "gemini-3.0-flash";
 
 router.get("/openai/conversations", async (_req, res) => {
   const convs = await db.select().from(conversationsTable).orderBy(conversationsTable.createdAt);

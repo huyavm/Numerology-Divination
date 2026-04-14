@@ -24,7 +24,7 @@ router.get("/config/public", async (_req, res) => {
     res.json({
       serverKeyConfigured: !!cfg.ai_api_key,
       provider: cfg.ai_provider ?? "openai",
-      model: cfg.ai_model ?? "gpt-4.1",
+      model: cfg.ai_model ?? "gpt-5.4-nano",
       rateLimitPerHour: parseInt(cfg.rate_limit_per_hour ?? "20", 10),
       rateLimitPerDay: parseInt(cfg.rate_limit_per_day ?? "100", 10),
       adminConfigured: !!cfg.admin_password_hash,

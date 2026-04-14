@@ -21,8 +21,8 @@ function getSystemPrompt(type: string): string {
   return SYSTEM_PROMPTS[type] ?? `Bạn là nhà huyền học uyên bác, trả lời bằng tiếng Việt với giọng văn sâu sắc và thấu đáo.`;
 }
 
-const DEFAULT_OPENAI_MODEL = "gpt-4.1";
-const DEFAULT_GEMINI_MODEL = "gemini-2.5-pro";
+const DEFAULT_OPENAI_MODEL = "gpt-5.4-nano";
+const DEFAULT_GEMINI_MODEL = "gemini-3.0-flash";
 
 router.post("/mysticism/ai-interpret", async (req, res) => {
   const parsed = AiInterpretMysticismBody.safeParse(req.body);

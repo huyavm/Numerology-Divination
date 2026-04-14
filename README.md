@@ -359,8 +359,8 @@ Sau khi cấu hình, tất cả người dùng có thể chọn **Key hệ thố
 
 | Provider | Model mặc định | Các model khác |
 |----------|---------------|----------------|
-| OpenAI | `gpt-4.1` | `gpt-4.1-mini`, `gpt-4o`, `gpt-4o-mini` |
-| Google Gemini | `gemini-2.5-pro` | `gemini-2.0-flash`, `gemini-1.5-pro` |
+| OpenAI | `gpt-5.4-nano` | `gpt-5.4`, `gpt-5.4-mini`, `gpt-4.1` |
+| Google Gemini | `gemini-3.0-flash` | `gemini-3.0-pro`, `gemini-3.0-flash-lite` |
 
 ---
 
@@ -387,7 +387,7 @@ Base URL: `http://localhost:3001`
 ```
 x-ai-provider: server | openai | gemini
 x-ai-key: <API key của bạn>      (chỉ khi dùng openai/gemini)
-x-ai-model: gpt-4.1 | gemini-2.5-pro | ...
+x-ai-model: gpt-5.4-nano | gpt-5.4 | gemini-3.0-flash | gemini-3.0-pro | ...
 ```
 
 ---

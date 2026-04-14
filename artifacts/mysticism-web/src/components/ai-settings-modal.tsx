@@ -10,16 +10,16 @@ interface Props {
 }
 
 const OPENAI_MODELS = [
-  { value: "gpt-4.1", label: "GPT-4.1", badge: "Khuyến nghị", badgeColor: "bg-green-500/20 text-green-300", desc: "Model OpenAI ổn định nhất hiện tại. Mạnh mẽ, tuân thủ lệnh tốt, xử lý văn bản dài." },
-  { value: "gpt-4.1-mini", label: "GPT-4.1 Mini", badge: "Tiết kiệm", badgeColor: "bg-green-500/15 text-green-400", desc: "Nhanh, hiệu quả, chi phí thấp hơn." },
-  { value: "gpt-4o", label: "GPT-4o", badge: "Đa phương tiện", badgeColor: "bg-blue-500/20 text-blue-300", desc: "Model đa phương tiện. Suy luận cân bằng, phổ biến." },
-  { value: "gpt-4o-mini", label: "GPT-4o Mini", badge: "Siêu nhanh", badgeColor: "bg-slate-500/20 text-slate-300", desc: "Tốc độ cao, chi phí thấp nhất." },
+  { value: "gpt-5.4-nano", label: "GPT-5.4 Nano", badge: "Mặc định", badgeColor: "bg-green-500/20 text-green-300", desc: "Nhanh, tiết kiệm, chất lượng cao. Lý tưởng cho hầu hết tác vụ huyền học." },
+  { value: "gpt-5.4", label: "GPT-5.4", badge: "Mạnh nhất", badgeColor: "bg-amber-500/20 text-amber-300", desc: "Model OpenAI thế hệ mới nhất, suy luận sâu, xử lý văn bản phức tạp tốt nhất." },
+  { value: "gpt-5.4-mini", label: "GPT-5.4 Mini", badge: "Cân bằng", badgeColor: "bg-blue-500/20 text-blue-300", desc: "Cân bằng giữa tốc độ và chất lượng, chi phí vừa phải." },
+  { value: "gpt-4.1", label: "GPT-4.1", badge: "Ổn định", badgeColor: "bg-slate-500/20 text-slate-300", desc: "Phiên bản trước, thử nghiệm đã nhiều, đáng tin cậy." },
 ];
 
 const GEMINI_MODELS = [
-  { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro", badge: "Khuyến nghị", badgeColor: "bg-green-500/20 text-green-300", desc: "Phiên bản stable mạnh nhất, sẵn sàng production. Suy luận thích ứng, context 1M token." },
-  { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash", badge: "Nhanh & Phổ biến", badgeColor: "bg-blue-500/20 text-blue-300", desc: "Cân bằng trí tuệ và tốc độ. Kinh tế, đáng tin cậy." },
-  { value: "gemini-2.5-flash-lite", label: "Gemini 2.5 Flash-Lite", badge: "Tiết kiệm", badgeColor: "bg-slate-500/20 text-slate-300", desc: "Tối ưu chi phí, độ trễ thấp nhất." },
+  { value: "gemini-3.0-flash", label: "Gemini 3.0 Flash", badge: "Mặc định", badgeColor: "bg-green-500/20 text-green-300", desc: "Tốc độ cao, thông minh, kinh tế. Model Gemini thế hệ mới được khuyến nghị." },
+  { value: "gemini-3.0-pro", label: "Gemini 3.0 Pro", badge: "Mạnh nhất", badgeColor: "bg-amber-500/20 text-amber-300", desc: "Model Gemini 3 mạnh nhất, suy luận sâu, context 2M token, tốt nhất cho phân tích phức tạp." },
+  { value: "gemini-3.0-flash-lite", label: "Gemini 3.0 Flash-Lite", badge: "Tiết kiệm", badgeColor: "bg-slate-500/20 text-slate-300", desc: "Tối ưu chi phí và độ trễ thấp nhất trong dòng Gemini 3." },
 ];
 
 function ModelSelector({ models, value, onChange, selectedBorderColor }: {
@@ -254,7 +254,7 @@ export function AISettingsModal({ open, onClose }: Props) {
                   <div className="space-y-1.5">
                     <Label className="text-xs text-foreground/70">Model</Label>
                     <Input value={adminModel} onChange={(e) => setAdminModel(e.target.value)}
-                      placeholder="gpt-4.1" className="bg-background/50 border-border/50 text-sm" />
+                      placeholder="gpt-5.4-nano" className="bg-background/50 border-border/50 text-sm" />
                   </div>
                 </div>
 

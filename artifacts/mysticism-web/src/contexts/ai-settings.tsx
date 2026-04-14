@@ -31,8 +31,8 @@ interface AISettingsContextValue {
 
 const STORAGE_KEY = "huyen-bi-ai-settings";
 
-export const DEFAULT_OPENAI_MODEL = "gpt-4.1";
-export const DEFAULT_GEMINI_MODEL = "gemini-2.5-pro";
+export const DEFAULT_OPENAI_MODEL = "gpt-5.4-nano";
+export const DEFAULT_GEMINI_MODEL = "gemini-3.0-flash";
 
 const defaultSettings: AISettings = {
   provider: "server",
