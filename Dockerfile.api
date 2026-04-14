@@ -7,10 +7,8 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
-# Cấu hình pnpm:
-# - minimum-release-age=0: bỏ giới hạn tuổi package khi build trong Docker
-# - supported-architectures: pnpm tự cài binary native đúng platform (arm64 + x64)
-RUN printf "minimum-release-age=0\nsupported-architectures-cpu=arm64+x64\nsupported-architectures-os=linux\nsupported-architectures-libc=glibc\n" > /root/.npmrc
+# Override minimumReleaseAge để pnpm install không bị chặn trong Docker
+RUN echo "minimum-release-age=0" > /root/.npmrc
 
 # Copy workspace manifest và tsconfig root trước để tận dụng layer cache
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml tsconfig.base.json tsconfig.json ./
@@ -29,14 +27,19 @@ RUN ARCH=$(uname -m) && \
       echo "Patched pnpm-workspace.yaml for ARM64"; \
     fi
 
-# pnpm sẽ tự tải đúng binary ARM64 nhờ supported-architectures trong .npmrc
 RUN pnpm install --no-frozen-lockfile
 
-# Copy source code api-server
+# Copy source code api-server và shared libs
 COPY artifacts/api-server/ ./artifacts/api-server/
 
-# Build — esbuild bundle thành dist/index.mjs (tự chứa, không cần node_modules khi chạy)
+# Build — esbuild bundle thành dist/index.mjs
+# Lưu ý: một số package như @google/generative-ai được đánh dấu "external"
+# trong build.mjs nên KHÔNG được bundle — cần node_modules lúc runtime.
 RUN pnpm --filter @workspace/api-server run build
+
+# Tạo thư mục production standalone với chỉ các production deps
+# pnpm deploy tự động loại bỏ devDependencies, giữ lại đúng những gì cần
+RUN pnpm --filter @workspace/api-server deploy --prod /prod
 
 # ============================================================
 # Stage 2: Runner — image production tối giản
@@ -45,7 +48,10 @@ FROM node:20-slim AS runner
 
 WORKDIR /app
 
-# esbuild đã bundle tất cả — chỉ cần thư mục dist
+# Copy production node_modules từ pnpm deploy (chứa @google/generative-ai và các external deps)
+COPY --from=builder /prod/node_modules ./node_modules
+
+# Copy dist từ builder (esbuild bundle)
 COPY --from=builder /app/artifacts/api-server/dist ./dist
 
 EXPOSE 3001
