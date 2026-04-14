@@ -39,7 +39,7 @@ RUN pnpm --filter @workspace/api-server run build
 
 # Tạo thư mục production standalone với chỉ các production deps
 # pnpm deploy tự động loại bỏ devDependencies, giữ lại đúng những gì cần
-RUN pnpm --filter @workspace/api-server deploy --prod /prod
+RUN pnpm --filter @workspace/api-server deploy --prod --legacy /prod
 
 # ============================================================
 # Stage 2: Runner — image production tối giản
