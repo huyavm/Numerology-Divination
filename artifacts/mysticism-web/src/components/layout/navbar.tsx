@@ -13,6 +13,10 @@ const navItems = [
   { href: "/cat-hung", label: "Cát Hung" },
   { href: "/lich-van-nien", label: "Lịch" },
   { href: "/tu-vi", label: "Tử Vi" },
+  { href: "/phong-thuy", label: "Phong Thuỷ" },
+  { href: "/xem-ten", label: "Xem Tên" },
+  { href: "/lich-ca-nhan", label: "Lịch Cá Nhân" },
+  { href: "/tu-dien", label: "Từ Điển" },
   { href: "/ai-chat", label: "Trợ lý AI" },
 ];
 

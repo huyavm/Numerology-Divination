@@ -4,6 +4,7 @@ import html2canvas from "html2canvas";
 export function useExportImage() {
   const exportRef = useRef<HTMLDivElement>(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isPdfExporting, setIsPdfExporting] = useState(false);
 
   const downloadAsImage = useCallback(async (filename: string) => {
     if (!exportRef.current) return;
@@ -37,5 +38,32 @@ export function useExportImage() {
     URL.revokeObjectURL(url);
   }, []);
 
-  return { exportRef, downloadAsImage, downloadAsText, isExporting };
+  const downloadAsPdf = useCallback(async (filename: string) => {
+    if (!exportRef.current) return;
+    setIsPdfExporting(true);
+    try {
+      const canvas = await html2canvas(exportRef.current, {
+        backgroundColor: "#0d0818",
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        allowTaint: true,
+      });
+      const { jsPDF } = await import("jspdf");
+      const imgData = canvas.toDataURL("image/png");
+      const imgW = canvas.width;
+      const imgH = canvas.height;
+      const pdfW = 210;
+      const pdfH = (imgH / imgW) * pdfW;
+      const pdf = new jsPDF({ orientation: pdfH > pdfW ? "portrait" : "landscape", unit: "mm", format: [pdfW, pdfH] });
+      pdf.addImage(imgData, "PNG", 0, 0, pdfW, pdfH);
+      pdf.save(`huyen-bi-${filename}-${Date.now()}.pdf`);
+    } catch (err) {
+      console.error("PDF export failed:", err);
+    } finally {
+      setIsPdfExporting(false);
+    }
+  }, []);
+
+  return { exportRef, downloadAsImage, downloadAsText, downloadAsPdf, isExporting, isPdfExporting };
 }

@@ -13,6 +13,10 @@ import AIChatPage from "@/pages/ai-chat";
 import CatHungPage from "@/pages/cat-hung";
 import LichVanNienPage from "@/pages/lich-van-nien";
 import TuViPage from "@/pages/tu-vi";
+import PhongThuyPage from "@/pages/phong-thuy";
+import XemTenPage from "@/pages/xem-ten";
+import LichCaNhanPage from "@/pages/lich-ca-nhan";
+import TuDienPage from "@/pages/tu-dien";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +31,10 @@ function Router() {
       <Route path="/lich-van-nien" component={LichVanNienPage} />
       <Route path="/tu-vi" component={TuViPage} />
       <Route path="/ai-chat" component={AIChatPage} />
+      <Route path="/phong-thuy" component={PhongThuyPage} />
+      <Route path="/xem-ten" component={XemTenPage} />
+      <Route path="/lich-ca-nhan" component={LichCaNhanPage} />
+      <Route path="/tu-dien" component={TuDienPage} />
       <Route component={NotFound} />
     </Switch>
   );

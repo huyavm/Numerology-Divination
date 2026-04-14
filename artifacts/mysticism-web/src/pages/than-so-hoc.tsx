@@ -3,7 +3,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { computeLifePathNumber, computeSoulNumber, computeDestinyNumber, computePersonalityNumber, getNumberMeaning } from "@/lib/numerology";
+import { computeLifePathNumber, computeSoulNumber, computeDestinyNumber, computePersonalityNumber, computeMaturityNumber, computePersonalYearNumber, getNumberMeaning } from "@/lib/numerology";
 import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
 import { useExportImage } from "@/hooks/use-export-image";
 import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
@@ -24,10 +24,11 @@ export default function NumerologyPage() {
     soul: number;
     destiny: number;
     personality: number;
+    maturity: number;
   } | null>(null);
 
   const { messages, streamResponse, isStreaming } = useAISSEChat();
-  const { exportRef, downloadAsImage, downloadAsText, isExporting } = useExportImage();
+  const { exportRef, downloadAsImage, downloadAsText, downloadAsPdf, isExporting, isPdfExporting } = useExportImage();
 
   const handleNameChange = (val: string) => {
     const upper = val.toUpperCase();
@@ -49,11 +50,14 @@ export default function NumerologyPage() {
     setErrors({ name: nameErr, dob: dobErr });
     setTouched({ name: true, dob: true });
     if (nameErr || dobErr) return;
+    const lifePath = computeLifePathNumber(dob);
+    const destiny = computeDestinyNumber(name);
     setResults({
-      lifePath: computeLifePathNumber(dob),
+      lifePath,
       soul: computeSoulNumber(name),
-      destiny: computeDestinyNumber(name),
+      destiny,
       personality: computePersonalityNumber(name),
+      maturity: computeMaturityNumber(lifePath, destiny),
     });
   };
 
@@ -201,8 +205,78 @@ export default function NumerologyPage() {
               <ExportDownloadBar
                 onDownloadImage={() => downloadAsImage(`than-so-hoc-${name.replace(/\s+/g, "-")}`)}
                 onDownloadText={() => downloadAsText(buildTextContent(), `than-so-hoc-${name.replace(/\s+/g, "-")}`)}
+                onDownloadPdf={() => downloadAsPdf(`than-so-hoc-${name.replace(/\s+/g, "-")}`)}
                 isExporting={isExporting}
+                isPdfExporting={isPdfExporting}
               />
+
+              {/* Radar Chart + Summary */}
+              <Card className="bg-card/40 backdrop-blur-sm border-primary/30 shadow-xl overflow-hidden">
+                <CardContent className="pt-6">
+                  <div className="flex flex-col sm:flex-row items-center gap-8">
+                    <div className="flex-1 space-y-3">
+                      <h3 className="text-sm font-semibold text-primary/70 uppercase tracking-widest">Bức tranh huyền số</h3>
+                      {[
+                        { label: "Đường Đời", value: results.lifePath, color: "text-red-400", desc: "Hành trình cuộc sống" },
+                        { label: "Sứ Mệnh", value: results.destiny, color: "text-yellow-400", desc: "Sứ mệnh và mục đích" },
+                        { label: "Linh Hồn", value: results.soul, color: "text-blue-400", desc: "Khao khát nội tâm" },
+                        { label: "Nhân Cách", value: results.personality, color: "text-green-400", desc: "Hình ảnh bên ngoài" },
+                        { label: "Trưởng Thành", value: results.maturity, color: "text-purple-400", desc: "Tiềm năng hậu vận" },
+                      ].map((n, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <span className="text-xs w-28 text-muted-foreground/70">{n.label}</span>
+                          <div className="flex-1 h-1.5 rounded-full bg-background/40 overflow-hidden">
+                            <div className="h-full rounded-full bg-primary/50 transition-all" style={{ width: `${Math.min((n.value / 9) * 100, 100)}%` }}/>
+                          </div>
+                          <span className={cn("text-sm font-bold w-6 text-right", n.color)}>{n.value}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Pentagon radar */}
+                    <div className="w-44 shrink-0">
+                      {(() => {
+                        const vals = [results.lifePath, results.destiny, results.soul, results.personality, results.maturity];
+                        const n = vals.length;
+                        const cx = 60, cy = 60, r = 50;
+                        const points = vals.map((v, i) => {
+                          const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+                          const ratio = Math.min(v, 9) / 9;
+                          return { x: cx + r * ratio * Math.cos(angle), y: cy + r * ratio * Math.sin(angle) };
+                        });
+                        const polygon = points.map(p => `${p.x},${p.y}`).join(" ");
+                        const gridPoly = (ratio: number) =>
+                          Array.from({ length: n }, (_, i) => {
+                            const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+                            return `${cx + r * ratio * Math.cos(angle)},${cy + r * ratio * Math.sin(angle)}`;
+                          }).join(" ");
+                        const labels = ["Đời", "Mệnh", "Hồn", "Cách", "Thành"];
+                        const labelColors = ["#f87171", "#fbbf24", "#60a5fa", "#4ade80", "#c084fc"];
+                        return (
+                          <svg viewBox="0 0 120 120" className="w-full">
+                            {[0.25, 0.5, 0.75, 1].map((r2, i) => (
+                              <polygon key={i} points={gridPoly(r2)} fill="none" stroke="rgba(255,215,0,0.08)" strokeWidth="0.6"/>
+                            ))}
+                            {Array.from({ length: n }, (_, i) => {
+                              const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+                              return <line key={i} x1={cx} y1={cy} x2={cx + r * Math.cos(angle)} y2={cy + r * Math.sin(angle)} stroke="rgba(255,215,0,0.1)" strokeWidth="0.6"/>;
+                            })}
+                            <polygon points={polygon} fill="rgba(255,215,0,0.12)" stroke="rgba(255,215,0,0.7)" strokeWidth="1.2" strokeLinejoin="round"/>
+                            {points.map((p, i) => (
+                              <circle key={i} cx={p.x} cy={p.y} r="2.5" fill={labelColors[i]} opacity="0.9"/>
+                            ))}
+                            {Array.from({ length: n }, (_, i) => {
+                              const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+                              const lx = cx + (r + 12) * Math.cos(angle);
+                              const ly = cy + (r + 12) * Math.sin(angle);
+                              return <text key={i} x={lx} y={ly + 2} textAnchor="middle" fontSize="6" fill={labelColors[i]} opacity="0.8">{labels[i]}</text>;
+                            })}
+                          </svg>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
 
               <div className="grid md:grid-cols-2 gap-6">
                 {[
@@ -210,6 +284,7 @@ export default function NumerologyPage() {
                   { label: "Sứ Mệnh", value: results.destiny },
                   { label: "Linh Hồn", value: results.soul },
                   { label: "Nhân Cách", value: results.personality },
+                  { label: "Trưởng Thành", value: results.maturity },
                 ].map((item, idx) => {
                   const meaning = getNumberMeaning(item.value);
                   return (
@@ -233,6 +308,50 @@ export default function NumerologyPage() {
                   );
                 })}
               </div>
+
+              {/* Personal Year outlook */}
+              {(() => {
+                const currentYear = new Date().getFullYear();
+                const years = [currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
+                const pyNums = years.map((y) => computePersonalYearNumber(dob, y));
+                const YEAR_THEME: Record<number, string> = {
+                  1: "Khởi đầu mới, tiên phong",
+                  2: "Hợp tác, kiên nhẫn, tình cảm",
+                  3: "Sáng tạo, giao tiếp, vui vẻ",
+                  4: "Xây dựng nền tảng, kỷ luật",
+                  5: "Thay đổi, tự do, phiêu lưu",
+                  6: "Trách nhiệm, gia đình, chữa lành",
+                  7: "Nội tâm, học hỏi, tâm linh",
+                  8: "Thịnh vượng, quyền lực, tham vọng",
+                  9: "Hoàn thành, buông bỏ, nhân đạo",
+                  11: "Trực giác cao, sứ mệnh tâm linh",
+                  22: "Đại kiến trúc sư, thực hiện giấc mơ lớn",
+                };
+                return (
+                  <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl overflow-hidden">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-xl text-primary">Nhịp Cá Nhân Theo Năm</CardTitle>
+                      <CardDescription>Chu kỳ năng lượng 9 năm — mỗi năm mang một sứ mệnh riêng.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {years.map((y, i) => {
+                          const isCurrent = y === currentYear;
+                          const n = pyNums[i];
+                          return (
+                            <div key={y} className={`rounded-2xl border p-4 text-center transition-all ${isCurrent ? "border-primary/60 bg-primary/10 shadow-lg shadow-primary/10" : "border-border/30 bg-background/20"}`}>
+                              {isCurrent && <div className="text-[10px] uppercase tracking-widest text-primary/70 mb-1 font-semibold">Năm nay</div>}
+                              <div className={`text-5xl font-bold font-serif mb-2 ${isCurrent ? "text-primary" : "text-foreground/50"}`}>{n}</div>
+                              <div className={`text-[11px] font-semibold ${isCurrent ? "text-foreground/70" : "text-muted-foreground/50"}`}>{y}</div>
+                              <div className={`text-[10px] mt-2 leading-snug ${isCurrent ? "text-foreground/60" : "text-muted-foreground/40"}`}>{YEAR_THEME[n] ?? ""}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })()}
 
               <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl shadow-primary/5 mt-8">
                 <CardHeader>

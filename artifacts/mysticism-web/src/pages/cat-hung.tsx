@@ -328,6 +328,165 @@ function PlateResult({ result, numStr }: { result: CatHungResult; numStr: string
   );
 }
 
+function ComparePhoneTab() {
+  const [phones, setPhones] = useState(["", ""]);
+  const [compared, setCompared] = useState<{ nums: string[]; results: CatHungResult[] } | null>(null);
+  const [suggestions, setSuggestions] = useState<{ num: string; result: CatHungResult }[]>([]);
+  const [showSuggest, setShowSuggest] = useState(false);
+
+  const handlePhoneChange = (i: number, val: string) => {
+    const formatted = formatPhoneDisplay(val);
+    setPhones((p) => { const n = [...p]; n[i] = formatted; return n; });
+    setCompared(null);
+    setSuggestions([]);
+    setShowSuggest(false);
+  };
+
+  const digits = phones.map((p) => p.replace(/\D/g, ""));
+  const ready = digits.every((d) => d.length >= 6);
+
+  const handleCompare = () => {
+    if (!ready) return;
+    const nums = digits.map((d) => d.slice(-6));
+    const results = nums.map((n) => analyzeCatHung(n));
+    setCompared({ nums, results });
+  };
+
+  const handleSuggest = () => {
+    if (!compared) return;
+    const baseNum = compared.nums[0];
+    const candidates: { num: string; result: CatHungResult }[] = [];
+    for (let pos = 3; pos <= 5; pos++) {
+      for (let d = 0; d <= 9; d++) {
+        const arr = baseNum.split("");
+        arr[pos] = String(d);
+        const num = arr.join("");
+        if (num === baseNum) continue;
+        candidates.push({ num, result: analyzeCatHung(num) });
+      }
+    }
+    const allSorted = candidates.sort((a, b) => b.result.totalScore - a.result.totalScore);
+    const good = allSorted.filter((c) => c.result.verdict === "dai-cat" || c.result.verdict === "cat");
+    setSuggestions(good.length >= 3 ? good.slice(0, 6) : allSorted.slice(0, 6));
+    setShowSuggest(true);
+  };
+
+  const VERDICT_BG: Record<string, string> = {
+    "dai-cat": "border-yellow-400/60 bg-yellow-500/10",
+    cat: "border-green-400/60 bg-green-500/10",
+    "binh-thuong": "border-blue-400/40 bg-blue-500/10",
+    hung: "border-orange-400/60 bg-orange-500/10",
+    "dai-hung": "border-red-500/60 bg-red-500/10",
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl">
+        <CardHeader>
+          <CardTitle className="text-2xl text-primary">So Sánh 2 Số Điện Thoại</CardTitle>
+          <CardDescription>Nhập hai số để so sánh điểm cát hung và tìm số tốt hơn.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            {[0, 1].map((i) => (
+              <div key={i} className="space-y-1.5">
+                <Label className="text-sm font-medium text-foreground/80">Số điện thoại {i + 1}</Label>
+                <div className="relative">
+                  <input
+                    type="tel"
+                    value={phones[i]}
+                    onChange={(e) => handlePhoneChange(i, e.target.value)}
+                    placeholder="0901 234 567"
+                    maxLength={12}
+                    className={cn(
+                      "flex h-10 w-full rounded-md border bg-background/50 px-3 py-2 pl-10 pr-16 text-sm font-mono tracking-widest transition-all duration-200 outline-none",
+                      digits[i].length >= 6 ? "border-green-500/60" : phones[i] ? "border-primary/40" : "border-border/50 focus:border-primary/50"
+                    )}
+                  />
+                  <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                  <span className={cn("absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono", digits[i].length >= 6 ? "text-green-400" : "text-muted-foreground/50")}>{digits[i].length}/10</span>
+                </div>
+                {digits[i].length >= 6 && (
+                  <p className="text-xs text-muted-foreground">6 số cuối: <span className="text-primary font-semibold font-mono tracking-widest">{digits[i].slice(-6)}</span></p>
+                )}
+              </div>
+            ))}
+          </div>
+          <Button onClick={handleCompare} disabled={!ready} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold tracking-wider">
+            SO SÁNH
+          </Button>
+        </CardContent>
+      </Card>
+
+      {compared && (
+        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* Side-by-side results */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {compared.results.map((r, i) => (
+              <div key={i} className={`rounded-2xl border p-5 space-y-3 ${VERDICT_BG[r.verdict]}`}>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground text-center">Số {i + 1}</p>
+                <p className="text-xs font-mono tracking-[0.2em] text-center text-foreground/60">{compared.nums[i]}</p>
+                <p className={`text-4xl font-serif font-bold text-center ${r.verdictColor}`}>{r.verdictLabel}</p>
+                <p className="text-xs text-muted-foreground text-center">Điểm: {r.totalScore.toFixed(1)}</p>
+                <div className="flex flex-wrap gap-1.5 justify-center">
+                  {r.digits.map((d, j) => (
+                    <span key={j} className={`rounded-lg px-2 py-1 text-sm font-bold font-serif ${LEVEL_CONFIG[d.level]?.text ?? "text-foreground"}`}>{d.digit}</span>
+                  ))}
+                </div>
+                {r.combinations.length > 0 && (
+                  <div className="flex flex-wrap gap-1 justify-center">
+                    {r.combinations.map((c, j) => <span key={j} className={`text-[10px] px-2 py-0.5 rounded-full border ${LEVEL_CONFIG[c.level].badge}`}>{c.name}</span>)}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Winner */}
+          {(() => {
+            const [r0, r1] = compared.results;
+            if (r0.totalScore === r1.totalScore) return (
+              <div className="text-center py-4 text-muted-foreground">Hai số điểm ngang nhau — xem chi tiết từng số để quyết định.</div>
+            );
+            const winner = r0.totalScore > r1.totalScore ? 1 : 2;
+            const loser = winner === 1 ? 2 : 1;
+            const diff = Math.abs(r0.totalScore - r1.totalScore).toFixed(1);
+            return (
+              <div className="rounded-2xl border border-primary/40 bg-primary/5 p-6 text-center space-y-2">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground">Kết luận</p>
+                <p className="text-2xl font-bold text-primary">Số {winner} tốt hơn Số {loser}</p>
+                <p className="text-sm text-foreground/70">Chênh lệch điểm: <span className="text-primary font-semibold">{diff}</span> điểm</p>
+                <p className="text-xs text-muted-foreground font-mono tracking-widest">{compared.nums[winner - 1]}</p>
+              </div>
+            );
+          })()}
+
+          {/* Suggest better */}
+          <div className="text-center space-y-4">
+            <Button onClick={handleSuggest} variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
+              Gợi ý số cuối tốt hơn cho Số 1
+            </Button>
+            {showSuggest && suggestions.length > 0 && (
+              <div className="space-y-3 animate-in fade-in duration-300">
+                <p className="text-sm text-muted-foreground">Thay đổi 2 số cuối — các phương án tốt hơn:</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {suggestions.map(({ num, result }, i) => (
+                    <div key={i} className={`rounded-xl border p-3 text-center ${VERDICT_BG[result.verdict]}`}>
+                      <p className="font-mono tracking-[0.2em] text-foreground/80 text-sm mb-1">{num}</p>
+                      <p className={`text-xl font-bold font-serif ${result.verdictColor}`}>{result.verdictLabel}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{result.totalScore.toFixed(1)} điểm</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 interface PhoneState {
   mode: PhoneMode;
   sixResult?: { result: CatHungResult; numStr: string; ownerName?: string; compat?: CompatibilityResult };
@@ -404,9 +563,12 @@ export default function CatHungPage() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 bg-card/40 border border-primary/20">
+            <TabsList className="grid w-full grid-cols-3 bg-card/40 border border-primary/20">
               <TabsTrigger value="phone" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
                 Số Điện Thoại
+              </TabsTrigger>
+              <TabsTrigger value="compare" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+                So Sánh 2 Số
               </TabsTrigger>
               <TabsTrigger value="plate" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
                 Biển Số Xe
@@ -577,6 +739,10 @@ export default function CatHungPage() {
                   compatDOB={phoneState.tenResult.compatDOB}
                 />
               )}
+            </TabsContent>
+
+            <TabsContent value="compare" className="space-y-6 mt-6">
+              <ComparePhoneTab />
             </TabsContent>
 
             <TabsContent value="plate" className="space-y-8 mt-6">

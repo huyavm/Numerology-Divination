@@ -49,6 +49,19 @@ function computeNameNumber(name: string, filter: (char: string) => boolean): num
   return reduceToSingleDigitOrMaster(sum);
 }
 
+export function computeMaturityNumber(lifePath: number, destiny: number): number {
+  return reduceToSingleDigitOrMaster(lifePath + destiny);
+}
+
+export function computePersonalYearNumber(dob: string, year: number): number {
+  // dob: DD/MM/YYYY
+  const parts = dob.split("/");
+  const day = parseInt(parts[0]);
+  const month = parseInt(parts[1]);
+  const yearDigits = year.toString().split("").map(Number).reduce((a, b) => a + b, 0);
+  return reduceToSingleDigitOrMaster(day + month + yearDigits);
+}
+
 export function getNumberMeaning(n: number): { title: string, description: string, strengths: string[], challenges: string[] } {
   const meanings: Record<number, any> = {
     1: {
