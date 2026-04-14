@@ -254,6 +254,105 @@ Cài đặt AI được lưu vào localStorage với key `huyen-bi-ai-settings`.
 
 ---
 
+## Docker
+
+### Yêu cầu
+- Docker 24+
+- Docker Compose v2+
+
+### Cấu trúc Docker
+
+```
+docker-compose.yml
+├── postgres    — PostgreSQL 16 (lưu trữ hội thoại AI)
+├── api         — Express 5 backend (Dockerfile.api)
+│                 Build: esbuild bundle → dist/index.mjs
+└── web         — Nginx 1.27 (Dockerfile.web)
+                  Build: Vite → static files
+                  Proxy: /api/* → api:3001
+```
+
+### Chạy nhanh
+
+```bash
+# 1. Clone repo
+git clone https://github.com/huyavm/Numerology-Divination.git
+cd Numerology-Divination
+
+# 2. Tạo file .env từ mẫu
+cp .env.example .env
+# Chỉnh sửa .env nếu cần (mật khẩu database, API keys, ...)
+
+# 3. Build và khởi động tất cả service
+docker compose up --build -d
+
+# 4. Chạy migration database (chỉ lần đầu)
+# Chạy từ máy local với DATABASE_URL trỏ vào postgres container:
+DATABASE_URL=postgresql://huyenbi:huyenbi_secret@localhost:5432/huyenbi \
+  pnpm --filter @workspace/db run push
+```
+
+> Mở trình duyệt: **http://localhost**
+
+### Lệnh thường dùng
+
+```bash
+# Xem log real-time
+docker compose logs -f
+
+# Xem log từng service
+docker compose logs -f api
+docker compose logs -f web
+
+# Restart 1 service (sau khi thay đổi code)
+docker compose up --build -d api
+docker compose up --build -d web
+
+# Dừng tất cả
+docker compose down
+
+# Dừng và xoá toàn bộ data (cẩn thận!)
+docker compose down -v
+```
+
+### Biến môi trường quan trọng
+
+| Biến | Mặc định | Mô tả |
+|------|----------|-------|
+| `POSTGRES_DB` | `huyenbi` | Tên database |
+| `POSTGRES_USER` | `huyenbi` | Username PostgreSQL |
+| `POSTGRES_PASSWORD` | `huyenbi_secret` | Mật khẩu PostgreSQL |
+| `WEB_PORT` | `80` | Cổng web expose ra ngoài |
+| `OPENAI_API_KEY` | *(trống)* | OpenAI API key (tuỳ chọn) |
+| `GEMINI_API_KEY` | *(trống)* | Google Gemini API key (tuỳ chọn) |
+
+### Thay đổi port
+
+Nếu cổng 80 đã bị chiếm:
+
+```bash
+# Trong .env
+WEB_PORT=8080
+
+# Hoặc ghi đè trực tiếp
+WEB_PORT=8080 docker compose up -d
+```
+
+### Chạy sau reverse proxy (Nginx/Traefik)
+
+Nếu đã có reverse proxy phía trước, chỉ cần expose cổng 80 nội bộ:
+
+```yaml
+# docker-compose.override.yml
+services:
+  web:
+    ports: []          # Bỏ expose cổng trực tiếp
+    expose:
+      - "80"           # Chỉ expose nội bộ cho reverse proxy
+```
+
+---
+
 ## Đóng góp
 
 1. Fork repo này

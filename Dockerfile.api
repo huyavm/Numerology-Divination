@@ -1,0 +1,46 @@
+# ============================================================
+# Stage 1: Builder — cài deps + build api-server
+# ============================================================
+FROM node:24-alpine AS builder
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+
+# Override minimumReleaseAge để pnpm install không bị chặn trong Docker
+RUN echo "minimum-release-age=0" > /root/.npmrc
+
+# Copy workspace manifest trước để tận dụng layer cache
+COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
+
+# Copy tất cả package.json trong workspace (cần cho pnpm workspaces)
+COPY artifacts/api-server/package.json          ./artifacts/api-server/
+COPY artifacts/mockup-sandbox/package.json      ./artifacts/mockup-sandbox/
+COPY artifacts/mysticism-web/package.json       ./artifacts/mysticism-web/
+COPY lib/                                       ./lib/
+
+# Cài toàn bộ dependencies workspace
+RUN pnpm install --frozen-lockfile
+
+# Copy source code api-server
+COPY artifacts/api-server/ ./artifacts/api-server/
+
+# Build — esbuild bundle thành dist/index.mjs (tự chứa, không cần node_modules khi chạy)
+RUN pnpm --filter @workspace/api-server run build
+
+# ============================================================
+# Stage 2: Runner — image production tối giản
+# ============================================================
+FROM node:24-alpine AS runner
+
+WORKDIR /app
+
+# esbuild đã bundle tất cả — chỉ cần thư mục dist
+COPY --from=builder /app/artifacts/api-server/dist ./dist
+
+EXPOSE 3001
+
+ENV NODE_ENV=production \
+    PORT=3001
+
+CMD ["node", "--enable-source-maps", "./dist/index.mjs"]

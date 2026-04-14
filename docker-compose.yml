@@ -1,0 +1,88 @@
+version: "3.9"
+
+# ============================================================
+# Huyền Bí — Docker Compose
+# Gồm 3 service: postgres, api-server (Express), web (Nginx)
+# ============================================================
+
+services:
+
+  # ----------------------------------------------------------
+  # PostgreSQL — cơ sở dữ liệu
+  # ----------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: huyen-bi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB:-huyenbi}
+      POSTGRES_USER:     ${POSTGRES_USER:-huyenbi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-huyenbi_secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # Expose cổng 5432 ra máy host để có thể chạy migration từ local
+    # Có thể xoá dòng này sau khi migration xong
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-huyenbi} -d ${POSTGRES_DB:-huyenbi}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  # ----------------------------------------------------------
+  # API Server — Express 5 backend
+  # ----------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: huyen-bi-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV:     production
+      PORT:         3001
+      DATABASE_URL: postgresql://${POSTGRES_USER:-huyenbi}:${POSTGRES_PASSWORD:-huyenbi_secret}@postgres:5432/${POSTGRES_DB:-huyenbi}
+
+      # AI Providers — điền nếu dùng OpenAI hoặc Gemini qua server
+      # (Người dùng cũng có thể nhập key trực tiếp trong giao diện)
+      OPENAI_API_KEY:  ${OPENAI_API_KEY:-}
+      GEMINI_API_KEY:  ${GEMINI_API_KEY:-}
+
+      # Replit AI Integrations (chỉ dùng khi deploy trên Replit)
+      AI_INTEGRATIONS_OPENAI_BASE_URL: ${AI_INTEGRATIONS_OPENAI_BASE_URL:-}
+      AI_INTEGRATIONS_OPENAI_API_KEY:  ${AI_INTEGRATIONS_OPENAI_API_KEY:-}
+    networks:
+      - internal
+    # Không expose cổng ra ngoài — chỉ Nginx được gọi vào api
+
+  # ----------------------------------------------------------
+  # Web — Nginx phục vụ static files + proxy /api/*
+  # ----------------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: huyen-bi-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-80}:80"
+    networks:
+      - internal
+
+# ----------------------------------------------------------
+# Volumes & Networks
+# ----------------------------------------------------------
+volumes:
+  postgres_data:
+
+networks:
+  internal:
+    driver: bridge
