@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/footer";
 import { Link } from "wouter";
 
 const MODULES = [
@@ -417,39 +418,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-primary/10 py-10 px-4 no-print">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="text-center md:text-left space-y-1">
-            <div className="text-xl font-bold tracking-widest text-primary">HUYỀN BÍ</div>
-            <div className="text-xs text-muted-foreground">Nền tảng huyền học kết hợp trí tuệ nhân tạo</div>
-          </div>
-          <div className="flex flex-wrap justify-center gap-5 text-sm">
-            {[
-              { label: "Thần số học", href: "/than-so-hoc" },
-              { label: "Bát tự Tứ Trụ", href: "/bat-tu" },
-              { label: "Xem quẻ", href: "/xem-que" },
-              { label: "Cát Hung", href: "/cat-hung" },
-              { label: "Lịch Vạn Niên", href: "/lich-van-nien" },
-              { label: "Tử Vi", href: "/tu-vi" },
-              { label: "Phong Thuỷ", href: "/phong-thuy" },
-              { label: "Xem Tên", href: "/xem-ten" },
-              { label: "Lịch Cá Nhân", href: "/lich-ca-nhan" },
-              { label: "Từ Điển", href: "/tu-dien" },
-              { label: "Hợp Tuổi", href: "/hop-tuoi" },
-              { label: "Xem Ngày Tốt", href: "/xem-ngay-tot" },
-              { label: "Sao Hạn", href: "/sao-han" },
-              { label: "Lịch Sử", href: "/lich-su" },
-              { label: "Trợ lý AI", href: "/ai-chat" },
-            ].map((l) => (
-              <Link key={l.href} href={l.href} className="text-muted-foreground hover:text-primary transition-colors">{l.label}</Link>
-            ))}
-          </div>
-          <div className="text-xs text-muted-foreground/50 text-center md:text-right">
-            Mọi luận giải chỉ mang<br />tính tham khảo, không thay thế<br />quyết định cá nhân.
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

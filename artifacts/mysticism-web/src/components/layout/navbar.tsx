@@ -1,26 +1,54 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { useAISettings } from "@/contexts/ai-settings";
 import { useTheme } from "@/contexts/theme";
 import { AISettingsModal } from "@/components/ai-settings-modal";
 
-const navItems = [
+type NavChild = { href: string; label: string; desc?: string };
+type NavGroup = { label: string; children: NavChild[] };
+type NavItem = { href: string; label: string } | NavGroup;
+
+function isGroup(item: NavItem): item is NavGroup {
+  return "children" in item;
+}
+
+const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Trang chủ" },
-  { href: "/than-so-hoc", label: "Thần số học" },
-  { href: "/bat-tu", label: "Bát tự" },
-  { href: "/xem-que", label: "Xem quẻ" },
-  { href: "/cat-hung", label: "Cát Hung" },
-  { href: "/lich-van-nien", label: "Lịch" },
-  { href: "/tu-vi", label: "Tử Vi" },
-  { href: "/phong-thuy", label: "Phong Thuỷ" },
-  { href: "/xem-ten", label: "Xem Tên" },
-  { href: "/lich-ca-nhan", label: "Lịch Cá Nhân" },
-  { href: "/tu-dien", label: "Từ Điển" },
-  { href: "/hop-tuoi", label: "Hợp Tuổi" },
-  { href: "/xem-ngay-tot", label: "Ngày Tốt" },
-  { href: "/sao-han", label: "Sao Hạn" },
-  { href: "/lich-su", label: "Lịch Sử" },
+  {
+    label: "Số Học",
+    children: [
+      { href: "/than-so-hoc", label: "Thần Số Học", desc: "Số vận mệnh & năm cá nhân" },
+      { href: "/xem-ten", label: "Xem Tên", desc: "Phân tích Ngũ Cách tên người" },
+      { href: "/lich-ca-nhan", label: "Lịch Cá Nhân", desc: "Năm, tháng, ngày cá nhân" },
+      { href: "/cat-hung", label: "Cát Hung", desc: "Điện thoại & biển số xe" },
+    ],
+  },
+  {
+    label: "Mệnh Lý",
+    children: [
+      { href: "/bat-tu", label: "Bát Tự Tứ Trụ", desc: "Tứ trụ, Ngũ Hành & Đại Vận" },
+      { href: "/tu-vi", label: "Tử Vi Đẩu Số", desc: "12 cung & 14 chính tinh" },
+      { href: "/phong-thuy", label: "Phong Thuỷ Bát Trạch", desc: "Hướng nhà & Mệnh Quái" },
+      { href: "/sao-han", label: "Sao Hạn Hàng Năm", desc: "Sao chiếu mệnh 7 năm" },
+    ],
+  },
+  {
+    label: "Tiên Tri",
+    children: [
+      { href: "/xem-que", label: "Xem Quẻ I Ching", desc: "64 quẻ Kinh Dịch cổ đại" },
+      { href: "/hop-tuoi", label: "Hợp Tuổi & Duyên Số", desc: "Tương hợp đôi bạn" },
+      { href: "/xem-ngay-tot", label: "Xem Ngày Tốt", desc: "Ngày Hoàng Đạo theo mục đích" },
+    ],
+  },
+  {
+    label: "Tra Cứu",
+    children: [
+      { href: "/lich-van-nien", label: "Lịch Vạn Niên", desc: "Âm lịch & Can Chi" },
+      { href: "/tu-dien", label: "Từ Điển Huyền Học", desc: "Can, Chi, Ngũ Hành, Bát Quái" },
+      { href: "/lich-su", label: "Lịch Sử Tra Cứu", desc: "Xem lại kết quả đã tra" },
+    ],
+  },
   { href: "/ai-chat", label: "Trợ lý AI" },
 ];
 
@@ -49,6 +77,129 @@ function MoonIcon() {
   );
 }
 
+function ChevronIcon({ open }: { open: boolean }) {
+  return (
+    <svg
+      className={cn("w-3 h-3 transition-transform duration-200", open && "rotate-180")}
+      fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  );
+}
+
+function DropdownMenu({ group, location }: { group: NavGroup; location: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const isActive = group.children.some((c) => c.href === location);
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          "flex items-center gap-1 text-xs tracking-wide transition-colors hover:text-primary py-1",
+          isActive ? "text-primary font-semibold" : "text-muted-foreground"
+        )}
+      >
+        {group.label}
+        <ChevronIcon open={open} />
+      </button>
+
+      {open && (
+        <div
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+          className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50"
+        >
+          <div className="min-w-[220px] rounded-xl border border-border/60 bg-background/95 backdrop-blur-md shadow-xl shadow-black/30 py-1.5 overflow-hidden">
+            <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 border-b border-border/30 mb-1">
+              {group.label}
+            </div>
+            {group.children.map((child) => (
+              <Link
+                key={child.href}
+                href={child.href}
+                onClick={() => setOpen(false)}
+                className={cn(
+                  "flex flex-col px-3 py-2 mx-1 rounded-lg transition-colors group",
+                  location === child.href
+                    ? "bg-primary/15 text-primary"
+                    : "hover:bg-primary/8 text-foreground"
+                )}
+              >
+                <span className={cn("text-sm font-medium", location === child.href ? "text-primary" : "group-hover:text-primary transition-colors")}>
+                  {child.label}
+                </span>
+                {child.desc && (
+                  <span className="text-[11px] text-muted-foreground mt-0.5">{child.desc}</span>
+                )}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MobileGroupSection({
+  group,
+  location,
+  onClose,
+}: {
+  group: NavGroup;
+  location: string;
+  onClose: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const isActive = group.children.some((c) => c.href === location);
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          "w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+          isActive ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-foreground hover:bg-primary/5"
+        )}
+      >
+        <span>{group.label}</span>
+        <ChevronIcon open={open} />
+      </button>
+      {open && (
+        <div className="ml-3 mt-0.5 space-y-0.5 border-l border-primary/20 pl-3">
+          {group.children.map((child) => (
+            <Link
+              key={child.href}
+              href={child.href}
+              onClick={onClose}
+              className={cn(
+                "block px-2 py-2 rounded-lg text-sm transition-colors",
+                location === child.href
+                  ? "text-primary font-semibold bg-primary/10"
+                  : "text-muted-foreground hover:text-foreground hover:bg-primary/5"
+              )}
+            >
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function Navbar() {
   const [location] = useLocation();
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -67,32 +218,34 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden lg:flex items-center gap-4 flex-1 justify-center px-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "text-xs tracking-wide transition-colors hover:text-primary whitespace-nowrap",
-                  location === item.href ? "text-primary font-semibold" : "text-muted-foreground"
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
+          <div className="hidden lg:flex items-center gap-5 flex-1 justify-center px-6">
+            {NAV_ITEMS.map((item) =>
+              isGroup(item) ? (
+                <DropdownMenu key={item.label} group={item} location={location} />
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-xs tracking-wide transition-colors hover:text-primary whitespace-nowrap py-1",
+                    location === item.href ? "text-primary font-semibold" : "text-muted-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            {/* Theme toggle */}
             <button
               onClick={toggleTheme}
-              title={theme === "dark" ? "Chuyển sang chế độ sáng" : "Chuyển sang chế độ tối"}
+              title={theme === "dark" ? "Chế độ sáng" : "Chế độ tối"}
               className="w-8 h-8 rounded-full border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all"
             >
               {theme === "dark" ? <SunIcon /> : <MoonIcon />}
             </button>
 
-            {/* AI settings */}
             <button
               onClick={() => setSettingsOpen(true)}
               title="Cài đặt AI"
@@ -109,7 +262,6 @@ export function Navbar() {
               </svg>
             </button>
 
-            {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen((v) => !v)}
               className="lg:hidden w-8 h-8 rounded-lg border border-border/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all"
@@ -125,22 +277,31 @@ export function Navbar() {
 
         {/* Mobile menu */}
         {mobileOpen && (
-          <div className="lg:hidden border-t border-border/40 bg-background/95 backdrop-blur-md px-4 py-3 space-y-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "block px-3 py-2.5 rounded-lg text-sm transition-colors",
-                  location === item.href
-                    ? "bg-primary/15 text-primary font-semibold"
-                    : "text-muted-foreground hover:bg-primary/8 hover:text-foreground"
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
+          <div className="lg:hidden border-t border-border/40 bg-background/97 backdrop-blur-md px-4 py-3 space-y-1 max-h-[75vh] overflow-y-auto">
+            {NAV_ITEMS.map((item) =>
+              isGroup(item) ? (
+                <MobileGroupSection
+                  key={item.label}
+                  group={item}
+                  location={location}
+                  onClose={() => setMobileOpen(false)}
+                />
+              ) : (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={cn(
+                    "block px-3 py-2.5 rounded-lg text-sm transition-colors font-medium",
+                    location === item.href
+                      ? "bg-primary/15 text-primary font-semibold"
+                      : "text-muted-foreground hover:bg-primary/8 hover:text-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
           </div>
         )}
       </nav>
