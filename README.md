@@ -1,8 +1,8 @@
 # Huyền Bí — Ứng dụng Huyền Học Việt Nam
 
-> Nền tảng huyền học toàn diện: Thần số học, Bát Tự Tứ Trụ, Kinh Dịch I Ching, Cát Hung, Lịch Vạn Niên, Tử Vi Đẩu Số và Trợ lý AI — giao diện tiếng Việt, chủ đề tối huyền bí.
+> Nền tảng huyền học toàn diện: 15 mô-đun tra cứu bao gồm Thần Số Học, Bát Tự Tứ Trụ (có Đại Vận), Kinh Dịch, Cát Hung, Tử Vi Đẩu Số, Phong Thuỷ, Hợp Tuổi, Xem Ngày Tốt, Sao Hạn và Trợ lý AI — giao diện tiếng Việt, chủ đề tối huyền bí.
 
-![Huyền Bí](https://img.shields.io/badge/Huy%E1%BB%87n%20B%C3%AD-v2.0-c9a227?style=for-the-badge&labelColor=0d0818)
+![Huyền Bí](https://img.shields.io/badge/Huy%E1%BB%87n%20B%C3%AD-v3.0-c9a227?style=for-the-badge&labelColor=0d0818)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript)
 ![Express](https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express)
@@ -25,30 +25,39 @@
 
 ## Giới thiệu
 
-**Huyền Bí** là ứng dụng web huyền học Việt Nam đầy đủ tính năng, gồm 7 mô-đun tra cứu, trợ lý AI hỗ trợ streaming, và hệ thống quản trị key AI dùng chung với giới hạn lượt gọi theo IP.
+**Huyền Bí** là ứng dụng web huyền học Việt Nam đầy đủ tính năng, gồm **15 mô-đun tra cứu**, trợ lý AI hỗ trợ streaming, và hệ thống quản trị key AI dùng chung với giới hạn lượt gọi theo IP.
 
 ---
 
 ## Tính năng
 
-### 7 Mô-đun tra cứu
+### 15 Mô-đun tra cứu
 
 | Mô-đun | Đường dẫn | Mô tả |
 |--------|-----------|-------|
-| **Thần Số Học** | `/than-so-hoc` | Số Đường đời, Linh hồn, Sứ mệnh, Nhân cách |
-| **Bát Tự Tứ Trụ** | `/bat-tu` | 4 trụ Năm–Tháng–Ngày–Giờ, phân tích Ngũ Hành |
-| **Xem Quẻ I Ching** | `/xem-que` | 64 quẻ Kinh Dịch, gieo quẻ và luận giải |
-| **Cát Hung** | `/cat-hung` | Phân tích số điện thoại, biển số xe |
+| **Thần Số Học** | `/than-so-hoc` | Số Đường đời, Linh hồn, Sứ mệnh, Nhân cách, Trưởng thành; biểu đồ radar ngũ giác; dự báo 4 năm |
+| **Bát Tự Tứ Trụ** | `/bat-tu` | 4 trụ Năm–Tháng–Ngày–Giờ, biểu đồ Ngũ Hành donut, **Đại Vận 8 trụ**, so sánh 2 người |
+| **Xem Quẻ I Ching** | `/xem-que` | 64 quẻ Kinh Dịch, gieo quẻ SVG thanh âm/dương, lịch sử 10 lần gieo |
+| **Cát Hung** | `/cat-hung` | Phân tích số điện thoại & biển số xe, so sánh 2 số, gợi ý số tốt hơn |
 | **Lịch Vạn Niên** | `/lich-van-nien` | Âm lịch, Can Chi, Hoàng Đạo/Hắc Đạo (1900–2100) |
 | **Tử Vi Đẩu Số** | `/tu-vi` | 12 cung Tử Vi, 14 chính tinh, Mệnh Cục |
-| **Trợ lý AI** | `/ai-chat` | Chat huyền học với AI, lưu lịch sử hội thoại |
+| **Phong Thuỷ Bát Trạch** | `/phong-thuy` | Mệnh Quái cá nhân, 4 hướng tốt / 4 hướng xấu, luận giải nhà ở |
+| **Xem Tên** | `/xem-ten` | Ngũ Cách phân tích tên (Thiên/Nhân/Địa/Ngoại/Tổng Cách), Ngũ Hành tên |
+| **Lịch Cá Nhân** | `/lich-ca-nhan` | Năm Cá Nhân, Tháng Cá Nhân, Ngày Cá Nhân theo Thần Số; lịch tháng màu sắc năng lượng |
+| **Từ Điển Huyền Học** | `/tu-dien` | 5 tab tra cứu: Thiên Can, Địa Chi, Ngũ Hành, Bát Quái, Thần Số |
+| **Hợp Tuổi & Duyên Số** | `/hop-tuoi` | Tương hợp qua Mệnh Quái, Can Chi, Ngũ Hành, Thần Số Đường Đời; điểm 0–100 + biểu đồ cột |
+| **Xem Ngày Tốt** | `/xem-ngay-tot` | Tìm ngày Hoàng Đạo theo mục đích (cưới, khai trương, động thổ...); lịch tháng tương tác |
+| **Sao Hạn Hàng Năm** | `/sao-han` | Tra cứu sao chiếu mệnh 7 năm (Thái Tuế, Thái Dương, La Hầu, Phúc Tinh...); card vận hạn |
+| **Lịch Sử Tra Cứu** | `/lich-su` | Xem lại, tìm kiếm, lọc và xóa lịch sử tra cứu lưu cục bộ; bảng thống kê |
+| **Trợ lý AI** | `/ai-chat` | Chat huyền học với AI, 14 câu gợi ý theo chủ đề, lưu lịch sử hội thoại |
 
 ### Tính năng chung
 
 - **Chủ đề Sáng/Tối** — Light/Dark mode, lưu localStorage
-- **Xuất PNG & TXT** — Ảnh chất lượng cao 2× retina hoặc file văn bản
+- **Xuất PNG, TXT & PDF** — Ảnh chất lượng cao 2× retina, file văn bản hoặc PDF
 - **Phân tích AI** — Giải nghĩa kết quả bằng AI với streaming SSE
 - **Key AI dùng chung** — Admin cấu hình key qua giao diện web, có giới hạn lượt gọi theo IP
+- **PWA** — Hỗ trợ cài đặt như ứng dụng gốc trên di động (beforeinstallprompt)
 - **Responsive** — Tương thích mobile, tablet, desktop
 
 ---
@@ -216,7 +225,7 @@ server {
         chunked_transfer_encoding on;
         proxy_set_header   Host              $host;
         proxy_set_header   X-Real-IP         $remote_addr;
-        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded-for;
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
     }
@@ -396,32 +405,59 @@ x-ai-model: gpt-5.4-nano | gpt-5.4 | gemini-3.0-flash | gemini-3.0-pro | ...
 
 ```
 artifacts/mysticism-web/src/
-├── pages/               # Các trang (home, than-so-hoc, bat-tu, ...)
+├── pages/
+│   ├── home.tsx              # Trang chủ — 15 module cards
+│   ├── than-so-hoc.tsx       # Thần Số Học
+│   ├── bat-tu.tsx            # Bát Tự + Đại Vận
+│   ├── xem-que.tsx           # Kinh Dịch
+│   ├── cat-hung.tsx          # Cát Hung
+│   ├── lich-van-nien.tsx     # Lịch Vạn Niên
+│   ├── tu-vi.tsx             # Tử Vi Đẩu Số
+│   ├── phong-thuy.tsx        # Phong Thuỷ Bát Trạch
+│   ├── xem-ten.tsx           # Xem Tên
+│   ├── lich-ca-nhan.tsx      # Lịch Cá Nhân
+│   ├── tu-dien.tsx           # Từ Điển Huyền Học
+│   ├── hop-tuoi.tsx          # Hợp Tuổi & Duyên Số
+│   ├── xem-ngay-tot.tsx      # Xem Ngày Tốt (Hoàng Đạo)
+│   ├── sao-han.tsx           # Sao Hạn Hàng Năm
+│   ├── lich-su.tsx           # Lịch Sử Tra Cứu
+│   └── ai-chat.tsx           # Trợ lý AI
 ├── components/
-│   ├── layout/          # Navbar, Footer
-│   ├── ui/              # shadcn/ui components
+│   ├── layout/               # Navbar (15 mục), Footer
+│   ├── ui/                   # shadcn/ui components
+│   ├── pwa-install-prompt.tsx
 │   └── export-card-*.tsx
 ├── lib/
-│   ├── lunar-calendar.ts   # Chuyển đổi Dương↔Âm (Ho Ngoc Duc)
-│   ├── tu-vi.ts            # 12 cung Tử Vi + 14 chính tinh
-│   ├── numerology.ts       # Thần Số Học
-│   ├── batu.ts             # Bát Tự + Ngũ Hành
-│   ├── iching.ts           # 64 quẻ Kinh Dịch
-│   └── cat-hung.ts         # Phân tích Cát Hung
+│   ├── lunar-calendar.ts     # Chuyển đổi Dương↔Âm (Ho Ngoc Duc)
+│   ├── tu-vi.ts              # 12 cung Tử Vi + 14 chính tinh
+│   ├── numerology.ts         # Thần Số Học
+│   ├── batu.ts               # Bát Tự + Ngũ Hành
+│   ├── dai-van.ts            # Đại Vận 8 trụ
+│   ├── iching.ts             # 64 quẻ Kinh Dịch
+│   ├── cat-hung.ts           # Phân tích Cát Hung
+│   ├── phong-thuy.ts         # Bát Trạch Ming Gua
+│   ├── xem-ten.ts            # Ngũ Cách phân tích tên
+│   ├── lich-ca-nhan.ts       # Lịch Cá Nhân + Năm/Tháng/Ngày
+│   ├── hop-tuoi.ts           # Tương hợp tuổi & duyên số
+│   ├── xem-ngay-tot.ts       # Tìm ngày Hoàng Đạo theo mục đích
+│   ├── sao-han.ts            # Sao hạn chiếu mệnh hàng năm
+│   ├── share-utils.ts        # Chia sẻ kết quả qua URL
+│   ├── history.ts            # Lịch sử tra cứu (localStorage)
+│   └── form-utils.ts         # Tiện ích nhập form (ngày, giờ, tên)
 └── contexts/
-    ├── theme.tsx            # Light/Dark mode
-    └── ai-settings.tsx      # AI provider context
+    ├── theme.tsx              # Light/Dark mode
+    └── ai-settings.tsx        # AI provider context
 
 artifacts/api-server/src/
 ├── lib/
-│   ├── migrate.ts       # Auto-migration các bảng DB khi khởi động
-│   ├── server-config.ts # Đọc/ghi cấu hình từ DB
-│   └── rate-limit.ts    # Kiểm tra + ghi log rate limit theo IP
+│   ├── migrate.ts            # Auto-migration các bảng DB khi khởi động
+│   ├── server-config.ts      # Đọc/ghi cấu hình từ DB
+│   └── rate-limit.ts         # Kiểm tra + ghi log rate limit theo IP
 └── routes/
-    ├── mysticism/       # SSE AI interpret
-    ├── conversations/   # CRUD hội thoại
-    ├── config/          # /api/config/public
-    └── admin/           # /api/admin/config, /api/admin/usage
+    ├── mysticism/            # SSE AI interpret
+    ├── conversations/        # CRUD hội thoại
+    ├── config/               # /api/config/public
+    └── admin/                # /api/admin/config, /api/admin/usage
 ```
 
 ---
