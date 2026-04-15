@@ -25,7 +25,8 @@ router.get("/healthz", async (_req, res) => {
     dbError: dbError ?? undefined,
     dbConfigured: !!dbUrl,
     nodeEnv: process.env.NODE_ENV,
-    clerkConfigured: !!process.env.CLERK_SECRET_KEY,
+    clerkSecretKey: !!process.env.CLERK_SECRET_KEY,
+    clerkPublishableKey: !!process.env.CLERK_PUBLISHABLE_KEY,
   });
 });
 

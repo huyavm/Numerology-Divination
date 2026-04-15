@@ -35,12 +35,18 @@ app.use(cors({ credentials: true, origin: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// clerkMiddleware chỉ mount khi có CLERK_SECRET_KEY
-// Khi thiếu key, /api/readings sẽ trả 401 nhưng server không crash
-if (process.env.CLERK_SECRET_KEY) {
-  app.use(clerkMiddleware());
+// clerkMiddleware cần CẢ HAI: CLERK_SECRET_KEY và CLERK_PUBLISHABLE_KEY
+// Khi thiếu một trong hai, bỏ qua — auth endpoints sẽ trả 401 nhưng server không crash
+const clerkSecretKey = process.env.CLERK_SECRET_KEY;
+const clerkPublishableKey = process.env.CLERK_PUBLISHABLE_KEY;
+
+if (clerkSecretKey && clerkPublishableKey) {
+  app.use(clerkMiddleware({ secretKey: clerkSecretKey, publishableKey: clerkPublishableKey }));
 } else {
-  logger.warn("CLERK_SECRET_KEY not set — auth endpoints will return 401");
+  logger.warn(
+    { hasSecretKey: !!clerkSecretKey, hasPublishableKey: !!clerkPublishableKey },
+    "Clerk keys incomplete — auth endpoints will return 401, other endpoints unaffected",
+  );
 }
 
 app.use("/api", router);
