@@ -3,6 +3,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { popReopenData, displayToInputDate } from "@/lib/reopen-reading";
+import { SaoHanKnowledge } from "@/components/knowledge-base";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -172,6 +173,7 @@ export default function SaoHanPage() {
               </Card>
             </div>
           )}
+          <SaoHanKnowledge />
         </div>
       </main>
     </div>

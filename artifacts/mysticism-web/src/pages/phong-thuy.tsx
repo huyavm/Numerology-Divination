@@ -3,6 +3,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { popReopenData } from "@/lib/reopen-reading";
+import { PhongThuyKnowledge } from "@/components/knowledge-base";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -298,6 +299,7 @@ export default function PhongThuyPage() {
               </Card>
             </div>
           )}
+          <PhongThuyKnowledge />
         </div>
       </main>
     </div>

@@ -525,3 +525,236 @@ export function CatHungKnowledge() {
     </div>
   );
 }
+
+export function SaoHanKnowledge() {
+  return (
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">Nguồn tri thức — Sao Hạn Hàng Năm</p>
+
+      <KBSection title="Cơ sở lý thuyết — Cửu Diệu Tinh">
+        <p className="leading-relaxed">
+          Sao hạn hàng năm dựa trên hệ thống <strong className="text-primary">Cửu Diệu Tinh</strong> (九曜星) — 9 ngôi sao hành tinh trong thiên văn cổ đại Trung Hoa, kết hợp với <strong className="text-primary">Hệ Lạc Thư</strong> (luân chuyển theo chu kỳ 9 năm). Mỗi người, căn cứ vào năm sinh, được gán vào một trong 9 sao, và các sao sẽ luân phiên theo thứ tự từng năm.
+        </p>
+        <KBGrid
+          items={[
+            { label: "9 Sao", value: "Nhất Bạch → Cửu Tử", color: "text-primary" },
+            { label: "9 năm", value: "1 vòng chu kỳ", color: "text-primary" },
+            { label: "Lạc Thư", value: "Nền tảng phân bổ", color: "text-primary" },
+            { label: "Can Chi", value: "Xác định sao gốc", color: "text-primary" },
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="9 Ngôi Sao & Ý nghĩa">
+        <KBTable
+          headers={["Sao", "Ngũ Hành", "Tính chất", "Đánh giá"]}
+          rows={[
+            ["Nhất Bạch Thủy Tinh", "Thủy", "Trí tuệ, học vấn, quý nhân", "Tốt"],
+            ["Nhị Hắc Thổ Tinh", "Thổ", "Bệnh tật, chướng ngại, mệt mỏi", "Cẩn thận"],
+            ["Tam Bích Mộc Tinh", "Mộc", "Tranh chấp, thị phi, kiện tụng", "Cẩn thận"],
+            ["Tứ Lục Mộc Tinh", "Mộc", "Văn chương, tình cảm, sáng tạo", "Tốt"],
+            ["Ngũ Hoàng Thổ Tinh", "Thổ", "Tai họa, bệnh nặng, thất bại lớn", "Xấu nhất"],
+            ["Lục Bạch Kim Tinh", "Kim", "Quyền lực, lãnh đạo, may mắn", "Rất tốt"],
+            ["Thất Xích Kim Tinh", "Kim", "Đao kiếm, rủi ro, vật lộn", "Cẩn thận"],
+            ["Bát Bạch Thổ Tinh", "Thổ", "Tài lộc, bất động sản, thịnh vượng", "Rất tốt"],
+            ["Cửu Tử Hỏa Tinh", "Hỏa", "Hỷ sự, danh vọng, sáng rực", "Tốt (hỷ sự)"],
+          ]}
+        />
+        <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+          Ngũ Hoàng (5) và Nhị Hắc (2) là hai sao hung nhất. Lục Bạch (6) và Bát Bạch (8) là hai sao cát nhất trong giai đoạn Vận 8–9 hiện nay.
+        </p>
+      </KBSection>
+
+      <KBSection title="Cách tính sao gốc theo năm sinh">
+        <p className="leading-relaxed">
+          Sao gốc được tính từ <strong className="text-primary">năm sinh Dương lịch</strong>. Công thức rút gọn phổ biến:
+        </p>
+        <div className="bg-background/30 rounded-lg px-4 py-3 font-mono text-xs space-y-1.5 border border-primary/10">
+          <div>Nam: Sao gốc = (11 − tổng chữ số năm sinh) mod 9</div>
+          <div>Nữ: Sao gốc = (4 + tổng chữ số năm sinh) mod 9</div>
+          <div className="text-primary mt-2">Ví dụ (Nam, sinh 1990): 1+9+9+0 = 19 → 1+9 = 10 → 1+0 = 1</div>
+          <div className="text-primary">→ (11 − 1) = 10 mod 9 = <strong>Nhất Bạch</strong></div>
+        </div>
+        <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+          Sau đó, sao di chuyển theo thứ tự nghịch (Nam đi lui) hoặc thuận (Nữ đi tới) qua bảng Lạc Thư mỗi năm để tìm ra sao hạn cho từng năm cụ thể.
+        </p>
+      </KBSection>
+
+      <KBSection title="Gợi ý hóa giải sao xấu">
+        <div className="space-y-2">
+          {[
+            { sao: "Ngũ Hoàng (5) — Nguy hiểm nhất", bien: "Treo chuông gió kim loại, đặt vật phẩm ngũ hành Kim, tránh động thổ hướng Ngũ Hoàng trong năm." },
+            { sao: "Nhị Hắc (2) — Bệnh tật", bien: "Dùng đồ vật màu trắng/bạc, treo gương bát quái, bổ sung khí Kim để hóa Thổ sinh bệnh." },
+            { sao: "Tam Bích (3) — Thị phi", bien: "Đặt vật phẩm màu đỏ (Hỏa khắc Mộc), hạn chế tranh luận, kiện tụng trong năm." },
+            { sao: "Thất Xích (7) — Rủi ro", bien: "Đặt bình nước hoặc vật phẩm Thủy, tránh đầu tư mạo hiểm và xung đột bạo lực." },
+          ].map((item, i) => (
+            <div key={i} className="rounded-lg bg-background/20 border border-primary/10 p-3">
+              <p className="text-xs font-semibold text-red-400 mb-1">{item.sao}</p>
+              <p className="text-xs text-foreground/70 leading-relaxed">{item.bien}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground mt-2">Sao hạn mang tính định hướng. Tu tâm tích đức, hành thiện và chọn thời điểm hành động đúng lúc luôn là nền tảng vững chắc hơn bất kỳ vật phẩm hóa giải nào.</p>
+      </KBSection>
+    </div>
+  );
+}
+
+export function PhongThuyKnowledge() {
+  return (
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">Nguồn tri thức — Phong Thuỷ Hướng Nhà</p>
+
+      <KBSection title="Hệ thống Bát Trạch Phong Thuỷ">
+        <p className="leading-relaxed">
+          <strong className="text-primary">Bát Trạch Phong Thuỷ</strong> (八宅风水) là một trong các trường phái phong thuỷ cổ điển Trung Hoa, phân loại con người thành <strong className="text-primary">Đông Tứ Mệnh</strong> hoặc <strong className="text-primary">Tây Tứ Mệnh</strong> dựa trên năm sinh và giới tính. Mỗi mệnh có 4 hướng cát và 4 hướng hung riêng biệt.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-4 mt-2">
+          <div className="rounded-lg bg-blue-950/20 border border-blue-500/20 p-3 space-y-1">
+            <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Đông Tứ Mệnh</p>
+            <p className="text-xs text-foreground/70">Quái: Khảm (1), Ly (9), Chấn (3), Tốn (4)</p>
+            <p className="text-xs text-foreground/60">Hướng tốt: Đông, Đông Nam, Nam, Bắc</p>
+          </div>
+          <div className="rounded-lg bg-orange-950/20 border border-orange-500/20 p-3 space-y-1">
+            <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Tây Tứ Mệnh</p>
+            <p className="text-xs text-foreground/70">Quái: Càn (6), Khôn (2), Cấn (8), Đoài (7)</p>
+            <p className="text-xs text-foreground/60">Hướng tốt: Tây, Tây Bắc, Tây Nam, Đông Bắc</p>
+          </div>
+        </div>
+      </KBSection>
+
+      <KBSection title="8 Vị Tinh — Ý nghĩa từng hướng">
+        <KBTable
+          headers={["Tinh", "Tên", "Ý nghĩa"]}
+          rows={[
+            ["Sinh Khí", "Phước Đức · Tốt nhất", "Tài lộc, sức khoẻ, thịnh vượng, phát đạt"],
+            ["Thiên Y", "Trời Thuốc", "Sức khoẻ, trường thọ, mọi sự bình an"],
+            ["Diên Niên", "Kéo Dài Tuổi", "Hôn nhân tốt, gia đình hoà thuận, sự nghiệp bền"],
+            ["Phục Vị", "Vị Trí Gốc", "Ổn định, an toàn, bình yên, duy trì hiện trạng"],
+            ["Hoạ Hại", "Tai Hoạ Nhẹ", "Tranh cãi, tiểu nhân, thất bại nhỏ"],
+            ["Lục Sát", "Sáu Điều Xấu", "Hao tài, tình cảm trục trặc, mất tiền bạc"],
+            ["Ngũ Quỷ", "Năm Con Quỷ", "Bệnh tật, mất trộm, hoả hoạn, tai ương"],
+            ["Tuyệt Mệnh", "Tuyệt Sinh Mệnh", "Hướng xấu nhất — đại nạn, phá sản, tai ương lớn"],
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Cách tính Mệnh Quái (Quái Số)">
+        <div className="space-y-3">
+          <div className="bg-background/30 rounded-lg px-4 py-3 font-mono text-xs space-y-1.5 border border-primary/10">
+            <div className="font-semibold text-primary">Nam (sinh trước 2000): (10 − tổng chữ số năm) mod 9</div>
+            <div className="font-semibold text-primary">Nam (sinh từ 2000 trở đi): (9 − tổng chữ số năm) mod 9</div>
+            <div className="font-semibold text-primary mt-1">Nữ (sinh trước 2000): (tổng chữ số năm + 5) mod 9</div>
+            <div className="font-semibold text-primary">Nữ (sinh từ 2000 trở đi): (tổng chữ số năm + 6) mod 9</div>
+            <div className="text-muted-foreground mt-1 text-[11px]">Kết quả 0 → tính thành 9. Kết quả 5: Nam → 2 (Khôn), Nữ → 8 (Cấn).</div>
+          </div>
+          <KBTable
+            headers={["Quái số", "Tên Quái", "Hành", "Nhóm"]}
+            rows={[
+              ["1", "Khảm", "Thủy", "Đông Tứ Mệnh"],
+              ["2", "Khôn", "Thổ", "Tây Tứ Mệnh"],
+              ["3", "Chấn", "Mộc", "Đông Tứ Mệnh"],
+              ["4", "Tốn", "Mộc", "Đông Tứ Mệnh"],
+              ["6", "Càn", "Kim", "Tây Tứ Mệnh"],
+              ["7", "Đoài", "Kim", "Tây Tứ Mệnh"],
+              ["8", "Cấn", "Thổ", "Tây Tứ Mệnh"],
+              ["9", "Ly", "Hỏa", "Đông Tứ Mệnh"],
+            ]}
+          />
+        </div>
+      </KBSection>
+
+      <KBSection title="Ứng dụng thực tế trong nhà ở">
+        <div className="space-y-2">
+          {[
+            { title: "Phòng ngủ & Đầu giường", desc: "Đặt đầu giường hướng Sinh Khí hoặc Thiên Y để tăng sức khoẻ và tái tạo năng lượng khi ngủ." },
+            { title: "Bàn làm việc / học tập", desc: "Mặt hướng Sinh Khí (tài lộc) hoặc Diên Niên (sự nghiệp lâu dài) khi làm việc, học tập." },
+            { title: "Bếp nấu & Cửa lò", desc: "Tránh đặt bếp ở hướng Sinh Khí — lửa sẽ 'đốt' khí may mắn. Nên dùng hướng phụ trung tính." },
+            { title: "Cửa chính", desc: "Cửa đón gió hướng Sinh Khí hoặc Thiên Y mang khí tốt vào nhà liên tục quanh năm." },
+            { title: "Tránh Tuyệt Mệnh & Ngũ Quỷ", desc: "Không ngủ, không ngồi làm việc quay lưng hoặc mặt về các hướng xấu nhất này." },
+          ].map((tip, i) => (
+            <div key={i} className="rounded-lg bg-background/20 border border-primary/10 p-3">
+              <p className="text-xs font-semibold text-primary/80 mb-1">{tip.title}</p>
+              <p className="text-xs text-foreground/70 leading-relaxed">{tip.desc}</p>
+            </div>
+          ))}
+        </div>
+      </KBSection>
+    </div>
+  );
+}
+
+export function XemTenKnowledge() {
+  return (
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">Nguồn tri thức — Xem Tên</p>
+
+      <KBSection title="Hệ thống Ngũ Cách — Phân tích Họ Tên">
+        <p className="leading-relaxed">
+          Xem tên theo <strong className="text-primary">Ngũ Cách</strong> (五格) là hệ thống phân tích họ tên dựa trên <strong className="text-primary">số nét chữ Hán</strong>, được phổ biến tại Nhật Bản (熊崎式姓名判断 — Kumazaki) vào đầu thế kỷ 20 và lan rộng sang Trung Hoa, Hàn Quốc, Việt Nam. Hệ thống chia tên thành 5 "cách" mang ý nghĩa vận mệnh khác nhau.
+        </p>
+        <KBGrid
+          items={[
+            { label: "Thiên Cách", value: "Nét họ + 1", sub: "Vận tiên thiên, tổ tiên", color: "text-yellow-400" },
+            { label: "Nhân Cách", value: "Nét cuối họ + nét đầu tên", sub: "Vận chủ — quan trọng nhất", color: "text-primary" },
+            { label: "Địa Cách", value: "Nét tên + 1", sub: "Vận hậu thiên, thực tế", color: "text-green-400" },
+            { label: "Ngoại Cách", value: "Nét họ + nét đầu tên lót", sub: "Vận xã hội, môi trường", color: "text-blue-400" },
+            { label: "Tổng Cách", value: "Tổng tất cả nét", sub: "Vận tổng thể cả đời", color: "text-purple-400" },
+          ]}
+        />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Ứng dụng này sử dụng bảng số nét chuẩn hóa cho từng chữ Latin đại diện họ tên Việt, quy ước mỗi chữ cái = 1 nét và cộng thêm 1 cho phần họ hoặc tên đơn lẻ theo phương pháp Kumazaki.
+        </p>
+      </KBSection>
+
+      <KBSection title="Phân loại số cát hung (1–81)">
+        <p className="leading-relaxed">
+          Mỗi tổng số nét (từ 1 đến 81) mang một ý nghĩa vận mệnh riêng, phân loại thành 4 nhóm:
+        </p>
+        <KBGrid
+          items={[
+            { label: "Đại Cát", value: "Vận mệnh rất tốt", sub: "1, 5, 6, 11, 13, 15, 16, 21, 23, 24, 31, 32, 33, 35, 37, 41...", color: "text-yellow-400" },
+            { label: "Cát", value: "Vận mệnh khá tốt", sub: "Số hỗ trợ và thuận lợi vừa phải", color: "text-green-400" },
+            { label: "Trung Bình", value: "Vận bình thường", sub: "Không đặc biệt tốt hay xấu", color: "text-blue-400" },
+            { label: "Hung", value: "Vận cần chú ý", sub: "4, 9, 10, 14, 19, 20, 22, 26, 28, 34, 36, 40, 44...", color: "text-red-400" },
+          ]}
+        />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <strong>Nhân Cách</strong> là chỉ số quan trọng nhất — ảnh hưởng trực tiếp tới tính cách, sự nghiệp và hôn nhân. Tổng Cách phản ánh vận mệnh tổng thể cả đời.
+        </p>
+      </KBSection>
+
+      <KBSection title="Số Linh Hồn & Số Sứ Mệnh">
+        <p className="leading-relaxed mb-2">
+          Ngoài Ngũ Cách, hệ thống còn tính thêm 2 chỉ số từ <strong className="text-primary">Thần Số Học Pythagore</strong> để có cái nhìn đa chiều về tên:
+        </p>
+        <KBTable
+          headers={["Chỉ số", "Cách tính", "Ý nghĩa"]}
+          rows={[
+            ["Số Linh Hồn", "Tổng giá trị số của các nguyên âm (A, E, I, O, U) trong tên đầy đủ", "Khát vọng nội tâm sâu thẳm, điều trái tim thực sự muốn"],
+            ["Số Sứ Mệnh", "Tổng giá trị số của toàn bộ chữ cái trong họ tên đầy đủ", "Sứ mệnh và mục đích lớn trong cuộc đời"],
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Nguyên tắc đặt tên tốt theo Ngũ Cách">
+        <div className="space-y-2">
+          {[
+            { title: "Ưu tiên Nhân Cách đạt số Đại Cát", desc: "Đây là chỉ số ảnh hưởng trực tiếp nhất tới tính cách và cuộc đời. Cần đạt số 1, 5, 6, 11, 13, 15, 16, 21, 23, 24, 31, 32, 33..." },
+            { title: "Tổng Cách nên là số lẻ cát", desc: "Tổng Cách số lẻ thường mang vận mệnh tốt hơn số chẵn theo quan niệm truyền thống." },
+            { title: "Tránh các số hung phổ biến", desc: "Đặc biệt tránh số 4, 9, 10, 19, 20, 22, 26, 28 ở vị trí Nhân Cách và Tổng Cách." },
+            { title: "Phối hợp Ngũ Hành tên với bản mệnh", desc: "Nếu biết mệnh ngũ hành của con, nên chọn chữ tên có bộ thủ hoặc âm nghĩa phù hợp (tương sinh) với bản mệnh." },
+          ].map((tip, i) => (
+            <div key={i} className="rounded-lg bg-background/20 border border-primary/10 p-3">
+              <p className="text-xs font-semibold text-primary/80 mb-1">{tip.title}</p>
+              <p className="text-xs text-foreground/70 leading-relaxed">{tip.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+          Tên đẹp là tên dễ đọc, dễ nhớ và có nghĩa đẹp. Ngũ Cách là công cụ tham khảo — vận mệnh còn phụ thuộc lớn vào môi trường sống, giáo dục và sự nỗ lực của bản thân.
+        </p>
+      </KBSection>
+    </div>
+  );
+}
