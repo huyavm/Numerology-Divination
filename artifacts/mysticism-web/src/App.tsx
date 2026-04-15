@@ -33,9 +33,10 @@ import { MysticCursor } from "@/components/mystic-cursor";
 const queryClient = new QueryClient();
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
-const clerkProxyUrl: string | undefined = import.meta.env.PROD
-  ? (import.meta.env.VITE_CLERK_PROXY_URL ?? `${window.location.origin}/api/__clerk`)
-  : undefined;
+// Proxy chỉ dùng khi VITE_CLERK_PROXY_URL được set rõ ràng.
+// Với custom domain VPS + production keys, KHÔNG cần proxy — Clerk load thẳng từ CDN.
+// Proxy cần thiết cho Replit.app deployments (không có DNS CNAME).
+const clerkProxyUrl: string | undefined = import.meta.env.VITE_CLERK_PROXY_URL || undefined;
 const basePath = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
 
 function stripBase(path: string): string {
