@@ -28,6 +28,27 @@ CREATE TABLE IF NOT EXISTS usage_log (
 );
 
 CREATE INDEX IF NOT EXISTS idx_usage_log_ip_created ON usage_log(ip, created_at);
+
+CREATE TABLE IF NOT EXISTS saved_readings (
+  id          SERIAL PRIMARY KEY,
+  user_id     TEXT NOT NULL,
+  module      TEXT NOT NULL,
+  title       TEXT NOT NULL,
+  input_data  JSONB NOT NULL DEFAULT '{}',
+  result_data JSONB NOT NULL DEFAULT '{}',
+  notes       TEXT,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_saved_readings_user ON saved_readings(user_id, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS share_tokens (
+  token       TEXT PRIMARY KEY,
+  reading_id  INTEGER NOT NULL REFERENCES saved_readings(id) ON DELETE CASCADE,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  expires_at  TIMESTAMPTZ
+);
 `;
 
 export async function runMigrations(): Promise<void> {

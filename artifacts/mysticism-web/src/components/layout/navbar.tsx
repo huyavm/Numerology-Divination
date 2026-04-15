@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
+import { useUser, useClerk, Show } from "@clerk/react";
 import { cn } from "@/lib/utils";
 import { useAISettings } from "@/contexts/ai-settings";
 import { useTheme } from "@/contexts/theme";
@@ -200,6 +201,73 @@ function MobileGroupSection({
   );
 }
 
+function UserButton() {
+  const { user, isLoaded } = useUser();
+  const { signOut } = useClerk();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  if (!isLoaded) return null;
+
+  return (
+    <Show
+      when="signed-in"
+      fallback={
+        <div className="flex items-center gap-1">
+          <Link href="/sign-in">
+            <button className="text-xs px-3 py-1.5 rounded-lg text-muted-foreground hover:text-primary transition-colors">
+              Đăng nhập
+            </button>
+          </Link>
+          <Link href="/sign-up">
+            <button className="text-xs px-3 py-1.5 rounded-lg border border-primary/30 text-primary hover:bg-primary/10 transition-all">
+              Đăng ký
+            </button>
+          </Link>
+        </div>
+      }
+    >
+      <div ref={ref} className="relative">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="w-8 h-8 rounded-full border border-primary/40 bg-primary/15 flex items-center justify-center text-sm font-bold text-primary hover:border-primary hover:bg-primary/25 transition-all"
+          title={user?.fullName ?? "Tài khoản"}
+        >
+          {user?.firstName?.[0]?.toUpperCase() ?? user?.emailAddresses?.[0]?.emailAddress?.[0]?.toUpperCase() ?? "U"}
+        </button>
+        {open && (
+          <div className="absolute right-0 top-full mt-2 w-52 rounded-xl border border-border/60 bg-background/97 backdrop-blur-md shadow-xl py-1.5 z-50">
+            <div className="px-3 py-2 border-b border-border/30">
+              <p className="text-sm font-medium text-foreground truncate">{user?.fullName ?? "Người dùng"}</p>
+              <p className="text-xs text-muted-foreground truncate">{user?.emailAddresses?.[0]?.emailAddress}</p>
+            </div>
+            <Link href="/profile" onClick={() => setOpen(false)}>
+              <button className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-primary/8 hover:text-primary transition-colors">
+                Hồ Sơ & Lá Số
+              </button>
+            </Link>
+            <button
+              onClick={() => { setOpen(false); signOut(() => setLocation("/")); }}
+              className="w-full text-left px-3 py-2 text-sm text-muted-foreground hover:bg-red-500/8 hover:text-red-400 transition-colors"
+            >
+              Đăng xuất
+            </button>
+          </div>
+        )}
+      </div>
+    </Show>
+  );
+}
+
 export function Navbar() {
   const [location] = useLocation();
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -250,7 +318,7 @@ export function Navbar() {
               onClick={() => setSettingsOpen(true)}
               title="Cài đặt AI"
               className={cn(
-                "flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border transition-all hover:opacity-80",
+                "hidden sm:flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full border transition-all hover:opacity-80",
                 badge.color,
                 !isConfigured && "opacity-60 ring-1 ring-red-500/50"
               )}
@@ -261,6 +329,10 @@ export function Navbar() {
                 <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
               </svg>
             </button>
+
+            <div className="hidden lg:flex">
+              <UserButton />
+            </div>
 
             <button
               onClick={() => setMobileOpen((v) => !v)}

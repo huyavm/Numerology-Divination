@@ -103,9 +103,20 @@ REST API with:
 Uses Replit AI Integrations (no user API key required). Model: `gpt-5.2`.
 - `AI_INTEGRATIONS_OPENAI_BASE_URL` and `AI_INTEGRATIONS_OPENAI_API_KEY` are auto-configured.
 
+## Authentication (Clerk)
+- `@clerk/react` (frontend) + `@clerk/express` (backend)
+- React 19.1.4 required (peer dep for Clerk 6.3+)
+- `ClerkProvider` wraps entire app in `App.tsx` with `routerPush/routerReplace` for wouter routing
+- Dev: no proxy needed. Production: proxy at `/api/__clerk` via `clerkProxyMiddleware`
+- Pages: `/sign-in/*?`, `/sign-up/*?`, `/profile`
+- `UserButton` component in navbar: shows avatar+dropdown when signed in, "Đăng nhập"/"Đăng ký" when signed out
+- `SaveReadingBtn` component: saves readings to DB, redirects to sign-in if not authenticated
+
 ## Database Tables
 - `conversations` — AI chat conversation sessions
 - `messages` — individual chat messages (user/assistant)
+- `saved_readings` — user-saved readings (user_id, module, title, input_data, result_data, notes)
+- `share_tokens` — shareable reading links with expiry (token, reading_id, expires_at)
 
 ## Key Commands
 
