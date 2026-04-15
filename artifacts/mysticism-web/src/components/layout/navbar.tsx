@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { useAISettings } from "@/contexts/ai-settings";
 import { useTheme } from "@/contexts/theme";
 import { AISettingsModal } from "@/components/ai-settings-modal";
+import { isClerkEnabled } from "@/lib/auth-config";
 
 type NavChild = { href: string; label: string; desc?: string };
 type NavGroup = { label: string; children: NavChild[] };
@@ -330,9 +331,11 @@ export function Navbar() {
               </svg>
             </button>
 
-            <div className="hidden lg:flex">
-              <UserButton />
-            </div>
+            {isClerkEnabled && (
+              <div className="hidden lg:flex">
+                <UserButton />
+              </div>
+            )}
 
             <button
               onClick={() => setMobileOpen((v) => !v)}

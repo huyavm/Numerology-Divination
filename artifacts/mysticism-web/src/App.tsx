@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation, Redirect } from "wouter";
 import { ClerkProvider, Show, useClerk, useUser } from "@clerk/react";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import { isClerkEnabled } from "@/lib/auth-config";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AISettingsProvider } from "@/contexts/ai-settings";
@@ -87,12 +88,27 @@ function Router() {
   );
 }
 
+function AppContent() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <AISettingsProvider>
+          <Router />
+          <Toaster />
+          <PwaInstallPrompt />
+          <MysticCursor />
+        </AISettingsProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+}
+
 function ClerkProviderWithRoutes() {
   const [, setLocation] = useLocation();
 
   return (
     <ClerkProvider
-      publishableKey={clerkPubKey ?? ""}
+      publishableKey={clerkPubKey!}
       proxyUrl={clerkProxyUrl}
       routerPush={(to) => setLocation(stripBase(to))}
       routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
@@ -116,7 +132,7 @@ function App() {
   return (
     <ThemeProvider>
       <WouterRouter base={basePath}>
-        <ClerkProviderWithRoutes />
+        {isClerkEnabled ? <ClerkProviderWithRoutes /> : <AppContent />}
       </WouterRouter>
     </ThemeProvider>
   );

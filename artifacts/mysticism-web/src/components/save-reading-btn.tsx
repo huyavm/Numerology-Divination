@@ -3,6 +3,7 @@ import { useUser } from "@clerk/react";
 import { useLocation } from "wouter";
 import { readingsApi } from "@/lib/readings-api";
 import { cn } from "@/lib/utils";
+import { isClerkEnabled } from "@/lib/auth-config";
 
 interface SaveReadingBtnProps {
   module: string;
@@ -13,7 +14,12 @@ interface SaveReadingBtnProps {
   variant?: "icon" | "full";
 }
 
-export function SaveReadingBtn({
+export function SaveReadingBtn(props: SaveReadingBtnProps) {
+  if (!isClerkEnabled) return null;
+  return <SaveReadingBtnInner {...props} />;
+}
+
+function SaveReadingBtnInner({
   module,
   title,
   inputData = {},

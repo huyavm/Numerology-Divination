@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useUser, useClerk, Show } from "@clerk/react";
-import { useLocation, Link } from "wouter";
+import { useLocation, Link, Redirect } from "wouter";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { AmbientBg } from "@/components/ambient-bg";
 import { readingsApi, type SavedReading } from "@/lib/readings-api";
 import { cn } from "@/lib/utils";
+import { isClerkEnabled } from "@/lib/auth-config";
 
 const MODULE_LABELS: Record<string, string> = {
   "than-so-hoc": "Thần Số Học",
@@ -243,6 +244,11 @@ function ComparePanel({ readings }: { readings: SavedReading[] }) {
 }
 
 export default function ProfilePage() {
+  if (!isClerkEnabled) return <Redirect to="/" />;
+  return <ProfilePageInner />;
+}
+
+function ProfilePageInner() {
   const { user, isLoaded } = useUser();
   const { signOut } = useClerk();
   const [, setLocation] = useLocation();

@@ -1,12 +1,14 @@
 import { SignIn } from "@clerk/react";
+import { Redirect } from "wouter";
 import { Navbar } from "@/components/layout/navbar";
 import { AmbientBg } from "@/components/ambient-bg";
+import { isClerkEnabled } from "@/lib/auth-config";
 
 const basePath = import.meta.env.BASE_URL?.replace(/\/$/, "") || "";
 
 export default function SignInPage() {
-  // To update login providers, app branding, or OAuth settings use the Auth
-  // pane in the workspace toolbar. More information can be found in the Replit docs.
+  if (!isClerkEnabled) return <Redirect to="/" />;
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <AmbientBg />
