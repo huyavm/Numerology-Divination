@@ -1,5 +1,8 @@
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { AmbientBg } from "@/components/ambient-bg";
+import { TiltCard } from "@/components/tilt-card";
+import { useScrollRevealAll } from "@/hooks/use-scroll-reveal";
 import { Link } from "wouter";
 
 const MODULES = [
@@ -239,18 +242,21 @@ function StarField() {
 }
 
 export default function Home() {
+  useScrollRevealAll();
+
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-background text-foreground">
+    <div className="min-h-[100dvh] flex flex-col bg-background text-foreground relative">
+      <AmbientBg />
       <Navbar />
 
       {/* ── Hero ── */}
-      <section className="relative flex flex-col items-center justify-center min-h-[100dvh] px-4 pt-20 pb-16 overflow-hidden">
+      <section className="relative z-10 flex flex-col items-center justify-center min-h-[100dvh] px-4 pt-20 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,hsl(var(--primary)/0.18),transparent)] pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_80%_80%,hsl(var(--primary)/0.07),transparent)] pointer-events-none" />
         <StarField />
 
         <div className="relative z-10 max-w-4xl w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-          <div className="inline-flex items-center gap-2 border border-primary/25 bg-primary/5 rounded-full px-4 py-1.5 text-xs text-primary/80 tracking-widest uppercase mb-2">
+          <div className="inline-flex items-center gap-2 border border-primary/25 bg-primary/5 rounded-full px-4 py-1.5 text-xs text-primary/80 tracking-widest uppercase mb-2 float-badge">
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
             Huyền Học Phương Đông &amp; Phương Tây
           </div>
@@ -258,7 +264,7 @@ export default function Home() {
           <h1 className="text-5xl sm:text-6xl md:text-8xl font-bold tracking-wide leading-tight">
             <span className="text-foreground">Khám Phá</span>
             <br />
-            <span className="text-primary">Vận Mệnh</span>
+            <span className="shimmer-text">Vận Mệnh</span>
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
@@ -267,12 +273,12 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
             <Link href="/than-so-hoc">
-              <button className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 transition-all duration-200 hover:shadow-[0_0_24px_hsl(var(--primary)/0.4)] hover:-translate-y-0.5">
+              <button className="btn-ripple px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 transition-all duration-200 hover:shadow-[0_0_28px_hsl(var(--primary)/0.5)] hover:-translate-y-1">
                 Bắt đầu khám phá
               </button>
             </Link>
             <Link href="/ai-chat">
-              <button className="px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-semibold text-base hover:bg-primary/10 transition-all duration-200 hover:-translate-y-0.5">
+              <button className="btn-ripple px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-semibold text-base hover:bg-primary/10 transition-all duration-200 hover:-translate-y-1 hover:border-primary/60">
                 Hỏi Trợ Lý AI
               </button>
             </Link>
@@ -285,7 +291,7 @@ export default function Home() {
               { val: "AI", label: "GPT-5.4 & Gemini 3.0" },
             ].map((s) => (
               <div key={s.label} className="text-center">
-                <div className="text-3xl font-bold text-primary">{s.val}</div>
+                <div className="text-3xl font-bold text-primary glow-pulse">{s.val}</div>
                 <div className="text-xs text-muted-foreground mt-1 tracking-wide">{s.label}</div>
               </div>
             ))}
@@ -299,49 +305,55 @@ export default function Home() {
       </section>
 
       {/* ── Modules ── */}
-      <section className="py-20 px-4 relative">
+      <section className="relative z-10 py-20 px-4">
         <div className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center space-y-3">
+          <div className="text-center space-y-3" data-reveal>
             <p className="text-xs uppercase tracking-[0.3em] text-primary/60">Hệ thống tra cứu</p>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground">15 Môn Huyền Học</h2>
+            <div className="magic-line max-w-xs mx-auto mt-3" />
             <p className="text-muted-foreground max-w-xl mx-auto">Mỗi phương pháp là một cánh cửa độc lập dẫn đến sự thấu hiểu bản thân và vận mệnh.</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {MODULES.map((m) => (
-              <Link key={m.href} href={m.href} className="group">
-                <div className={`h-full rounded-2xl border bg-gradient-to-br ${m.accent} p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_32px_hsl(var(--primary)/0.15)] cursor-pointer`}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <p className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-1">{m.subtitle}</p>
-                      <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{m.title}</h3>
+            {MODULES.map((m, i) => (
+              <div key={m.href} data-reveal data-reveal-delay={i * 60}>
+                <TiltCard>
+                  <Link href={m.href} className="group block h-full">
+                    <div className={`h-full rounded-2xl border bg-gradient-to-br ${m.accent} p-6 transition-all duration-300 hover:shadow-[0_8px_40px_hsl(var(--primary)/0.2)] cursor-pointer`}>
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <p className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-1">{m.subtitle}</p>
+                          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{m.title}</h3>
+                        </div>
+                        <div className="text-right flex-shrink-0 ml-4">
+                          <div className={`text-4xl font-bold leading-none ${m.symbolColor} group-hover:scale-110 transition-transform duration-300`}>{m.symbol}</div>
+                          <div className="text-[10px] text-muted-foreground/50 mt-1">{m.symbolSub}</div>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{m.desc}</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {m.tags.map((t) => (
+                          <span key={t} className={`text-[11px] px-2 py-0.5 rounded-full ${m.tagColor}`}>{t}</span>
+                        ))}
+                      </div>
+                      <div className="mt-4 flex items-center gap-1.5 text-xs text-primary/60 group-hover:text-primary transition-colors">
+                        <span>Vào tra cứu</span>
+                        <span className="group-hover:translate-x-1 transition-transform">→</span>
+                      </div>
                     </div>
-                    <div className="text-right flex-shrink-0 ml-4">
-                      <div className={`text-4xl font-bold leading-none ${m.symbolColor}`}>{m.symbol}</div>
-                      <div className="text-[10px] text-muted-foreground/50 mt-1">{m.symbolSub}</div>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">{m.desc}</p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {m.tags.map((t) => (
-                      <span key={t} className={`text-[11px] px-2 py-0.5 rounded-full ${m.tagColor}`}>{t}</span>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex items-center gap-1.5 text-xs text-primary/60 group-hover:text-primary transition-colors">
-                    <span>Vào tra cứu</span>
-                    <span className="group-hover:translate-x-1 transition-transform">→</span>
-                  </div>
-                </div>
-              </Link>
+                  </Link>
+                </TiltCard>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── Quote ── */}
-      <section className="py-16 px-4">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="border border-primary/20 bg-primary/5 rounded-2xl px-8 py-10 space-y-4 relative overflow-hidden">
+      <section className="relative z-10 py-16 px-4">
+        <div className="max-w-3xl mx-auto text-center" data-reveal>
+          <div className="border border-primary/20 bg-primary/5 rounded-2xl px-8 py-10 space-y-4 relative overflow-hidden hover:border-primary/40 transition-colors duration-500">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.06),transparent)] pointer-events-none" />
             <div className="absolute top-0 left-0 text-[120px] leading-none text-primary/5 font-bold select-none pointer-events-none -mt-4 -ml-2">"</div>
             <p className="text-2xl md:text-3xl font-bold text-primary/90 italic leading-relaxed relative z-10">{QUOTE.text}</p>
             <p className="text-muted-foreground text-sm leading-relaxed">{QUOTE.trans}</p>
@@ -351,20 +363,21 @@ export default function Home() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="py-20 px-4 relative overflow-hidden">
+      <section className="relative z-10 py-20 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_100%,hsl(var(--primary)/0.06),transparent)] pointer-events-none" />
         <div className="max-w-5xl mx-auto relative">
-          <div className="text-center space-y-3 mb-14">
+          <div className="text-center space-y-3 mb-14" data-reveal>
             <p className="text-xs uppercase tracking-[0.3em] text-primary/60">Quy trình</p>
             <h2 className="text-3xl md:text-4xl font-bold">Cách Hoạt Động</h2>
+            <div className="magic-line max-w-xs mx-auto mt-3" />
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {STEPS.map((s, i) => (
-              <div key={s.num} className="relative text-center space-y-4">
+              <div key={s.num} className="relative text-center space-y-4" data-reveal data-reveal-delay={i * 120}>
                 {i < STEPS.length - 1 && (
                   <div className="hidden md:block absolute top-8 left-[calc(50%+3rem)] right-[-calc(50%-3rem)] h-px bg-gradient-to-r from-primary/30 to-transparent" />
                 )}
-                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl border border-primary/30 bg-primary/10 text-primary text-2xl font-bold mx-auto">{s.num}</div>
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl border border-primary/30 bg-primary/10 text-primary text-2xl font-bold mx-auto hover:border-primary/60 hover:bg-primary/20 hover:scale-110 transition-all duration-300">{s.num}</div>
                 <h3 className="text-lg font-semibold text-foreground">{s.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
               </div>
@@ -374,16 +387,17 @@ export default function Home() {
       </section>
 
       {/* ── Features ── */}
-      <section className="py-20 px-4">
+      <section className="relative z-10 py-20 px-4">
         <div className="max-w-6xl mx-auto space-y-12">
-          <div className="text-center space-y-3">
+          <div className="text-center space-y-3" data-reveal>
             <p className="text-xs uppercase tracking-[0.3em] text-primary/60">Tại sao chọn chúng tôi</p>
             <h2 className="text-3xl md:text-4xl font-bold">Điểm Khác Biệt</h2>
+            <div className="magic-line max-w-xs mx-auto mt-3" />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {FEATURES.map((f) => (
-              <div key={f.title} className="rounded-2xl border border-primary/15 bg-primary/3 p-6 space-y-3 hover:border-primary/30 hover:bg-primary/6 transition-all duration-300">
-                <div className="text-3xl text-primary/70">{f.icon}</div>
+            {FEATURES.map((f, i) => (
+              <div key={f.title} data-reveal data-reveal-delay={i * 80} className="rounded-2xl border border-primary/15 bg-primary/3 p-6 space-y-3 hover:border-primary/35 hover:bg-primary/8 hover:-translate-y-1 hover:shadow-[0_4px_20px_hsl(var(--primary)/0.12)] transition-all duration-300 group">
+                <div className="text-3xl text-primary/70 group-hover:scale-110 group-hover:text-primary transition-all duration-300">{f.icon}</div>
                 <h3 className="text-base font-semibold text-foreground">{f.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{f.desc}</p>
               </div>
@@ -393,22 +407,22 @@ export default function Home() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto">
-          <div className="rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/10 to-transparent p-12 space-y-6 relative overflow-hidden text-center">
+      <section className="relative z-10 py-20 px-4">
+        <div className="max-w-3xl mx-auto" data-reveal>
+          <div className="rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/10 to-transparent p-12 space-y-6 relative overflow-hidden text-center hover:border-primary/40 transition-colors duration-500">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_0%,hsl(var(--primary)/0.12),transparent)] pointer-events-none" />
             <StarField />
             <div className="relative z-10 space-y-4">
-              <h2 className="text-3xl md:text-4xl font-bold">Sẵn Sàng Khám Phá?</h2>
+              <h2 className="text-3xl md:text-4xl font-bold shimmer-text">Sẵn Sàng Khám Phá?</h2>
               <p className="text-muted-foreground text-lg">Hành trình thấu hiểu bản thân và vận mệnh bắt đầu từ một câu hỏi.</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                 <Link href="/lich-van-nien">
-                  <button className="px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all duration-200 hover:shadow-[0_0_24px_hsl(var(--primary)/0.4)] hover:-translate-y-0.5">
+                  <button className="btn-ripple px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all duration-200 hover:shadow-[0_0_28px_hsl(var(--primary)/0.5)] hover:-translate-y-1">
                     Xem Lịch Hôm Nay
                   </button>
                 </Link>
                 <Link href="/ai-chat">
-                  <button className="px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-semibold hover:bg-primary/10 transition-all duration-200 hover:-translate-y-0.5">
+                  <button className="btn-ripple px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-semibold hover:bg-primary/10 transition-all duration-200 hover:-translate-y-1 hover:border-primary/60">
                     Chat với AI
                   </button>
                 </Link>
