@@ -758,3 +758,201 @@ export function XemTenKnowledge() {
     </div>
   );
 }
+
+export function HopTuoiKnowledge() {
+  return (
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">Nguồn tri thức — Hợp Tuổi & Duyên Số</p>
+
+      <KBSection title="Cơ sở lý thuyết — Can Chi & Tương Hợp">
+        <p className="leading-relaxed">
+          Hợp tuổi trong văn hóa Á Đông dựa trên <strong className="text-primary">Địa Chi</strong> (12 con giáp) và <strong className="text-primary">Thiên Can</strong> (10 can) của năm sinh. Sự tương hợp hay xung khắc được xác định qua ba mối quan hệ chính: <em>Tam Hợp</em>, <em>Lục Hợp</em> và <em>Lục Xung / Tứ Hành Xung</em>.
+        </p>
+        <KBGrid
+          items={[
+            { label: "12 Địa Chi", value: "Tý → Hợi (12 con giáp)", color: "text-primary" },
+            { label: "10 Thiên Can", value: "Giáp → Quý", color: "text-primary" },
+            { label: "Tam Hợp", value: "3 chi cùng hành → đại cát", color: "text-green-400" },
+            { label: "Lục Xung", value: "2 chi đối nhau → hung", color: "text-red-400" },
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Tam Hợp — Bộ 3 Địa Chi Hòa Hợp">
+        <p className="leading-relaxed mb-2">
+          Tam Hợp là khi ba Địa Chi kết hợp tạo thành một hành mạnh, cộng hưởng năng lượng lẫn nhau. Đây là mức tương hợp cao nhất.
+        </p>
+        <KBTable
+          headers={["Bộ Tam Hợp", "3 Chi", "Hành hóa", "Ý nghĩa"]}
+          rows={[
+            ["Thủy Cục", "Thân – Tý – Thìn", "Thủy", "Trí tuệ, linh hoạt, thích nghi, đồng điệu sâu"],
+            ["Mộc Cục", "Hợi – Mão – Mùi", "Mộc", "Phát triển, nhân từ, hài hòa lâu dài"],
+            ["Hỏa Cục", "Dần – Ngọ – Tuất", "Hỏa", "Nhiệt huyết, dũng cảm, đồng hành mạnh mẽ"],
+            ["Kim Cục", "Tỵ – Dậu – Sửu", "Kim", "Quyết đoán, trung thành, bền vững"],
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Lục Hợp — Cặp Đôi Tương Hỗ">
+        <p className="leading-relaxed mb-2">
+          Lục Hợp là 6 cặp Địa Chi kết hợp hòa hợp tự nhiên, bổ trợ và thu hút nhau. Mức hợp tốt, đặc biệt trong hôn nhân và hợp tác.
+        </p>
+        <KBTable
+          headers={["Cặp Lục Hợp", "Hóa hành", "Ghi chú"]}
+          rows={[
+            ["Tý ♥ Sửu", "Thổ", "Thu hút tự nhiên, bổ trợ nhau tốt"],
+            ["Dần ♥ Hợi", "Mộc", "Hòa hợp, chăm sóc và bảo vệ nhau"],
+            ["Mão ♥ Tuất", "Hỏa", "Duyên tình sâu đậm, gắn bó"],
+            ["Thìn ♥ Dậu", "Kim", "Hỗ trợ vật chất, ổn định tài chính"],
+            ["Tỵ ♥ Thân", "Thủy", "Bổ trợ trí tuệ, hợp tác hiệu quả"],
+            ["Ngọ ♥ Mùi", "Thổ/Hỏa", "Ấm áp, dễ chịu, cuộc sống hài hòa"],
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Lục Xung & Tứ Hành Xung — Xung Khắc">
+        <div className="space-y-3">
+          <div>
+            <p className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-2">Lục Xung (6 cặp đối nhau 180°)</p>
+            <KBTable
+              headers={["Cặp Lục Xung", "Mức độ"]}
+              rows={[
+                ["Tý ✕ Ngọ", "Xung mạnh — cần nỗ lực dung hòa"],
+                ["Sửu ✕ Mùi", "Xung vừa — bất đồng quan điểm"],
+                ["Dần ✕ Thân", "Xung mạnh — va chạm cá tính"],
+                ["Mão ✕ Dậu", "Xung vừa — cạnh tranh lẫn nhau"],
+                ["Thìn ✕ Tuất", "Xung mạnh — dễ mâu thuẫn"],
+                ["Tỵ ✕ Hợi", "Xung vừa — khó tìm điểm chung"],
+              ]}
+            />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider mb-2">Tứ Hành Xung (4 chi xung nhau cùng nhóm)</p>
+            <KBTable
+              headers={["Nhóm", "4 Chi", "Hành"]}
+              rows={[
+                ["Xung Kim–Mộc", "Dần – Thân – Tỵ – Hợi", "Xung 4 hướng, đa mâu thuẫn"],
+                ["Xung Thủy–Thổ", "Tý – Ngọ – Mão – Dậu", "Xung tứ phương, năng lượng hỗn loạn"],
+              ]}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Xung khắc không có nghĩa là không thể sống cùng nhau — nhiều cặp xung lại có sức hút mạnh mẽ. Điều quan trọng là hai người hiểu và tôn trọng sự khác biệt.
+          </p>
+        </div>
+      </KBSection>
+
+      <KBSection title="Ngũ Hành Thiên Can — Năng lượng năm sinh">
+        <p className="leading-relaxed mb-2">
+          Ngoài con giáp (Địa Chi), Thiên Can của năm sinh cũng ảnh hưởng đến tính cách và sự tương hợp:
+        </p>
+        <KBTable
+          headers={["Can", "Hành", "Năm gần đây", "Tính cách cơ bản"]}
+          rows={[
+            ["Giáp / Ất", "Mộc", "2024 (Giáp), 2025 (Ất)", "Nhân từ, phát triển, hướng thượng"],
+            ["Bính / Đinh", "Hỏa", "2026 (Bính), 2027 (Đinh)", "Nhiệt huyết, rực rỡ, hào phóng"],
+            ["Mậu / Kỷ", "Thổ", "2028 (Mậu), 2029 (Kỷ)", "Vững chắc, thực tế, bao dung"],
+            ["Canh / Tân", "Kim", "2020 (Canh), 2021 (Tân)", "Quyết đoán, cứng rắn, trung thực"],
+            ["Nhâm / Quý", "Thủy", "2022 (Nhâm), 2023 (Quý)", "Linh hoạt, trí tuệ, thích nghi"],
+          ]}
+        />
+        <p className="text-xs text-muted-foreground leading-relaxed mt-2">
+          Tương sinh giữa hai ngũ hành Thiên Can (Mộc→Hỏa, Hỏa→Thổ, Thổ→Kim, Kim→Thủy, Thủy→Mộc) làm tăng điểm hợp. Tương khắc làm giảm điểm.
+        </p>
+      </KBSection>
+    </div>
+  );
+}
+
+export function XemNgayTotKnowledge() {
+  return (
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">Nguồn tri thức — Xem Ngày Tốt</p>
+
+      <KBSection title="Cơ sở lý thuyết — Vạn Niên Lịch & Thời Trạch">
+        <p className="leading-relaxed">
+          Chọn ngày tốt (Thời Trạch — 时择) là bộ môn trong <strong className="text-primary">Huyền học Phương Đông</strong> nghiên cứu năng lượng của từng ngày dựa trên <em>Can Chi ngày</em>, <em>Trực Ngày</em> (12 giá trị chu kỳ), <em>Nhị Thập Bát Tú</em> (28 sao), <em>Thần Sát</em> và <em>Tiết Khí</em> mặt trời. Mỗi ngày mang một tập hợp năng lượng riêng phù hợp hoặc không phù hợp với từng loại việc.
+        </p>
+        <KBGrid
+          items={[
+            { label: "Can Chi", value: "60 Hoa Giáp chu kỳ", color: "text-primary" },
+            { label: "Trực Ngày", value: "12 giá trị luân phiên", color: "text-primary" },
+            { label: "28 Tú", value: "Nhị Thập Bát Tú", color: "text-primary" },
+            { label: "Tiết Khí", value: "24 tiết mặt trời / năm", color: "text-primary" },
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="12 Giá Trị Trực Ngày">
+        <p className="leading-relaxed mb-2">
+          <strong className="text-primary">Trực Ngày</strong> là hệ thống 12 giá trị luân phiên theo từng ngày âm lịch, mỗi giá trị cho biết tính chất tổng quát của ngày đó:
+        </p>
+        <KBTable
+          headers={["Trực", "Ý nghĩa", "Đánh giá"]}
+          rows={[
+            ["Kiến (建)", "Ngày xây dựng, khởi đầu công việc mới", "Tốt cho khai trương, khởi công"],
+            ["Trừ (除)", "Ngày loại bỏ, thanh lọc, tẩy rửa", "Tốt cho dọn dẹp, giải quyết tồn đọng"],
+            ["Mãn (滿)", "Ngày đầy đủ, tròn vẹn, hoàn thành", "Tốt cho ký kết, kết thúc dự án"],
+            ["Bình (平)", "Ngày bằng phẳng, ổn định, an yên", "Tốt cho hầu hết mọi việc thông thường"],
+            ["Định (定)", "Ngày định vị, xác lập, bền vững", "Tốt cho khai trương, kết hôn, mua nhà"],
+            ["Chấp (執)", "Ngày nắm giữ, thực thi, kiên trì", "Tốt cho ký hợp đồng, bắt đầu công việc"],
+            ["Phá (破)", "Ngày phá vỡ, xung đột, rủi ro", "Xấu — tránh việc quan trọng"],
+            ["Nguy (危)", "Ngày nguy hiểm, bất ổn, cẩn thận", "Xấu — hạn chế di chuyển xa"],
+            ["Thành (成)", "Ngày thành tựu, hoàn thành, kết quả", "Tốt nhất — phù hợp đại sự"],
+            ["Thu (收)", "Ngày thu hoạch, tích lũy, thu về", "Tốt cho thu tiền, thu hồi nợ"],
+            ["Khai (開)", "Ngày mở ra, khai thông, đón nhận", "Tốt cho khai trương, mở đầu"],
+            ["Bế (閉)", "Ngày đóng lại, kết thúc, thu hồi", "Hạn chế — chỉ tốt cho việc âm"],
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Các ngày kỵ cần tránh">
+        <div className="space-y-3">
+          <div>
+            <p className="text-xs font-semibold text-red-400 uppercase tracking-wider mb-2">Ngày Tam Nương (13 ngày xấu nhất trong năm)</p>
+            <div className="bg-background/30 rounded-lg px-4 py-3 text-xs border border-red-500/15 space-y-1">
+              <div className="text-foreground/80">Tháng 1: mùng 3, 7, 13 | Tháng 2: 3, 20 | Tháng 3: 9, 26</div>
+              <div className="text-foreground/80">Tháng 4: 8, 25 | Tháng 5: 11, 28 | Tháng 6: 26 | Tháng 7: 7, 19</div>
+              <div className="text-muted-foreground mt-1">Tránh khởi sự, kết hôn, ký kết, di chuyển xa trong các ngày này.</div>
+            </div>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider mb-2">Ngày Dương Công Kỵ Nhật (13 ngày kiêng kỵ)</p>
+            <p className="text-xs text-foreground/70 leading-relaxed">
+              Tháng 1 ngày 13, tháng 2 ngày 11, tháng 3 ngày 9, tháng 4 ngày 7, tháng 5 ngày 5, tháng 6 ngày 3, tháng 7 ngày 1 & 29, tháng 8 ngày 27, tháng 9 ngày 25, tháng 10 ngày 23, tháng 11 ngày 21, tháng 12 ngày 19.
+            </p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-yellow-400 uppercase tracking-wider mb-2">Ngày Sát Chủ — Ngày Nguyệt Kỵ</p>
+            <p className="text-xs text-foreground/70 leading-relaxed">
+              Mỗi tháng có 3 ngày Nguyệt Kỵ: mùng 5, 14, 23 âm lịch. Tránh khởi sự, xuất hành, giao dịch lớn trong các ngày này.
+            </p>
+          </div>
+        </div>
+      </KBSection>
+
+      <KBSection title="Ngày tốt theo từng mục đích">
+        <p className="leading-relaxed mb-2">
+          Ngoài Trực Ngày, từng loại công việc còn yêu cầu <strong className="text-primary">Thần Sát</strong> (thần tốt/xấu) phù hợp. Nguyên tắc chung:
+        </p>
+        <div className="space-y-2">
+          {[
+            { title: "Khai trương / Khởi công", desc: "Ưu tiên Trực: Thành, Định, Khai, Kiến. Tránh: Phá, Nguy, Bế. Nên chọn ngày Hoàng Đạo, tránh ngày Hắc Đạo." },
+            { title: "Cưới hỏi / Hôn nhân", desc: "Cần xem tuổi đôi bên, tránh ngày xung tuổi hai người. Ưu tiên Trực Thành, Định, Khai. Tháng 7 âm lịch (tháng cô hồn) thường được kiêng kỵ." },
+            { title: "Mua nhà / Ký hợp đồng", desc: "Trực Định và Thành là tốt nhất. Xem Can Chi ngày phù hợp với mệnh chủ nhà. Tránh ngày Nguyệt Kỵ." },
+            { title: "Xuất hành / Du lịch", desc: "Trực Bình, Định, Thành thuận lợi cho di chuyển. Tránh Nguy, Phá. Xem hướng xuất hành theo tuổi." },
+            { title: "Giải phẫu / Khám chữa bệnh", desc: "Trực Trừ (thanh lọc) tốt cho điều trị. Tránh Nguy (rủi ro). Nên chọn ngày Kim (Can Canh, Tân) cho việc liên quan đến dao kéo." },
+          ].map((tip, i) => (
+            <div key={i} className="rounded-lg bg-background/20 border border-primary/10 p-3">
+              <p className="text-xs font-semibold text-primary/80 mb-1">{tip.title}</p>
+              <p className="text-xs text-foreground/70 leading-relaxed">{tip.desc}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+          Phiên bản này sử dụng thuật toán tổng hợp kết hợp Trực Ngày, điểm Can Chi, Nguyệt Kỵ và Tam Nương để chấm điểm từng ngày theo mục đích đã chọn.
+        </p>
+      </KBSection>
+    </div>
+  );
+}
