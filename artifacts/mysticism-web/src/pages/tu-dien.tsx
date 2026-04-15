@@ -115,14 +115,14 @@ export default function TuDienPage() {
               <p className="text-sm text-muted-foreground text-center">10 Thiên Can (Thập Thiên Can) — biểu tượng cho 10 loại năng lượng vũ trụ.</p>
               <div className="grid sm:grid-cols-2 gap-3">
                 {THIEN_CAN.map((c, i) => (
-                  <div key={i} className="flex gap-3 p-4 rounded-xl border border-border/30 bg-card/30 hover:border-primary/30 transition-all duration-200">
-                    <span className={cn("text-3xl font-bold font-serif w-10 shrink-0 text-center", c.color)}>{c.name}</span>
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-foreground/80">{c.name}</span>
-                        <span className={cn("text-xs px-2 py-0.5 rounded-full border", c.color, "bg-current/10 border-current/30 bg-opacity-10")} style={{ backgroundColor: "rgba(255,255,255,0.05)" }}>{c.element}</span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">{c.desc}</p>
+                  <div key={i} className="flex gap-4 p-4 rounded-xl border border-border/30 bg-card/30 hover:border-primary/30 transition-all duration-200">
+                    <span className={cn("text-4xl font-bold font-serif w-14 shrink-0 flex items-center justify-center", c.color)}>{c.name}</span>
+                    <div className="min-w-0 space-y-1.5">
+                      <span className={cn("inline-block text-xs px-2.5 py-0.5 rounded-full border font-medium")}
+                        style={{ color: "inherit", borderColor: "rgba(255,255,255,0.15)", background: "rgba(255,255,255,0.06)" }}>
+                        <span className={c.color}>{c.element}</span>
+                      </span>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{c.desc}</p>
                     </div>
                   </div>
                 ))}

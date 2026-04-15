@@ -86,6 +86,54 @@ const MODULES = [
     tagColor: "bg-sky-500/10 text-sky-300/80",
     symbolColor: "text-sky-400/80",
   },
+  {
+    href: "/phong-thuy",
+    symbol: "羅",
+    symbolSub: "Bát Trạch",
+    title: "Phong Thuỷ",
+    subtitle: "Bát Trạch Minh Cảnh",
+    desc: "Xác định Mệnh Quái cá nhân theo năm sinh, tìm 4 hướng tốt và 4 hướng xấu. Luận giải phong thủy nhà ở, bàn làm việc và hướng ngủ tối ưu.",
+    tags: ["Mệnh Quái", "8 Hướng", "Nhà ở", "Bàn làm việc"],
+    accent: "from-lime-600/20 to-lime-500/5 border-lime-500/30 hover:border-lime-400/60",
+    tagColor: "bg-lime-500/10 text-lime-300/80",
+    symbolColor: "text-lime-400/80",
+  },
+  {
+    href: "/xem-ten",
+    symbol: "名",
+    symbolSub: "Ngũ Cách",
+    title: "Xem Tên",
+    subtitle: "Phân Tích Họ Tên",
+    desc: "Phân tích năng lượng tên theo hệ thống Ngũ Cách: Thiên Cách, Nhân Cách, Địa Cách, Ngoại Cách, Tổng Cách. Tra cứu ngũ hành tên và nhận tư vấn đặt tên.",
+    tags: ["Ngũ Cách", "Ngũ Hành tên", "Họ Tên", "Đặt tên"],
+    accent: "from-fuchsia-600/20 to-fuchsia-500/5 border-fuchsia-500/30 hover:border-fuchsia-400/60",
+    tagColor: "bg-fuchsia-500/10 text-fuchsia-300/80",
+    symbolColor: "text-fuchsia-400/80",
+  },
+  {
+    href: "/lich-ca-nhan",
+    symbol: "運",
+    symbolSub: "Vận trình",
+    title: "Lịch Cá Nhân",
+    subtitle: "Năm Tháng Ngày Vận",
+    desc: "Tra cứu Năm Cá Nhân, Tháng Cá Nhân và Ngày Cá Nhân theo thần số học. Xem lịch tháng với màu sắc năng lượng từng ngày và gợi ý hành động.",
+    tags: ["Năm Cá Nhân", "Tháng Cá Nhân", "Ngày Cá Nhân", "Chu kỳ vận"],
+    accent: "from-cyan-600/20 to-cyan-500/5 border-cyan-500/30 hover:border-cyan-400/60",
+    tagColor: "bg-cyan-500/10 text-cyan-300/80",
+    symbolColor: "text-cyan-400/80",
+  },
+  {
+    href: "/tu-dien",
+    symbol: "典",
+    symbolSub: "Tra cứu",
+    title: "Từ Điển Huyền Học",
+    subtitle: "Bách Khoa Huyền Bí",
+    desc: "Tra cứu nhanh ý nghĩa 10 Thiên Can, 12 Địa Chi, Ngũ Hành, Bát Quái và các con số Thần Số học. Tài liệu tham chiếu đầy đủ cho người học huyền học.",
+    tags: ["Thiên Can", "Địa Chi", "Ngũ Hành", "Bát Quái"],
+    accent: "from-orange-600/20 to-orange-500/5 border-orange-500/30 hover:border-orange-400/60",
+    tagColor: "bg-orange-500/10 text-orange-300/80",
+    symbolColor: "text-orange-400/80",
+  },
 ];
 
 const FEATURES = [
@@ -112,7 +160,7 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { num: "01", title: "Chọn phương pháp", desc: "Lựa chọn trong 7 hệ thống: Thần số, Bát tự, Kinh Dịch, Cát Hung, Lịch vạn niên, Tử Vi hoặc chat AI." },
+  { num: "01", title: "Chọn phương pháp", desc: "Lựa chọn trong 11 hệ thống: Thần số, Bát tự, Kinh Dịch, Cát Hung, Phong Thủy, Xem Tên, Lịch Cá Nhân, Từ Điển và nhiều hơn nữa." },
   { num: "02", title: "Nhập thông tin", desc: "Cung cấp ngày sinh, tên gọi, câu hỏi hoặc con số cần tra cứu theo từng phương pháp." },
   { num: "03", title: "Nhận luận giải AI", desc: "AI phân tích và đưa ra luận giải chi tiết, sâu sắc bằng tiếng Việt trong vài giây." },
 ];
@@ -165,7 +213,7 @@ export default function Home() {
           </h1>
 
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Nền tảng huyền học toàn diện kết hợp Thần Số Học, Bát Tự, Kinh Dịch, Tử Vi và Lịch Vạn Niên với sức mạnh của trí tuệ nhân tạo tiên tiến nhất.
+            Nền tảng huyền học toàn diện kết hợp Thần Số Học, Bát Tự, Kinh Dịch, Phong Thủy, Tử Vi, Xem Tên và Lịch Vạn Niên với sức mạnh của trí tuệ nhân tạo tiên tiến nhất.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
@@ -183,7 +231,7 @@ export default function Home() {
 
           <div className="flex flex-wrap justify-center gap-8 pt-8 border-t border-primary/10 mt-8">
             {[
-              { val: "7", label: "Hệ thống huyền học" },
+              { val: "11", label: "Hệ thống huyền học" },
               { val: "64", label: "Quẻ Dịch" },
               { val: "AI", label: "GPT-5.4 & Gemini 3.0" },
             ].map((s) => (
@@ -206,7 +254,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <p className="text-xs uppercase tracking-[0.3em] text-primary/60">Hệ thống tra cứu</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">7 Môn Huyền Học</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">11 Môn Huyền Học</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">Mỗi phương pháp là một cánh cửa độc lập dẫn đến sự thấu hiểu bản thân và vận mệnh.</p>
           </div>
 
@@ -336,6 +384,10 @@ export default function Home() {
               { label: "Cát Hung", href: "/cat-hung" },
               { label: "Lịch Vạn Niên", href: "/lich-van-nien" },
               { label: "Tử Vi", href: "/tu-vi" },
+              { label: "Phong Thuỷ", href: "/phong-thuy" },
+              { label: "Xem Tên", href: "/xem-ten" },
+              { label: "Lịch Cá Nhân", href: "/lich-ca-nhan" },
+              { label: "Từ Điển", href: "/tu-dien" },
               { label: "Trợ lý AI", href: "/ai-chat" },
             ].map((l) => (
               <Link key={l.href} href={l.href} className="text-muted-foreground hover:text-primary transition-colors">{l.label}</Link>

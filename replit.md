@@ -20,45 +20,65 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 ## Artifacts
 
 ### mysticism-web (React + Vite, `previewPath: /`)
-Vietnamese mysticism website "Huyền Bí" with 7 modules:
-- `/` — Trang chủ redesigned hero + module cards + footer
-- `/than-so-hoc` — Thần Số Học: Life Path, Soul, Destiny, Personality + export PNG/TXT
-- `/bat-tu` — Bát Tự Tứ Trụ: 4 pillars + Ngũ Hành analysis + export PNG/TXT
-- `/xem-que` — Kinh Dịch I Ching: 64 hexagrams + export PNG/TXT
-- `/cat-hung` — Cát Hung phong thủy: phone/plate number analysis
+Vietnamese mysticism website "Huyền Bí" with **11 modules**:
+
+**Original 7 modules:**
+- `/` — Trang chủ: hero + 11 module cards + features + footer
+- `/than-so-hoc` — Thần Số Học: Life Path, Soul, Destiny, Personality, Maturity numbers; Pentagon radar SVG chart; 4-year Personal Year outlook; export PNG/TXT/PDF
+- `/bat-tu` — Bát Tự Tứ Trụ: 4 pillars (Can Chi) + Ngũ Hành SVG donut chart + Hợp Cung Đôi (compare two people); export PNG/TXT/PDF
+- `/xem-que` — Kinh Dịch I Ching: 64 hexagrams + SVG line rendering (yang/yin bars) + session history (10 casts); export PNG/TXT/PDF
+- `/cat-hung` — Cát Hung: phone/plate analysis + So Sánh 2 Số tab (winner card + suggest better variants); export PNG/TXT/PDF
 - `/lich-van-nien` — Lịch Vạn Niên: lunar calendar, Can Chi, Hoàng Đạo/Hắc Đạo
-- `/tu-vi` — Tử Vi Đẩu Số: 12 palaces + stars + export PNG/TXT
+- `/tu-vi` — Tử Vi Đẩu Số: 12 palaces + stars + export PNG/TXT/PDF
 - `/ai-chat` — Trợ lý AI: chat with suggested questions + sidebar toggle
+
+**4 new modules (added in v2):**
+- `/phong-thuy` — Phong Thuỷ Bát Trạch: Ming Gua compass, 4 tốt / 4 xấu directions, AI interpretation
+- `/xem-ten` — Xem Tên: Ngũ Cách name analysis grid (Thiên/Nhân/Địa/Ngoại/Tổng Cách), Ngũ Hành name element
+- `/lich-ca-nhan` — Lịch Cá Nhân: Personal Year/Month/Day numerology + monthly calendar with energy colors
+- `/tu-dien` — Từ Điển Huyền Học: 5-tab reference (Thiên Can, Địa Chi, Ngũ Hành, Bát Quái, Thần Số)
 
 ### Key frontend features
 - **Light/Dark mode**: ThemeProvider + toggle button in navbar; saves to localStorage (`huyen-bi-theme`)
-- **Export PNG/TXT**: html2canvas-based image export cards with dark branded design; applies to Thần Số Học, Bát Tự, Xem Quẻ, Tử Vi
-- **AI provider selection**: Default Replit / OpenAI GPT-5.4 / Gemini 3.1; key + model stored in localStorage (`huyen-bi-ai-settings`)
+- **Export PNG/TXT/PDF**: html2canvas + jspdf based export cards; applies to Thần Số Học, Bát Tự, Xem Quẻ, Cát Hung, Tử Vi
+- **AI provider selection**: Default Replit / OpenAI GPT-5.4 / Gemini 3.0; key + model stored in localStorage (`huyen-bi-ai-settings`)
 - **History system**: `src/lib/history.ts` — localStorage-backed, max 50 entries (`huyen-bi-history`)
 - **ResultActions**: Copy/Share/Print/Save component reusable across all pages
 - **SEO + PWA**: Full meta tags, Open Graph, manifest.json, theme-color
 - **Mobile responsive navbar**: hamburger menu + all nav links
+- **UX patterns**: native `<input type="date">` with `[color-scheme:dark]` + icon overlay; `hourToCanChi()` hint; real-time validation with touched/errors state; `formatPhoneDisplay()` for phone inputs
 
 ### api-server (Express 5, `previewPath: /api`)
 REST API with:
 - `/api/healthz` — Health check
 - `/api/openai/conversations` — AI chat CRUD
 - `/api/openai/conversations/:id/messages` — SSE streaming chat
-- `/api/mysticism/ai-interpret` — SSE streaming AI interpretation (numerology/batu/iching/tu-vi)
+- `/api/mysticism/ai-interpret` — SSE streaming AI interpretation (numerology/batu/iching/tu-vi/phong-thuy/xem-ten)
 
 ## Key Libraries
 - `html2canvas` — DOM-to-image capture for export cards (mysticism-web)
+- `jspdf` — PDF export wrapping html2canvas output
 - AI headers: `x-ai-provider`, `x-ai-key`, `x-ai-model`
 
 ## Key lib files
 - `src/lib/lunar-calendar.ts` — Solar↔Lunar conversion (Ho Ngoc Duc algorithm, UTC+7)
 - `src/lib/tu-vi.ts` — Tử Vi 12 palace calculation with stars
 - `src/lib/history.ts` — localStorage history management
-- `src/lib/numerology.ts`, `batu.ts`, `iching.ts`, `cat-hung.ts`
-- `src/hooks/use-export-image.ts` — html2canvas download hook
+- `src/lib/numerology.ts` — `computeMaturityNumber`, `computePersonalYearNumber`, life path, soul, destiny, personality
+- `src/lib/batu.ts`, `src/lib/iching.ts`, `src/lib/cat-hung.ts`
+- `src/lib/phong-thuy.ts` — Bát Trạch Ming Gua (getGuaInfo, direction grid)
+- `src/lib/xem-ten.ts` — Ngũ Cách name analysis (analyzeName)
+- `src/lib/lich-ca-nhan.ts` — Personal Year/Month/Day + calendar builder (buildMonthCalendar)
+- `src/lib/form-utils.ts` — `hourToCanChi`, `dateInputToDisplay`, `displayToDateInput`, `formatPhoneDisplay`, `validateName`, `validateDateDisplay`
+- `src/hooks/use-export-image.ts` — html2canvas + jspdf download hook (`downloadAsImage`, `downloadAsPdf`, `downloadAsText`)
 - `src/hooks/use-ai-sse-chat.ts` — SSE streaming hook with provider/key/model headers
 - `src/contexts/theme.tsx` — ThemeProvider (light/dark)
 - `src/contexts/ai-settings.tsx` — AI provider settings context
+
+## Critical patterns
+- **NEVER define sub-components inside parent components** — causes remount on every render. Always define at module level.
+- All date inputs use `type="date"` with `[color-scheme:dark]` class for dark theme styling.
+- `cn()` for conditional border colors: green=valid, red=error.
 
 ## OpenAI Integration
 Uses Replit AI Integrations (no user API key required). Model: `gpt-5.2`.
