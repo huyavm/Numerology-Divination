@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -38,6 +40,14 @@ export default function XemNgayTotPage() {
     const daysInMonth = new Date(year, month, 0).getDate();
     return { firstDay, daysInMonth };
   }, [year, month]);
+
+  useAutoHistory(results && results.length > 0 ? {
+    module: "xem-ngay-tot",
+    moduleName: "Xem Ngày Tốt",
+    title: `Xem Ngày Tốt — ${purposeInfo?.label || purpose} — ${MONTH_NAMES[month - 1]} ${year}`,
+    summary: `Tìm thấy ${results.length} ngày tốt. Top 1: ${results[0]?.dayInfo.solar.toLocaleDateString("vi-VN", { day: "numeric", month: "long" })} (điểm ${results[0]?.score})`,
+    result: `Mục đích: ${purposeInfo?.label}\nTháng: ${MONTH_NAMES[month - 1]} ${year}\n\nTop 5 ngày tốt nhất:\n${results.slice(0, 5).map((d, i) => `${i + 1}. ${d.dayInfo.solar.toLocaleDateString("vi-VN", { weekday: "short", day: "numeric", month: "long" })} — điểm ${d.score}`).join("\n")}`,
+  } : null);
 
   const handleSearch = () => {
     const days = findGoodDays(year, month, purpose);
@@ -109,6 +119,16 @@ export default function XemNgayTotPage() {
 
           {results && (
             <div className="space-y-6 animate-in fade-in duration-500">
+              {results.length > 0 && (
+                <div className="flex justify-end">
+                  <SaveReadingBtn
+                    module="xem-ngay-tot"
+                    title={`Xem Ngày Tốt — ${purposeInfo?.label || purpose} — ${MONTH_NAMES[month - 1]} ${year}`}
+                    inputData={{ thang: month, nam: year, mucDich: purpose }}
+                    resultData={{ tongSoNgayTot: results.length, topNgayTot: results.slice(0, 3).map(d => d.dayInfo.solar.toLocaleDateString("vi-VN")) }}
+                  />
+                </div>
+              )}
               {/* Calendar grid */}
               <Card className="bg-card/40 backdrop-blur-sm border-primary/20">
                 <CardHeader>

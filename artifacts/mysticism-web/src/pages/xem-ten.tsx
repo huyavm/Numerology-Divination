@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -85,6 +87,14 @@ export default function XemTenPage() {
   const score = grid ? scoreFullName(grid) : null;
   const radarValues = grid ? [grid.thienCach, grid.diaCach, grid.nhanCach, grid.ngoaiCach, grid.tongCach] : [];
 
+  useAutoHistory(grid ? {
+    module: "xem-ten",
+    moduleName: "Xem Tên",
+    title: `Xem Tên — ${fullName}`,
+    summary: `${fullName}: Nhân Cách ${grid.nhanCach}, Tổng Cách ${grid.tongCach}. ${score?.label || ""}`,
+    result: `Tên: ${fullName}\nThiên Cách: ${grid.thienCach}\nĐịa Cách: ${grid.diaCach}\nNhân Cách: ${grid.nhanCach}\nNgoại Cách: ${grid.ngoaiCach}\nTổng Cách: ${grid.tongCach}\nSố Linh Hồn: ${grid.soLinhHon}\nSố Sứ Mệnh: ${grid.soSuMenh}`,
+  } : null);
+
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
@@ -131,6 +141,14 @@ export default function XemTenPage() {
 
           {grid && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
+              <div className="flex justify-end">
+                <SaveReadingBtn
+                  module="xem-ten"
+                  title={`Xem Tên — ${fullName}`}
+                  inputData={{ hoTen: fullName }}
+                  resultData={{ nhanCach: grid.nhanCach, tongCach: grid.tongCach, soLinhHon: grid.soLinhHon, soSuMenh: grid.soSuMenh }}
+                />
+              </div>
               {/* Score + Radar */}
               <Card className="bg-card/40 backdrop-blur-sm border-primary/30 shadow-xl overflow-hidden">
                 <CardContent className="pt-6">

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -132,6 +134,14 @@ export default function TuViPage() {
     return lines.join("\n");
   };
 
+  useAutoHistory(result ? {
+    module: "tu-vi",
+    moduleName: "Tử Vi Đẩu Số",
+    title: `Tử Vi — ${form.day}/${form.month}/${form.year} giờ ${form.hour}:00 ${form.gender === "nam" ? "Nam" : "Nữ"}`,
+    summary: `Mệnh cục: ${result.cuccDesc}. Ngũ hành: ${result.nguHanhCuc}. Can năm: ${result.canNam} ${result.chiNam}.`,
+    result: `Ngày sinh: ${form.day}/${form.month}/${form.year} giờ ${form.hour}:00 — ${form.gender === "nam" ? "Nam" : "Nữ"}\nMệnh cục: ${result.cuccDesc} | Ngũ hành: ${result.nguHanhCuc}\n${result.menhDesc}`,
+  } : null);
+
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background">
       {/* Hidden export card */}
@@ -262,12 +272,20 @@ export default function TuViPage() {
           {/* Result */}
           {result && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-              {/* Export bar */}
-              <ExportDownloadBar
-                onDownloadImage={() => downloadAsImage(`tu-vi-${form.day}-${form.month}-${form.year}`)}
-                onDownloadText={() => downloadAsText(buildTextContent(), `tu-vi-${form.day}-${form.month}-${form.year}`)}
-                isExporting={isExporting}
-              />
+              {/* Export bar + Save */}
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <ExportDownloadBar
+                  onDownloadImage={() => downloadAsImage(`tu-vi-${form.day}-${form.month}-${form.year}`)}
+                  onDownloadText={() => downloadAsText(buildTextContent(), `tu-vi-${form.day}-${form.month}-${form.year}`)}
+                  isExporting={isExporting}
+                />
+                <SaveReadingBtn
+                  module="tu-vi"
+                  title={`Tử Vi — ${form.day}/${form.month}/${form.year} giờ ${form.hour}:00 ${form.gender === "nam" ? "Nam" : "Nữ"}`}
+                  inputData={{ ngay: form.day, thang: form.month, nam: form.year, gio: form.hour, gioiTinh: form.gender }}
+                  resultData={{ menhCuc: result.cuccDesc, nguHanhCuc: result.nguHanhCuc, canNam: result.canNam, chiNam: result.chiNam }}
+                />
+              </div>
               {/* Summary */}
               <div className="grid sm:grid-cols-3 gap-4">
                 <InfoCard label="Mệnh Cục" value={result.cuccDesc} sub={`Ngũ Hành: ${result.nguHanhCuc}`} />

@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -90,6 +92,15 @@ export default function PhongThuyPage() {
   const [error, setError] = useState("");
   const { messages, streamResponse, isStreaming } = useAISSEChat();
 
+  const phongThuyEntry = result ? {
+    module: "phong-thuy",
+    moduleName: "Phong Thuỷ Hướng Nhà",
+    title: `Phong Thuỷ — Năm ${yearInput} — ${gender === "nam" ? "Nam" : "Nữ"}`,
+    summary: `Mệnh Quái: ${result.gua} ${result.guaName}. Ngũ hành ${result.element}. ${result.group === "east" ? "Đông Tứ Mệnh" : "Tây Tứ Mệnh"}.`,
+    result: `Mệnh Quái: ${result.gua} — ${result.guaName}\nNgũ hành: ${result.element}\nNhóm: ${result.group === "east" ? "Đông Tứ Mệnh" : "Tây Tứ Mệnh"}\nHướng tốt: ${result.directions.filter(d => d.quality === "auspicious").map(d => `${d.direction} (${d.name})`).join(", ")}\nHướng xấu: ${result.directions.filter(d => d.quality === "inauspicious").map(d => `${d.direction} (${d.name})`).join(", ")}`,
+  } : null;
+  useAutoHistory(phongThuyEntry);
+
   const handleCalculate = () => {
     const y = parseInt(yearInput);
     if (!y || y < 1900 || y > new Date().getFullYear()) {
@@ -174,6 +185,14 @@ export default function PhongThuyPage() {
 
           {result && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
+              <div className="flex justify-end">
+                <SaveReadingBtn
+                  module="phong-thuy"
+                  title={`Phong Thuỷ — Năm ${yearInput} — ${gender === "nam" ? "Nam" : "Nữ"}`}
+                  inputData={{ namSinh: yearInput, gioiTinh: gender }}
+                  resultData={{ guaName: result.guaName, gua: result.gua, element: result.element, group: result.group }}
+                />
+              </div>
               {/* Quái info */}
               <Card className="bg-card/40 backdrop-blur-sm border-primary/30 shadow-xl overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />

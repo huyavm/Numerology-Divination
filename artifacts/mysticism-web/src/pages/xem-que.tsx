@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Hexagram, randomHexagram } from "@/lib/iching";
@@ -82,6 +84,14 @@ export default function IChingPage() {
     ].join("\n");
   };
 
+  useAutoHistory(hexagram ? {
+    module: "xem-que",
+    moduleName: "Kinh Dịch — Xem Quẻ",
+    title: `Xem Quẻ — ${hexagram.symbol} ${hexagram.vietnameseName}`,
+    summary: `Quẻ ${hexagram.vietnameseName}: ${hexagram.description.slice(0, 100)}`,
+    result: buildTextContent() || `QUẺ: ${hexagram.symbol} ${hexagram.vietnameseName}\n${hexagram.meaning}`,
+  } : null);
+
   const formatTime = (d: Date) =>
     `${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
 
@@ -160,6 +170,14 @@ export default function IChingPage() {
 
             {hexagram && !isCasting && (
               <div className="w-full animate-in fade-in zoom-in duration-1000 space-y-6">
+                <div className="flex justify-end">
+                  <SaveReadingBtn
+                    module="xem-que"
+                    title={`Xem Quẻ — ${hexagram.symbol} ${hexagram.vietnameseName}`}
+                    inputData={{}}
+                    resultData={{ queNumber: hexagram.number, queName: hexagram.name, symbol: hexagram.symbol }}
+                  />
+                </div>
                 {/* Export bar */}
                 <ExportDownloadBar
                   onDownloadImage={() => downloadAsImage(`que-${hexagram.name.toLowerCase().replace(/\s+/g, "-")}`)}

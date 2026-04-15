@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -548,6 +550,41 @@ export default function CatHungPage() {
     setPlateResult({ result: analyzeCatHung(digits), numStr: digits });
   };
 
+  const phoneHistoryEntry = (() => {
+    if (!phoneState) return null;
+    if (phoneState.mode === "6" && phoneState.sixResult) {
+      const { result, numStr, ownerName: oName } = phoneState.sixResult;
+      return {
+        module: "cat-hung",
+        moduleName: "Xem Cát Hung",
+        title: `Cát Hung Điện Thoại — ${phone}${oName ? ` (${oName})` : ""}`,
+        summary: `Số ${numStr}: ${result.verdictLabel} — ${result.verdictDescription}`,
+        result: `Số điện thoại: ${phone}\nKết quả: ${result.verdictLabel} — ${result.verdictDescription}`,
+      };
+    }
+    if (phoneState.mode === "10" && phoneState.tenResult) {
+      const { analysis, ownerName: oName } = phoneState.tenResult;
+      return {
+        module: "cat-hung",
+        moduleName: "Xem Cát Hung",
+        title: `Cát Hung Điện Thoại 10 số — ${phone}${oName ? ` (${oName})` : ""}`,
+        summary: `${analysis.fullResult.verdictLabel} — ${analysis.fullResult.verdictDescription}`,
+        result: `Số điện thoại: ${phone}\nKết quả tổng: ${analysis.fullResult.verdictLabel} — ${analysis.fullResult.verdictDescription}`,
+      };
+    }
+    return null;
+  })();
+
+  useAutoHistory(phoneHistoryEntry);
+
+  useAutoHistory(plateResult ? {
+    module: "cat-hung",
+    moduleName: "Xem Cát Hung",
+    title: `Cát Hung Biển Số — ${plate}`,
+    summary: `Biển số ${plateResult.numStr}: ${plateResult.result.verdictLabel} — ${plateResult.result.verdictDescription}`,
+    result: `Biển số: ${plate} (${plateResult.numStr})\nKết quả: ${plateResult.result.verdictLabel} — ${plateResult.result.verdictDescription}`,
+  } : null);
+
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-background to-background pointer-events-none" />
@@ -723,21 +760,41 @@ export default function CatHungPage() {
               </Card>
 
               {phoneState?.mode === "6" && phoneState.sixResult && (
-                <SixDigitResult
-                  result={phoneState.sixResult.result}
-                  numStr={phoneState.sixResult.numStr}
-                  ownerName={phoneState.sixResult.ownerName}
-                  compat={phoneState.sixResult.compat}
-                />
+                <>
+                  <div className="flex justify-end">
+                    <SaveReadingBtn
+                      module="cat-hung"
+                      title={`Cát Hung Điện Thoại — ${phone}${phoneState.sixResult.ownerName ? ` (${phoneState.sixResult.ownerName})` : ""}`}
+                      inputData={{ soDienThoai: phone, tenChuSo: phoneState.sixResult.ownerName }}
+                      resultData={{ ketQua: phoneState.sixResult.result.verdictLabel, moTa: phoneState.sixResult.result.verdictDescription }}
+                    />
+                  </div>
+                  <SixDigitResult
+                    result={phoneState.sixResult.result}
+                    numStr={phoneState.sixResult.numStr}
+                    ownerName={phoneState.sixResult.ownerName}
+                    compat={phoneState.sixResult.compat}
+                  />
+                </>
               )}
               {phoneState?.mode === "10" && phoneState.tenResult && (
-                <TenDigitResult
-                  analysis={phoneState.tenResult.analysis}
-                  ownerName={phoneState.tenResult.ownerName}
-                  dob={phoneState.tenResult.dob}
-                  compatName={phoneState.tenResult.compatName}
-                  compatDOB={phoneState.tenResult.compatDOB}
-                />
+                <>
+                  <div className="flex justify-end">
+                    <SaveReadingBtn
+                      module="cat-hung"
+                      title={`Cát Hung Điện Thoại 10 số — ${phone}${phoneState.tenResult.ownerName ? ` (${phoneState.tenResult.ownerName})` : ""}`}
+                      inputData={{ soDienThoai: phone, tenChuSo: phoneState.tenResult.ownerName, ngaySinh: phoneState.tenResult.dob }}
+                      resultData={{ ketQua: phoneState.tenResult.analysis.fullResult.verdictLabel, moTa: phoneState.tenResult.analysis.fullResult.verdictDescription }}
+                    />
+                  </div>
+                  <TenDigitResult
+                    analysis={phoneState.tenResult.analysis}
+                    ownerName={phoneState.tenResult.ownerName}
+                    dob={phoneState.tenResult.dob}
+                    compatName={phoneState.tenResult.compatName}
+                    compatDOB={phoneState.tenResult.compatDOB}
+                  />
+                </>
               )}
             </TabsContent>
 
@@ -796,7 +853,19 @@ export default function CatHungPage() {
                   </form>
                 </CardContent>
               </Card>
-              {plateResult && <PlateResult result={plateResult.result} numStr={plateResult.numStr} />}
+              {plateResult && (
+                <>
+                  <div className="flex justify-end">
+                    <SaveReadingBtn
+                      module="cat-hung"
+                      title={`Cát Hung Biển Số — ${plate}`}
+                      inputData={{ bienSo: plate }}
+                      resultData={{ ketQua: plateResult.result.verdictLabel, moTa: plateResult.result.verdictDescription }}
+                    />
+                  </div>
+                  <PlateResult result={plateResult.result} numStr={plateResult.numStr} />
+                </>
+              )}
             </TabsContent>
           </Tabs>
 

@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -84,6 +86,14 @@ export default function SaoHanPage() {
   const [results, setResults] = useState<AnnualStarResult[] | null>(null);
   const currentYear = new Date().getFullYear();
 
+  useAutoHistory(results ? {
+    module: "sao-han",
+    moduleName: "Sao Hạn Hàng Năm",
+    title: `Sao Hạn — sinh ngày ${dob}`,
+    summary: `Năm ${currentYear}: ${results.find(r => r.year === currentYear)?.mainStar.name || ""} (${results.find(r => r.year === currentYear)?.overallLuck || ""})`,
+    result: results.map(r => `Năm ${r.year} (${r.canChi}): ${r.mainStar.name} — ${r.overallLuck}. ${r.mainStar.advice}`).join("\n"),
+  } : null);
+
   const handleCalculate = () => {
     const err = validateDateDisplay(dob);
     setError(err ?? "");
@@ -132,10 +142,19 @@ export default function SaoHanPage() {
 
           {results && (
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700">
-              <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-primary/20" />
-                <p className="text-sm text-muted-foreground text-center">Vận Hạn {results[0].year} — {results[results.length-1].year}</p>
-                <div className="h-px flex-1 bg-primary/20" />
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div className="flex items-center gap-3 flex-1">
+                  <div className="h-px flex-1 bg-primary/20" />
+                  <p className="text-sm text-muted-foreground text-center">Vận Hạn {results[0].year} — {results[results.length-1].year}</p>
+                  <div className="h-px flex-1 bg-primary/20" />
+                </div>
+                <SaveReadingBtn
+                  module="sao-han"
+                  title={`Sao Hạn — sinh ngày ${dob}`}
+                  inputData={{ dob }}
+                  resultData={{ years: results.map(r => ({ year: r.year, star: r.mainStar.name, luck: r.overallLuck })) }}
+                  variant="icon"
+                />
               </div>
               {results.map((r) => (
                 <StarCard key={r.year} data={r} current={r.year === currentYear} />

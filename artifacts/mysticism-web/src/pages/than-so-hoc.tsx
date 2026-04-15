@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -80,7 +82,7 @@ export default function NumerologyPage() {
       `SỐ ĐƯỜNG ĐỜI: ${results.lifePath}`,
       getNumberMeaning(results.lifePath).description,
       `Điểm mạnh: ${getNumberMeaning(results.lifePath).strengths.join(", ")}`,
-      `Thách thức: ${getNumberMeaning(results.lifePath).challenges.join(", ")}`,
+      `Thách thức: ${lp.challenges.join(", ")}`,
       "",
       `SỐ SỨ MỆNH: ${results.destiny}`,
       getNumberMeaning(results.destiny).description,
@@ -93,6 +95,14 @@ export default function NumerologyPage() {
       aiText ? `\nLUẬN GIẢI AI:\n${aiText}` : "",
     ].join("\n");
   };
+
+  useAutoHistory(results ? {
+    module: "than-so-hoc",
+    moduleName: "Thần Số Học",
+    title: `Thần Số Học — ${name} (${dob})`,
+    summary: `Số Đường Đời: ${results.lifePath}. Số Sứ Mệnh: ${results.destiny}. Số Linh Hồn: ${results.soul}. Số Nhân Cách: ${results.personality}.`,
+    result: `Họ tên: ${name} | Ngày sinh: ${dob}\nĐường Đời: ${results.lifePath} | Sứ Mệnh: ${results.destiny} | Linh Hồn: ${results.soul} | Nhân Cách: ${results.personality}`,
+  } : null);
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">
@@ -201,14 +211,22 @@ export default function NumerologyPage() {
 
           {results && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
-              {/* Export bar */}
-              <ExportDownloadBar
-                onDownloadImage={() => downloadAsImage(`than-so-hoc-${name.replace(/\s+/g, "-")}`)}
-                onDownloadText={() => downloadAsText(buildTextContent(), `than-so-hoc-${name.replace(/\s+/g, "-")}`)}
-                onDownloadPdf={() => downloadAsPdf(`than-so-hoc-${name.replace(/\s+/g, "-")}`)}
-                isExporting={isExporting}
-                isPdfExporting={isPdfExporting}
-              />
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                {/* Export bar */}
+                <ExportDownloadBar
+                  onDownloadImage={() => downloadAsImage(`than-so-hoc-${name.replace(/\s+/g, "-")}`)}
+                  onDownloadText={() => downloadAsText(buildTextContent(), `than-so-hoc-${name.replace(/\s+/g, "-")}`)}
+                  onDownloadPdf={() => downloadAsPdf(`than-so-hoc-${name.replace(/\s+/g, "-")}`)}
+                  isExporting={isExporting}
+                  isPdfExporting={isPdfExporting}
+                />
+                <SaveReadingBtn
+                  module="than-so-hoc"
+                  title={`Thần Số Học — ${name} (${dob})`}
+                  inputData={{ hoTen: name, ngaySinh: dob }}
+                  resultData={{ duongDoi: results.lifePath, suMenh: results.destiny, linhHon: results.soul, nhanCach: results.personality }}
+                />
+              </div>
 
               {/* Radar Chart + Summary */}
               <Card className="bg-card/40 backdrop-blur-sm border-primary/30 shadow-xl overflow-hidden">

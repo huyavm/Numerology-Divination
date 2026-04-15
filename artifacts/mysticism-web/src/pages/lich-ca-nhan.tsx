@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -74,6 +76,16 @@ export default function LichCaNhanPage() {
     setDob(dateInputToDisplay(val));
   };
 
+  const currentYear = new Date().getFullYear();
+
+  useAutoHistory(calculated && dob ? {
+    module: "lich-ca-nhan",
+    moduleName: "Lịch Cá Nhân",
+    title: `Lịch Cá Nhân — sinh ngày ${dob}`,
+    summary: `Số năm cá nhân ${currentYear}: ${computePersonalYear(dob, currentYear)} — ${getPersonalYearInfo(dob, currentYear).theme}`,
+    result: `Ngày sinh: ${dob}\nNăm ${currentYear - 1}: Số cá nhân ${computePersonalYear(dob, currentYear - 1)} — ${getPersonalYearInfo(dob, currentYear - 1).theme}\nNăm ${currentYear}: Số cá nhân ${computePersonalYear(dob, currentYear)} — ${getPersonalYearInfo(dob, currentYear).theme}\nNăm ${currentYear + 1}: Số cá nhân ${computePersonalYear(dob, currentYear + 1)} — ${getPersonalYearInfo(dob, currentYear + 1).theme}`,
+  } : null);
+
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();
     if (!dobInput) return;
@@ -138,6 +150,14 @@ export default function LichCaNhanPage() {
 
           {calculated && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
+              <div className="flex justify-end">
+                <SaveReadingBtn
+                  module="lich-ca-nhan"
+                  title={`Lịch Cá Nhân — sinh ngày ${dob}`}
+                  inputData={{ dob }}
+                  resultData={{ personalYear: computePersonalYear(dob, currentYear) }}
+                />
+              </div>
               {/* Legend */}
               <div className="flex flex-wrap justify-center gap-3">
                 {[

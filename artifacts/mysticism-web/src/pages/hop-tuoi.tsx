@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { useAutoHistory } from "@/lib/use-auto-history";
+import { SaveReadingBtn } from "@/components/save-reading-btn";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -76,6 +78,14 @@ export default function HopTuoiPage() {
   const [result, setResult] = useState<CompatibilityResult | null>(null);
   const [errors, setErrors] = useState({ dob1: "", dob2: "" });
 
+  useAutoHistory(result ? {
+    module: "hop-tuoi",
+    moduleName: "Hợp Tuổi & Duyên Số",
+    title: `Hợp Tuổi — ${result.person1.can} ${result.person1.chi} & ${result.person2.can} ${result.person2.chi}`,
+    summary: `${result.verdict} (${result.totalScore}/100) — ${result.summary.slice(0, 100)}`,
+    result: `Người 1: ${result.person1.can} ${result.person1.chi} (${result.person1.zodiac})\nNgười 2: ${result.person2.can} ${result.person2.chi} (${result.person2.zodiac})\nĐiểm: ${result.totalScore}/100\n${result.verdict}\n${result.summary}`,
+  } : null);
+
   const handleCalculate = () => {
     const e1 = validateDateDisplay(dob1);
     const e2 = validateDateDisplay(dob2);
@@ -150,6 +160,14 @@ export default function HopTuoiPage() {
 
           {result && (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+              <div className="flex justify-end">
+                <SaveReadingBtn
+                  module="hop-tuoi"
+                  title={`Hợp Tuổi — ${result.person1.can} ${result.person1.chi} & ${result.person2.can} ${result.person2.chi}`}
+                  inputData={{ dob1, gioiTinh1: gender1, dob2, gioiTinh2: gender2 }}
+                  resultData={{ score: result.totalScore, verdict: result.verdict, zodiac1: result.person1.zodiac, zodiac2: result.person2.zodiac }}
+                />
+              </div>
               {/* Person cards */}
               <div className="flex gap-4">
                 <PersonCard label="Người 1" p={result.person1} />
