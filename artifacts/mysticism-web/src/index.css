@@ -178,6 +178,12 @@
   }
 }
 
+/* ── Mystic Cursor ── */
+@media (hover: hover) {
+  *, *::before, *::after { cursor: none !important; }
+  input, textarea, [contenteditable] { cursor: text !important; }
+}
+
 /* ── Print Styles ── */
 @media print {
   .no-print { display: none !important; }

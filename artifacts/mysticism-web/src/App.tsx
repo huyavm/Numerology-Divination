@@ -22,6 +22,7 @@ import XemNgayTotPage from "@/pages/xem-ngay-tot";
 import SaoHanPage from "@/pages/sao-han";
 import LichSuPage from "@/pages/lich-su";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
+import { MysticCursor } from "@/components/mystic-cursor";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,7 @@ function App() {
             </WouterRouter>
             <Toaster />
             <PwaInstallPrompt />
+            <MysticCursor />
           </TooltipProvider>
         </QueryClientProvider>
       </AISettingsProvider>
