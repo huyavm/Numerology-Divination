@@ -49,19 +49,23 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      NODE_ENV:     production
-      PORT:         3001
-      DATABASE_URL: postgresql://${POSTGRES_USER:-huyenbi}:${POSTGRES_PASSWORD:-huyenbi_secret}@postgres:5432/${POSTGRES_DB:-huyenbi}
+      NODE_ENV:         production
+      PORT:             3001
+      DATABASE_URL:     postgresql://${POSTGRES_USER:-huyenbi}:${POSTGRES_PASSWORD:-huyenbi_secret}@postgres:5432/${POSTGRES_DB:-huyenbi}
+      CLERK_SECRET_KEY: ${CLERK_SECRET_KEY}
     networks:
       - internal
 
   # ----------------------------------------------------------
   # Web — Nginx phục vụ static files + proxy /api/*
+  # Clerk publishable key được bake vào bundle lúc docker build
   # ----------------------------------------------------------
   web:
     build:
       context: .
       dockerfile: Dockerfile.web
+      args:
+        VITE_CLERK_PUBLISHABLE_KEY: ${VITE_CLERK_PUBLISHABLE_KEY}
     container_name: huyen-bi-web
     restart: unless-stopped
     depends_on:

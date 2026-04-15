@@ -48,6 +48,11 @@ Thumbs.db
 .cursor/rules/nx-rules.mdc
 .github/instructions/nx.instructions.md
 
+# Environment secrets — KHÔNG commit file này lên git
+.env
+.env.local
+.env.production
+
 # Replit
 .cache/
 .local/

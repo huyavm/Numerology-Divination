@@ -41,6 +41,11 @@ ENV PORT=3000 \
     NODE_ENV=production \
     REPL_ID=""
 
+# Clerk publishable key — public key, an toàn khi baked vào bundle frontend
+# Truyền qua: docker build --build-arg VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
+ARG VITE_CLERK_PUBLISHABLE_KEY
+ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
+
 RUN pnpm --filter @workspace/mysticism-web run build
 # Output: artifacts/mysticism-web/dist/public/
 
