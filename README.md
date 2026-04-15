@@ -1,350 +1,221 @@
 # Huyền Bí — Ứng dụng Huyền Học Việt Nam
 
-> Nền tảng huyền học toàn diện: 15 mô-đun tra cứu bao gồm Thần Số Học, Bát Tự Tứ Trụ, Kinh Dịch, Cát Hung, Tử Vi Đẩu Số, Phong Thuỷ, Hợp Tuổi, Xem Ngày Tốt, Sao Hạn và Trợ lý AI — giao diện tiếng Việt, chủ đề tối huyền bí, tài khoản người dùng, lưu & chia sẻ lá số.
+> Nền tảng huyền học toàn diện: 15 mô-đun tra cứu bao gồm Thần Số Học, Bát Tự Tứ Trụ (có Đại Vận), Kinh Dịch, Cát Hung, Tử Vi Đẩu Số, Phong Thuỷ, Hợp Tuổi, Xem Ngày Tốt, Sao Hạn và Trợ lý AI — giao diện tiếng Việt, chủ đề tối huyền bí.
 
-![Huyền Bí](https://img.shields.io/badge/Huy%E1%BB%87n%20B%C3%AD-v4.0-c9a227?style=for-the-badge&labelColor=0d0818)
-![React](https://img.shields.io/badge/React-19.1-61DAFB?style=flat-square&logo=react)
+![Huyền Bí](https://img.shields.io/badge/Huy%E1%BB%87n%20B%C3%AD-v3.0-c9a227?style=for-the-badge&labelColor=0d0818)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript)
 ![Express](https://img.shields.io/badge/Express-5-000000?style=flat-square&logo=express)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat-square&logo=postgresql)
-![Clerk](https://img.shields.io/badge/Auth-Clerk-6C47FF?style=flat-square)
-![Docker](https://img.shields.io/badge/Docker-ready-2496ED?style=flat-square&logo=docker)
 
 ---
 
 ## Mục lục
 
 - [Giới thiệu](#giới-thiệu)
-- [15 Mô-đun tra cứu](#15-mô-đun-tra-cứu)
-- [Tính năng chung](#tính-năng-chung)
-- [Tài khoản người dùng](#tài-khoản-người-dùng)
-- [Kiến trúc hệ thống](#kiến-trúc-hệ-thống)
-- [Cài bằng Docker (khuyên dùng)](#cài-bằng-docker-khuyên-dùng)
-- [Cài thủ công trên VPS](#cài-thủ-công-trên-vps)
-- [Cấu hình HTTPS](#cấu-hình-https)
-- [Cấu hình Clerk Production](#cấu-hình-clerk-production)
+- [Tính năng](#tính-năng)
+- [Kiến trúc](#kiến-trúc)
+- [Cài lên server thông thường](#cài-lên-server-thông-thường)
+- [Cài bằng Docker](#cài-bằng-docker)
 - [Cấu hình AI (Admin Panel)](#cấu-hình-ai-admin-panel)
-- [API Reference](#api-reference)
+- [API](#api)
 - [Cấu trúc thư mục](#cấu-trúc-thư-mục)
 
 ---
 
 ## Giới thiệu
 
-**Huyền Bí** là ứng dụng web huyền học Việt Nam đầy đủ tính năng, gồm **15 mô-đun tra cứu**, **tài khoản người dùng** để lưu và chia sẻ lá số, trợ lý AI hỗ trợ streaming, xuất PNG/PDF, và hệ thống admin key AI dùng chung.
+**Huyền Bí** là ứng dụng web huyền học Việt Nam đầy đủ tính năng, gồm **15 mô-đun tra cứu**, trợ lý AI hỗ trợ streaming, và hệ thống quản trị key AI dùng chung với giới hạn lượt gọi theo IP.
 
 ---
 
-## 15 Mô-đun tra cứu
+## Tính năng
+
+### 15 Mô-đun tra cứu
 
 | Mô-đun | Đường dẫn | Mô tả |
 |--------|-----------|-------|
-| **Thần Số Học** | `/than-so-hoc` | Số Đường đời, Linh hồn, Sứ mệnh, Nhân cách, Trưởng thành; biểu đồ radar ngũ giác SVG; dự báo 4 năm cá nhân |
-| **Bát Tự Tứ Trụ** | `/bat-tu` | 4 trụ Năm–Tháng–Ngày–Giờ, biểu đồ Ngũ Hành donut SVG, Đại Vận 8 trụ, so sánh ngũ hành 2 người |
-| **Xem Quẻ I Ching** | `/xem-que` | 64 quẻ Kinh Dịch, gieo quẻ ngẫu nhiên, hiển thị hào âm/dương SVG, lịch sử 10 lần gieo |
-| **Cát Hung** | `/cat-hung` | Phân tích số điện thoại & biển số xe, so sánh 2 số cạnh nhau, gợi ý số điện thoại tốt hơn tương tự |
+| **Thần Số Học** | `/than-so-hoc` | Số Đường đời, Linh hồn, Sứ mệnh, Nhân cách, Trưởng thành; biểu đồ radar ngũ giác; dự báo 4 năm |
+| **Bát Tự Tứ Trụ** | `/bat-tu` | 4 trụ Năm–Tháng–Ngày–Giờ, biểu đồ Ngũ Hành donut, **Đại Vận 8 trụ**, so sánh 2 người |
+| **Xem Quẻ I Ching** | `/xem-que` | 64 quẻ Kinh Dịch, gieo quẻ SVG thanh âm/dương, lịch sử 10 lần gieo |
+| **Cát Hung** | `/cat-hung` | Phân tích số điện thoại & biển số xe, so sánh 2 số, gợi ý số tốt hơn |
 | **Lịch Vạn Niên** | `/lich-van-nien` | Âm lịch, Can Chi, Hoàng Đạo/Hắc Đạo (1900–2100) |
 | **Tử Vi Đẩu Số** | `/tu-vi` | 12 cung Tử Vi, 14 chính tinh, Mệnh Cục |
-| **Phong Thuỷ Bát Trạch** | `/phong-thuy` | Mệnh Quái cá nhân, la bàn SVG 4 hướng tốt / 4 hướng xấu, luận giải AI |
-| **Xem Tên** | `/xem-ten` | Ngũ Cách phân tích tên (Thiên/Nhân/Địa/Ngoại/Tổng Cách), Ngũ Hành tên, radar SVG |
-| **Lịch Cá Nhân** | `/lich-ca-nhan` | Năm–Tháng–Ngày Cá Nhân theo Thần Số, lịch tháng màu sắc năng lượng |
+| **Phong Thuỷ Bát Trạch** | `/phong-thuy` | Mệnh Quái cá nhân, 4 hướng tốt / 4 hướng xấu, luận giải nhà ở |
+| **Xem Tên** | `/xem-ten` | Ngũ Cách phân tích tên (Thiên/Nhân/Địa/Ngoại/Tổng Cách), Ngũ Hành tên |
+| **Lịch Cá Nhân** | `/lich-ca-nhan` | Năm Cá Nhân, Tháng Cá Nhân, Ngày Cá Nhân theo Thần Số; lịch tháng màu sắc năng lượng |
 | **Từ Điển Huyền Học** | `/tu-dien` | 5 tab tra cứu: Thiên Can, Địa Chi, Ngũ Hành, Bát Quái, Thần Số |
-| **Hợp Tuổi & Duyên Số** | `/hop-tuoi` | Tương hợp qua Mệnh Quái, Can Chi, Ngũ Hành, Thần Số; điểm 0–100, biểu đồ chi tiết |
-| **Xem Ngày Tốt** | `/xem-ngay-tot` | Tìm ngày Hoàng Đạo theo 9 mục đích (cưới, khai trương, động thổ...); lịch tháng tương tác |
-| **Sao Hạn Hàng Năm** | `/sao-han` | Sao chiếu mệnh 7 năm (Thái Tuế, Thái Dương, La Hầu, Phúc Tinh...); card vận hạn |
+| **Hợp Tuổi & Duyên Số** | `/hop-tuoi` | Tương hợp qua Mệnh Quái, Can Chi, Ngũ Hành, Thần Số Đường Đời; điểm 0–100 + biểu đồ cột |
+| **Xem Ngày Tốt** | `/xem-ngay-tot` | Tìm ngày Hoàng Đạo theo mục đích (cưới, khai trương, động thổ...); lịch tháng tương tác |
+| **Sao Hạn Hàng Năm** | `/sao-han` | Tra cứu sao chiếu mệnh 7 năm (Thái Tuế, Thái Dương, La Hầu, Phúc Tinh...); card vận hạn |
 | **Lịch Sử Tra Cứu** | `/lich-su` | Xem lại, tìm kiếm, lọc và xóa lịch sử tra cứu lưu cục bộ; bảng thống kê |
 | **Trợ lý AI** | `/ai-chat` | Chat huyền học với AI, 14 câu gợi ý theo chủ đề, lưu lịch sử hội thoại |
 
----
+### Tính năng chung
 
-## Tính năng chung
-
-| Tính năng | Chi tiết |
-|-----------|----------|
-| **Chủ đề Sáng/Tối** | Light/Dark mode, lưu localStorage |
-| **Xuất PNG / TXT / PDF** | html2canvas + jsPDF, ảnh 2× retina |
-| **Phân tích AI** | Giải nghĩa kết quả bằng AI, streaming SSE real-time |
-| **Key AI dùng chung** | Admin cấu hình key qua UI, giới hạn lượt gọi theo IP |
-| **PWA** | Cài đặt như app gốc trên di động (beforeinstallprompt) |
-| **Responsive** | Mobile, tablet, desktop |
-| **Navbar dropdown** | 5 nhóm: Số Học, Mệnh Lý, Tiên Tri, Tra Cứu, Trợ lý AI |
-| **Hiệu ứng huyền bí** | Ambient orbs, star field, mystic cursor, scroll reveal, 3D tilt card |
+- **Chủ đề Sáng/Tối** — Light/Dark mode, lưu localStorage
+- **Xuất PNG, TXT & PDF** — Ảnh chất lượng cao 2× retina, file văn bản hoặc PDF
+- **Phân tích AI** — Giải nghĩa kết quả bằng AI với streaming SSE
+- **Key AI dùng chung** — Admin cấu hình key qua giao diện web, có giới hạn lượt gọi theo IP
+- **PWA** — Hỗ trợ cài đặt như ứng dụng gốc trên di động (beforeinstallprompt)
+- **Responsive** — Tương thích mobile, tablet, desktop
 
 ---
 
-## Tài khoản người dùng
-
-Được tích hợp qua **Clerk Authentication** — đăng ký miễn phí tại [clerk.com](https://clerk.com).
-
-### Luồng sử dụng
-
-1. Người dùng nhấn **Đăng ký** / **Đăng nhập** trên navbar
-2. Chọn **Google OAuth** hoặc **Email + mật khẩu**
-3. Sau khi đăng nhập: navbar hiển thị **avatar** + dropdown
-4. Trên bất kỳ trang tra cứu nào → nhấn **Lưu lá số** để lưu kết quả
-5. Vào **Hồ Sơ** để xem, quản lý, và so sánh các lá số đã lưu
-
-### Tính năng hồ sơ (`/profile`)
-
-| Tính năng | Mô tả |
-|-----------|-------|
-| **Danh sách lá số** | Xem tất cả lá số đã lưu, lọc theo module, tìm kiếm theo tên |
-| **Ghi chú cá nhân** | Thêm/sửa ghi chú cho từng lá số |
-| **So sánh 2 lá số** | Chọn 2 lá số bất kỳ để xem bảng so sánh cạnh nhau |
-| **Chia sẻ link** | Tạo link chia sẻ (hết hạn sau 30 ngày), copy vào clipboard |
-| **Xóa lá số** | Xóa từng lá số với xác nhận |
-| **Đăng xuất** | Trong dropdown navbar hoặc trang hồ sơ |
-
-### Bảng database liên quan
-
-| Bảng | Mô tả |
-|------|-------|
-| `saved_readings` | Lá số của người dùng (user_id, module, title, input_data, result_data, notes) |
-| `share_tokens` | Token chia sẻ có hạn (token, reading_id, expires_at) |
-
-> **Lưu ý:** Nếu không cần tài khoản người dùng, có thể bỏ qua biến `CLERK_*` — app vẫn chạy đầy đủ 15 module, chỉ tắt tính năng lưu/chia sẻ lá số.
-
----
-
-## Kiến trúc hệ thống
+## Kiến trúc
 
 ```
 monorepo (pnpm workspaces)
 ├── artifacts/
-│   ├── mysticism-web/     # React 19 + Vite 7 frontend
+│   ├── mysticism-web/     # React 19 + Vite 6 frontend
 │   └── api-server/        # Express 5 backend
 ├── docker/
-│   └── nginx.conf         # Nginx: static files + proxy /api/*
-├── Dockerfile.api         # Backend: esbuild bundle
-├── Dockerfile.web         # Frontend: Vite build → Nginx
-├── docker-compose.yml     # Postgres + API + Web (3 service)
-├── .env.example           # Mẫu biến môi trường
-└── DEPLOY.md              # Hướng dẫn deploy chi tiết
+│   └── nginx.conf         # Nginx reverse proxy config
+├── Dockerfile.api
+├── Dockerfile.web
+└── docker-compose.yml
 ```
 
-**Stack:**
-
-| Layer | Công nghệ |
-|-------|-----------|
-| Frontend | React 19.1 + Vite 7 + TypeScript + Tailwind CSS v4 + shadcn/ui |
-| Backend | Express 5 + PostgreSQL + Zod validation |
-| Auth | Clerk (Google OAuth + Email, JWT, proxy middleware) |
-| AI | OpenAI GPT / Google Gemini — key chung hoặc key riêng |
-| Proxy | Nginx 1.27 — static files + reverse proxy `/api/*` |
-| Container | Docker + Docker Compose v2 |
+- **Frontend**: React 19 + Vite 6 + TypeScript + Tailwind CSS + shadcn/ui
+- **Backend**: Express 5 + PostgreSQL + Zod validation
+- **AI**: OpenAI (GPT) hoặc Google Gemini — key dùng chung (lưu DB) hoặc key riêng của người dùng
+- **DB**: PostgreSQL — lưu hội thoại AI, cấu hình admin, log lượt gọi AI
+- **Migration**: Tự động chạy khi server khởi động, không cần thao tác thủ công
 
 ---
 
-## Cài bằng Docker (khuyên dùng)
+## Cài lên server thông thường
 
-Phù hợp để triển khai nhanh — một lệnh chạy cả stack (Postgres + API + Nginx).
+Phù hợp khi bạn đã có server Linux/macOS với Node.js và PostgreSQL.
 
 ### Yêu cầu
 
-- Docker 24+
-- Docker Compose v2+
-- Domain (nếu cần HTTPS và Clerk production)
+| Công cụ | Phiên bản |
+|---------|-----------|
+| Node.js | 20+ |
+| pnpm | 10+ |
+| PostgreSQL | 14+ |
 
-### Bước 1 — Cài Docker
-
-```bash
-curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker $USER
-# Đăng xuất và đăng nhập lại
-```
-
-### Bước 2 — Clone repo
+### Bước 1 — Clone repo
 
 ```bash
 git clone https://github.com/huyavm/Numerology-Divination.git
 cd Numerology-Divination
 ```
 
-### Bước 3 — Tạo file .env
+### Bước 2 — Cài dependencies
+
+```bash
+pnpm install
+```
+
+### Bước 3 — Tạo database PostgreSQL
+
+```bash
+# Tạo database (đăng nhập vào psql trước nếu cần)
+psql -U postgres -c "CREATE DATABASE huyenbi;"
+psql -U postgres -c "CREATE USER huyenbi WITH PASSWORD 'your_password';"
+psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE huyenbi TO huyenbi;"
+```
+
+### Bước 4 — Tạo file .env
 
 ```bash
 cp .env.example .env
-nano .env
 ```
 
-Nội dung `.env` tối thiểu:
+Mở `.env` và điền `DATABASE_URL`:
 
-```dotenv
-# Database
-POSTGRES_PASSWORD=mat_khau_manh_cua_ban
-
-# Cổng web (mặc định 80)
-WEB_PORT=80
-
-# Clerk Authentication (lấy tại clerk.com → API Keys)
-CLERK_SECRET_KEY=sk_live_...
-VITE_CLERK_PUBLISHABLE_KEY=pk_live_...
+```env
+DATABASE_URL=postgresql://huyenbi:your_password@localhost:5432/huyenbi
+PORT_API=3001
+PORT_WEB=5173
 ```
 
-> Không cần điền API key AI ở đây — cấu hình qua Admin Panel sau khi deploy.
->
-> Nếu chưa có Clerk keys, có thể bỏ trống — app vẫn chạy đủ 15 mô-đun.
+> Các bảng database sẽ được tạo tự động khi backend khởi động lần đầu.
 
-### Bước 4 — Build và chạy
+### Bước 5 — Build
 
 ```bash
-docker compose up --build -d
-```
-
-Mở trình duyệt: **`http://IP_SERVER_CUA_BAN`**
-
-> Lần đầu build mất 3–5 phút. Các lần sau nhanh hơn nhờ Docker layer cache.
-
-### Lệnh thường dùng
-
-```bash
-# Xem trạng thái các container
-docker compose ps
-
-# Xem log real-time
-docker compose logs -f
-docker compose logs -f api      # Chỉ backend
-docker compose logs -f web      # Chỉ nginx
-
-# Rebuild sau khi thay đổi code
-docker compose up --build -d
-
-# Dừng (giữ data)
-docker compose down
-
-# Dừng và xoá toàn bộ data (cẩn thận!)
-docker compose down -v
-```
-
-### Chạy sau reverse proxy có sẵn (Nginx/Traefik)
-
-Nếu server đã có Nginx/Traefik xử lý TLS bên ngoài, tạo file `docker-compose.override.yml`:
-
-```yaml
-services:
-  web:
-    ports: []
-    expose:
-      - "80"
-```
-
----
-
-## Cài thủ công trên VPS
-
-Phù hợp khi server đã có Node.js, PostgreSQL, và Nginx sẵn.
-
-### Yêu cầu
-
-| Công cụ | Phiên bản |
-|---------|-----------|
-| Node.js | 22+ |
-| pnpm | 10+ |
-| PostgreSQL | 14+ |
-| Nginx | 1.20+ |
-
-### Bước 1 — Cài Node.js 22 và pnpm
-
-```bash
-curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
-sudo apt-get install -y nodejs
-sudo npm install -g pnpm@latest
-```
-
-### Bước 2 — Tạo database
-
-```bash
-sudo -u postgres psql -c "CREATE USER huyenbi WITH PASSWORD 'mat_khau_manh';"
-sudo -u postgres psql -c "CREATE DATABASE huyenbi OWNER huyenbi;"
-```
-
-### Bước 3 — Clone và cài dependencies
-
-```bash
-git clone https://github.com/huyavm/Numerology-Divination.git /opt/huyen-bi
-cd /opt/huyen-bi
-pnpm install --no-frozen-lockfile
-```
-
-### Bước 4 — Build backend
-
-```bash
+# Build backend (esbuild → dist/)
 pnpm --filter @workspace/api-server run build
+
+# Build frontend (Vite → dist/public/)
+pnpm --filter @workspace/mysticism-web run build
 ```
 
-### Bước 5 — Build frontend
+### Bước 6 — Chạy production
+
+#### Cách 1: Dùng PM2 (khuyến nghị)
 
 ```bash
-PORT=3000 BASE_PATH=/ NODE_ENV=production \
-  VITE_CLERK_PUBLISHABLE_KEY=pk_live_... \
-  pnpm --filter @workspace/mysticism-web run build
-# Static files xuất ra: artifacts/mysticism-web/dist/public/
-```
+npm install -g pm2
 
-### Bước 6 — Chạy backend với PM2
+# Chạy backend
+PORT=3001 DATABASE_URL=<your-db-url> \
+  pm2 start artifacts/api-server/dist/index.mjs \
+  --name huyen-bi-api
 
-```bash
-sudo npm install -g pm2
+# Chạy frontend (serve static files)
+npm install -g serve
+pm2 start "serve -s artifacts/mysticism-web/dist/public -l 5173" \
+  --name huyen-bi-web
 
-pm2 start /opt/huyen-bi/artifacts/api-server/dist/index.mjs \
-  --name huyen-bi-api \
-  --node-args="--enable-source-maps" \
-  --env production
-
-# Đặt biến môi trường cho process
-pm2 set huyen-bi-api:NODE_ENV production
-pm2 set huyen-bi-api:PORT 3001
-pm2 set huyen-bi-api:DATABASE_URL "postgresql://huyenbi:mat_khau@localhost:5432/huyenbi"
-pm2 set huyen-bi-api:CLERK_SECRET_KEY "sk_live_..."
-
-# Lưu config và cài startup
+# Lưu để tự khởi động lại khi reboot
 pm2 save
 pm2 startup
 ```
 
-Hoặc dùng file `.env` riêng:
+#### Cách 2: Dùng systemd (Ubuntu/Debian)
 
-```bash
-# Tạo file env cho backend
-cat > /opt/huyen-bi/.env.api << 'EOF'
-NODE_ENV=production
-PORT=3001
-DATABASE_URL=postgresql://huyenbi:mat_khau@localhost:5432/huyenbi
-CLERK_SECRET_KEY=sk_live_...
-EOF
+Tạo file `/etc/systemd/system/huyen-bi-api.service`:
 
-pm2 start /opt/huyen-bi/artifacts/api-server/dist/index.mjs \
-  --name huyen-bi-api \
-  --node-args="--enable-source-maps" \
-  --env-file /opt/huyen-bi/.env.api
+```ini
+[Unit]
+Description=Huyen Bi API Server
+After=network.target postgresql.service
 
-pm2 save && pm2 startup
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/Numerology-Divination
+ExecStart=/usr/bin/node artifacts/api-server/dist/index.mjs
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+Environment=PORT=3001
+Environment=DATABASE_URL=postgresql://huyenbi:your_password@localhost:5432/huyenbi
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-### Bước 7 — Cấu hình Nginx
-
 ```bash
-sudo nano /etc/nginx/sites-available/huyen-bi
+sudo systemctl daemon-reload
+sudo systemctl enable huyen-bi-api
+sudo systemctl start huyen-bi-api
 ```
 
-Nội dung:
+#### Cách 3: Nginx làm reverse proxy cho frontend + API
+
+Thêm config Nginx `/etc/nginx/sites-available/huyenbi`:
 
 ```nginx
 server {
     listen 80;
-    server_name your-domain.com;   # Thay bằng domain của bạn
+    server_name your-domain.com;
 
-    root /opt/huyen-bi/artifacts/mysticism-web/dist/public;
+    root /var/www/Numerology-Divination/artifacts/mysticism-web/dist/public;
     index index.html;
 
-    # Cache static assets dài hạn (Vite tạo tên file có hash)
-    location ~* \.(js|css|woff2?|ttf|svg|png|jpg|ico|webp)$ {
+    # Cache static assets
+    location ~* \.(js|css|woff2?|png|jpg|ico|svg)$ {
         expires 1y;
         add_header Cache-Control "public, immutable";
         try_files $uri =404;
     }
 
-    # Proxy /api/* → Express backend (hỗ trợ SSE streaming + Clerk proxy)
+    # Proxy API — hỗ trợ SSE streaming
     location /api/ {
         proxy_pass         http://localhost:3001;
         proxy_http_version 1.1;
@@ -354,13 +225,12 @@ server {
         chunked_transfer_encoding on;
         proxy_set_header   Host              $host;
         proxy_set_header   X-Real-IP         $remote_addr;
-        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
-        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded-for;
         proxy_read_timeout 300s;
         proxy_send_timeout 300s;
     }
 
-    # SPA fallback — tất cả route trả về index.html
+    # SPA fallback
     location / {
         try_files $uri $uri/ /index.html;
     }
@@ -368,102 +238,165 @@ server {
 ```
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/huyen-bi /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/huyenbi /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
 ---
 
-## Cấu hình HTTPS
+## Cài bằng Docker
 
-```bash
-sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d your-domain.com -d www.your-domain.com
-sudo systemctl reload nginx
+Phù hợp để triển khai nhanh — một lệnh là chạy cả stack (Postgres + API + Nginx).
+
+### Yêu cầu
+
+- Docker 24+
+- Docker Compose v2+
+
+### Cấu trúc Docker
+
+```
+docker-compose.yml
+├── postgres    — PostgreSQL 16 (lưu trữ dữ liệu)
+├── api         — Express 5 backend (Dockerfile.api)
+│                 Build: esbuild → dist/index.mjs
+│                 Migration DB chạy tự động khi khởi động
+└── web         — Nginx 1.27 (Dockerfile.web)
+                  Build: Vite → static files
+                  Proxy: /api/* → api:3001
 ```
 
-Certbot tự thêm block HTTPS và redirect HTTP → HTTPS vào nginx config.
+### Bước 1 — Clone repo
 
----
+```bash
+git clone https://github.com/huyavm/Numerology-Divination.git
+cd Numerology-Divination
+```
 
-## Cấu hình Clerk Production
+### Bước 2 — Tạo file .env
 
-Sau khi deploy xong và có domain + HTTPS:
+```bash
+cp .env.example .env
+```
 
-1. Vào [clerk.com](https://clerk.com) → Dashboard → **Domains**
-2. Nhấn **Add domain** → nhập domain của bạn (ví dụ `huyenbi.com`)
-3. Làm theo hướng dẫn verify (thêm DNS TXT record)
-4. Khi verify xong, Clerk cấp **production instance** — copy `pk_live_...` và `sk_live_...`
-5. Cập nhật `.env` với keys mới → rebuild Docker hoặc rebuild frontend thủ công
+Chỉnh sửa `.env` — tối thiểu đổi mật khẩu database:
 
-> **Clerk proxy:** Trong production, mọi request xác thực Clerk đi qua `/api/__clerk` trên server của bạn (Express tự proxy đến `clerk.dev`). Nginx đã cấu hình sẵn, không cần thêm gì.
+```env
+POSTGRES_PASSWORD=mat_khau_manh_cua_ban
+WEB_PORT=80
+```
+
+> Không cần điền API key AI ở đây — key AI được cấu hình qua Admin Panel trong giao diện web sau khi deploy.
+
+### Bước 3 — Build và chạy
+
+```bash
+docker compose up --build -d
+```
+
+Mở trình duyệt: **http://localhost** (hoặc `http://your-server-ip`)
+
+> Lần đầu build mất 3–5 phút. Các lần sau nhanh hơn nhờ Docker layer cache.
+
+### Lệnh thường dùng
+
+```bash
+# Xem log real-time tất cả service
+docker compose logs -f
+
+# Xem log từng service
+docker compose logs -f api
+docker compose logs -f web
+docker compose logs -f postgres
+
+# Rebuild và restart sau khi thay đổi code
+docker compose up --build -d
+
+# Chỉ rebuild một service
+docker compose up --build -d api
+
+# Dừng tất cả (giữ data)
+docker compose down
+
+# Dừng và xoá toàn bộ data (cẩn thận!)
+docker compose down -v
+```
+
+### Thay đổi port
+
+Nếu cổng 80 đã bị chiếm, sửa trong `.env`:
+
+```env
+WEB_PORT=8080
+```
+
+### Chạy sau reverse proxy (Nginx/Traefik sẵn có)
+
+```yaml
+# docker-compose.override.yml
+services:
+  web:
+    ports: []
+    expose:
+      - "80"
+```
 
 ---
 
 ## Cấu hình AI (Admin Panel)
 
-App hỗ trợ **3 chế độ AI**:
+Ứng dụng hỗ trợ **3 chế độ AI**:
 
-| Chế độ | Mô tả |
-|--------|-------|
-| **Key hệ thống** | Admin cài key dùng chung — người dùng không cần nhập gì |
-| **OpenAI** | Người dùng tự nhập OpenAI API key |
-| **Google Gemini** | Người dùng tự nhập Gemini API key |
+| Chế độ | Mô tả | Ai cần cấu hình? |
+|--------|-------|-----------------|
+| **Key hệ thống** | Dùng key chung do admin cài — người dùng không cần nhập gì | Admin |
+| **OpenAI** | Người dùng tự nhập OpenAI API key | Người dùng |
+| **Google Gemini** | Người dùng tự nhập Gemini API key | Người dùng |
 
-### Cài key hệ thống (Admin)
+### Cách cấu hình Key hệ thống (Admin)
 
-1. Vào app → Navbar → nút **AI** → **Cài đặt AI**
-2. Cuộn xuống **Cài đặt Admin** → nhập mật khẩu admin *(lần đầu tự đặt)*
-3. Chọn Provider, nhập API Key, chọn Model
-4. Đặt giới hạn lượt gọi theo IP (mặc định: 20/giờ, 100/ngày)
-5. Nhấn **Lưu cấu hình Admin**
+1. Vào ứng dụng → nhấn nút **AI** trên thanh điều hướng
+2. Nhấn **Cài đặt AI** → cuộn xuống phần **Cài đặt Admin**
+3. Nhập mật khẩu admin *(lần đầu nhập bất kỳ mật khẩu nào → tự đặt làm mật khẩu admin)*
+4. Chọn **Provider** (OpenAI hoặc Gemini), nhập **API Key**, chọn **Model**
+5. Đặt **giới hạn lượt gọi theo IP** (mặc định: 20/giờ, 100/ngày)
+6. Nhấn **Lưu cấu hình Admin**
+
+Sau khi cấu hình, tất cả người dùng có thể chọn **Key hệ thống** mà không cần nhập key riêng.
 
 ### Các model được hỗ trợ
 
-| Provider | Mặc định | Các model khác |
-|----------|----------|----------------|
+| Provider | Model mặc định | Các model khác |
+|----------|---------------|----------------|
 | OpenAI | `gpt-5.4-nano` | `gpt-5.4`, `gpt-5.4-mini`, `gpt-4.1` |
 | Google Gemini | `gemini-3.0-flash` | `gemini-3.0-pro`, `gemini-3.0-flash-lite` |
 
 ---
 
-## API Reference
+## API
 
-Base URL: `http://localhost:3001` (hoặc domain của bạn)
+Base URL: `http://localhost:3001`
 
-### Mô-đun chung
+### Endpoints chính
 
 | Method | Endpoint | Mô tả |
 |--------|----------|-------|
 | `GET` | `/api/healthz` | Kiểm tra server |
-| `GET` | `/api/config/public` | Thông tin cấu hình public |
-| `POST` | `/api/mysticism/ai-interpret` | Phân tích huyền học bằng AI (SSE) |
-
-### Tài khoản người dùng (yêu cầu đăng nhập)
-
-| Method | Endpoint | Mô tả |
-|--------|----------|-------|
-| `GET` | `/api/readings` | Danh sách lá số đã lưu |
-| `POST` | `/api/readings` | Lưu lá số mới |
-| `PATCH` | `/api/readings/:id` | Sửa tiêu đề / ghi chú |
-| `DELETE` | `/api/readings/:id` | Xóa lá số |
-| `POST` | `/api/readings/:id/share` | Tạo link chia sẻ (30 ngày) |
-| `GET` | `/api/share/:token` | Xem lá số qua link chia sẻ (public) |
-
-### AI Chat
-
-| Method | Endpoint | Mô tả |
-|--------|----------|-------|
-| `GET` | `/api/openai/conversations` | Danh sách hội thoại |
+| `GET` | `/api/config/public` | Thông tin cấu hình public (server có key không, rate limit) |
+| `POST` | `/api/admin/config` | Cập nhật cấu hình admin (cần mật khẩu) |
+| `GET` | `/api/admin/usage` | Thống kê lượt gọi AI theo IP |
+| `GET` | `/api/openai/conversations` | Danh sách hội thoại AI |
 | `POST` | `/api/openai/conversations` | Tạo hội thoại mới |
+| `GET` | `/api/openai/conversations/:id/messages` | Tin nhắn trong hội thoại |
 | `POST` | `/api/openai/conversations/:id/messages` | Gửi tin nhắn (SSE streaming) |
+| `POST` | `/api/mysticism/ai-interpret` | Phân tích huyền học bằng AI (SSE streaming) |
 
 ### Headers AI
 
 ```
 x-ai-provider: server | openai | gemini
-x-ai-key:      <API key>         (chỉ khi provider = openai / gemini)
-x-ai-model:    gpt-5.4-nano | gemini-3.0-flash | ...
+x-ai-key: <API key của bạn>      (chỉ khi dùng openai/gemini)
+x-ai-model: gpt-5.4-nano | gpt-5.4 | gemini-3.0-flash | gemini-3.0-pro | ...
 ```
 
 ---
@@ -473,37 +406,30 @@ x-ai-model:    gpt-5.4-nano | gemini-3.0-flash | ...
 ```
 artifacts/mysticism-web/src/
 ├── pages/
-│   ├── home.tsx              # Trang chủ
-│   ├── than-so-hoc.tsx       # Thần Số Học (radar SVG + 4-year outlook)
-│   ├── bat-tu.tsx            # Bát Tự + Đại Vận + so sánh 2 người
-│   ├── xem-que.tsx           # Kinh Dịch + session history
-│   ├── cat-hung.tsx          # Cát Hung + so sánh 2 số + gợi ý
+│   ├── home.tsx              # Trang chủ — 15 module cards
+│   ├── than-so-hoc.tsx       # Thần Số Học
+│   ├── bat-tu.tsx            # Bát Tự + Đại Vận
+│   ├── xem-que.tsx           # Kinh Dịch
+│   ├── cat-hung.tsx          # Cát Hung
 │   ├── lich-van-nien.tsx     # Lịch Vạn Niên
 │   ├── tu-vi.tsx             # Tử Vi Đẩu Số
 │   ├── phong-thuy.tsx        # Phong Thuỷ Bát Trạch
-│   ├── xem-ten.tsx           # Xem Tên (Ngũ Cách)
+│   ├── xem-ten.tsx           # Xem Tên
 │   ├── lich-ca-nhan.tsx      # Lịch Cá Nhân
 │   ├── tu-dien.tsx           # Từ Điển Huyền Học
 │   ├── hop-tuoi.tsx          # Hợp Tuổi & Duyên Số
-│   ├── xem-ngay-tot.tsx      # Xem Ngày Tốt
+│   ├── xem-ngay-tot.tsx      # Xem Ngày Tốt (Hoàng Đạo)
 │   ├── sao-han.tsx           # Sao Hạn Hàng Năm
 │   ├── lich-su.tsx           # Lịch Sử Tra Cứu
-│   ├── ai-chat.tsx           # Trợ lý AI
-│   ├── sign-in.tsx           # Trang đăng nhập (Clerk)
-│   ├── sign-up.tsx           # Trang đăng ký (Clerk)
-│   └── profile.tsx           # Hồ sơ + lá số + so sánh + chia sẻ
+│   └── ai-chat.tsx           # Trợ lý AI
 ├── components/
-│   ├── layout/
-│   │   ├── navbar.tsx        # Navbar 5 nhóm + UserButton (Clerk)
-│   │   └── footer.tsx        # Footer đa cột
-│   ├── save-reading-btn.tsx  # Nút lưu lá số (dùng lại ở mọi trang)
-│   ├── mystic-cursor.tsx     # Con trỏ huyền bí (gold dot + trail)
-│   ├── ambient-bg.tsx        # Orbs + star field
-│   ├── tilt-card.tsx         # 3D perspective tilt
+│   ├── layout/               # Navbar (15 mục), Footer
+│   ├── ui/                   # shadcn/ui components
 │   ├── pwa-install-prompt.tsx
-│   └── export-card-*.tsx     # Card xuất ảnh/PDF
+│   └── export-card-*.tsx
 ├── lib/
-│   ├── readings-api.ts       # API client cho /api/readings
+│   ├── lunar-calendar.ts     # Chuyển đổi Dương↔Âm (Ho Ngoc Duc)
+│   ├── tu-vi.ts              # 12 cung Tử Vi + 14 chính tinh
 │   ├── numerology.ts         # Thần Số Học
 │   ├── batu.ts               # Bát Tự + Ngũ Hành
 │   ├── dai-van.ts            # Đại Vận 8 trụ
@@ -511,36 +437,27 @@ artifacts/mysticism-web/src/
 │   ├── cat-hung.ts           # Phân tích Cát Hung
 │   ├── phong-thuy.ts         # Bát Trạch Ming Gua
 │   ├── xem-ten.ts            # Ngũ Cách phân tích tên
-│   ├── lich-ca-nhan.ts       # Lịch Cá Nhân
-│   ├── lunar-calendar.ts     # Dương↔Âm (Ho Ngoc Duc)
-│   ├── tu-vi.ts              # 12 cung Tử Vi + 14 chính tinh
-│   ├── hop-tuoi.ts           # Tương hợp Mệnh Quái + Ngũ Hành
+│   ├── lich-ca-nhan.ts       # Lịch Cá Nhân + Năm/Tháng/Ngày
+│   ├── hop-tuoi.ts           # Tương hợp tuổi & duyên số
 │   ├── xem-ngay-tot.ts       # Tìm ngày Hoàng Đạo theo mục đích
 │   ├── sao-han.ts            # Sao hạn chiếu mệnh hàng năm
-│   ├── history.ts            # Lịch sử localStorage
 │   ├── share-utils.ts        # Chia sẻ kết quả qua URL
-│   └── form-utils.ts         # Tiện ích form (ngày, giờ, tên)
+│   ├── history.ts            # Lịch sử tra cứu (localStorage)
+│   └── form-utils.ts         # Tiện ích nhập form (ngày, giờ, tên)
 └── contexts/
-    ├── theme.tsx             # Light/Dark mode
-    └── ai-settings.tsx       # AI provider context
+    ├── theme.tsx              # Light/Dark mode
+    └── ai-settings.tsx        # AI provider context
 
 artifacts/api-server/src/
-├── app.ts                    # Express app + Clerk middleware
-├── middlewares/
-│   └── clerkProxyMiddleware.ts  # Proxy Clerk FAPI trong production
 ├── lib/
-│   ├── migrate.ts            # Auto-migration khi server khởi động
-│   ├── server-config.ts      # Cấu hình admin
-│   └── rate-limit.ts         # Rate limit theo IP
+│   ├── migrate.ts            # Auto-migration các bảng DB khi khởi động
+│   ├── server-config.ts      # Đọc/ghi cấu hình từ DB
+│   └── rate-limit.ts         # Kiểm tra + ghi log rate limit theo IP
 └── routes/
-    ├── readings.ts           # CRUD lá số + share token
     ├── mysticism/            # SSE AI interpret
-    ├── openai/               # CRUD hội thoại AI
+    ├── conversations/        # CRUD hội thoại
     ├── config/               # /api/config/public
-    └── admin/                # /api/admin/*
-
-docker/
-└── nginx.conf                # Static files + proxy /api/* (SSE ready)
+    └── admin/                # /api/admin/config, /api/admin/usage
 ```
 
 ---
