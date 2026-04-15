@@ -17,6 +17,11 @@ import PhongThuyPage from "@/pages/phong-thuy";
 import XemTenPage from "@/pages/xem-ten";
 import LichCaNhanPage from "@/pages/lich-ca-nhan";
 import TuDienPage from "@/pages/tu-dien";
+import HopTuoiPage from "@/pages/hop-tuoi";
+import XemNgayTotPage from "@/pages/xem-ngay-tot";
+import SaoHanPage from "@/pages/sao-han";
+import LichSuPage from "@/pages/lich-su";
+import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +40,10 @@ function Router() {
       <Route path="/xem-ten" component={XemTenPage} />
       <Route path="/lich-ca-nhan" component={LichCaNhanPage} />
       <Route path="/tu-dien" component={TuDienPage} />
+      <Route path="/hop-tuoi" component={HopTuoiPage} />
+      <Route path="/xem-ngay-tot" component={XemNgayTotPage} />
+      <Route path="/sao-han" component={SaoHanPage} />
+      <Route path="/lich-su" component={LichSuPage} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -50,6 +59,7 @@ function App() {
               <Router />
             </WouterRouter>
             <Toaster />
+            <PwaInstallPrompt />
           </TooltipProvider>
         </QueryClientProvider>
       </AISettingsProvider>

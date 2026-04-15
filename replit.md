@@ -20,19 +20,33 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 ## Artifacts
 
 ### mysticism-web (React + Vite, `previewPath: /`)
-Vietnamese mysticism website "Huyền Bí" with **11 modules**:
+Vietnamese mysticism website "Huyền Bí" with **15 modules**:
 
 **Original 7 modules:**
-- `/` — Trang chủ: hero + 11 module cards + features + footer
+- `/` — Trang chủ: hero + 15 module cards + features + footer (stat: 15 hệ thống)
 - `/than-so-hoc` — Thần Số Học: Life Path, Soul, Destiny, Personality, Maturity numbers; Pentagon radar SVG chart; 4-year Personal Year outlook; export PNG/TXT/PDF
-- `/bat-tu` — Bát Tự Tứ Trụ: 4 pillars (Can Chi) + Ngũ Hành SVG donut chart + Hợp Cung Đôi (compare two people); export PNG/TXT/PDF
+- `/bat-tu` — Bát Tự Tứ Trụ: 4 pillars (Can Chi) + Ngũ Hành SVG donut chart + Đại Vận 8-pillar section + Hợp Cung Đôi; export PNG/TXT/PDF
 - `/xem-que` — Kinh Dịch I Ching: 64 hexagrams + SVG line rendering (yang/yin bars) + session history (10 casts); export PNG/TXT/PDF
 - `/cat-hung` — Cát Hung: phone/plate analysis + So Sánh 2 Số tab (winner card + suggest better variants); export PNG/TXT/PDF
 - `/lich-van-nien` — Lịch Vạn Niên: lunar calendar, Can Chi, Hoàng Đạo/Hắc Đạo
 - `/tu-vi` — Tử Vi Đẩu Số: 12 palaces + stars + export PNG/TXT/PDF
-- `/ai-chat` — Trợ lý AI: chat with suggested questions + sidebar toggle
 
-**4 new modules (added in v2):**
+**4 new modules (Phase 2):**
+- `/hop-tuoi` — Hợp Tuổi & Duyên Số: compatibility analysis via Mệnh Quái, Can Chi Zodiac, Ngũ Hành, Thần Số Đường Đời; animated score ring + detail breakdown bars
+- `/xem-ngay-tot` — Xem Ngày Tốt: find auspicious days by purpose (9 purposes); interactive calendar grid + top 5 best days
+- `/sao-han` — Sao Hạn Hàng Năm: 12 annual stars forecast for 7 years; star cards with type/strength/advice
+- `/lich-su` — Lịch Sử Tra Cứu: browseable query history stored in localStorage; search + filter + delete; stats dashboard
+
+**PWA:** `pwa-install-prompt.tsx` component using `beforeinstallprompt` event; localStorage dismiss state (`huyen-bi-pwa-dismissed`)
+
+**Lib files:**
+- `hop-tuoi.ts` — Ming Gua + Can Chi + Ngũ Hành + Numerology compatibility (`analyzeCompatibility`)
+- `xem-ngay-tot.ts` — auspicious day finder by purpose (`findGoodDays`, `PURPOSE_LIST`)
+- `sao-han.ts` — annual stars forecast (`computeAnnualStars`, `getMultiYearForecast`)
+- `dai-van.ts` — 10-year luck pillars computation (`computeDaiVan`)
+- `share-utils.ts` — URL encode/decode for shareable links (`buildShareUrl`, `copyShareUrl`, `readShareParams`)
+
+**4 modules (Phase 1 / v2):**
 - `/phong-thuy` — Phong Thuỷ Bát Trạch: Ming Gua compass, 4 tốt / 4 xấu directions, AI interpretation
 - `/xem-ten` — Xem Tên: Ngũ Cách name analysis grid (Thiên/Nhân/Địa/Ngoại/Tổng Cách), Ngũ Hành name element
 - `/lich-ca-nhan` — Lịch Cá Nhân: Personal Year/Month/Day numerology + monthly calendar with energy colors
@@ -69,6 +83,11 @@ REST API with:
 - `src/lib/phong-thuy.ts` — Bát Trạch Ming Gua (getGuaInfo, direction grid)
 - `src/lib/xem-ten.ts` — Ngũ Cách name analysis (analyzeName)
 - `src/lib/lich-ca-nhan.ts` — Personal Year/Month/Day + calendar builder (buildMonthCalendar)
+- `src/lib/hop-tuoi.ts` — analyzeCompatibility() via Mệnh Quái + Can Chi + Ngũ Hành + Thần Số
+- `src/lib/xem-ngay-tot.ts` — findGoodDays(year, month, purpose) + PURPOSE_LIST
+- `src/lib/sao-han.ts` — computeAnnualStars(birthYear, targetYear) + getMultiYearForecast()
+- `src/lib/dai-van.ts` — computeDaiVan(dob, gender) → 8 luck pillars
+- `src/lib/share-utils.ts` — buildShareUrl(), copyShareUrl(), readShareParams()
 - `src/lib/form-utils.ts` — `hourToCanChi`, `dateInputToDisplay`, `displayToDateInput`, `formatPhoneDisplay`, `validateName`, `validateDateDisplay`
 - `src/hooks/use-export-image.ts` — html2canvas + jspdf download hook (`downloadAsImage`, `downloadAsPdf`, `downloadAsText`)
 - `src/hooks/use-ai-sse-chat.ts` — SSE streaming hook with provider/key/model headers

@@ -17,6 +17,10 @@ const navItems = [
   { href: "/xem-ten", label: "Xem Tên" },
   { href: "/lich-ca-nhan", label: "Lịch Cá Nhân" },
   { href: "/tu-dien", label: "Từ Điển" },
+  { href: "/hop-tuoi", label: "Hợp Tuổi" },
+  { href: "/xem-ngay-tot", label: "Ngày Tốt" },
+  { href: "/sao-han", label: "Sao Hạn" },
+  { href: "/lich-su", label: "Lịch Sử" },
   { href: "/ai-chat", label: "Trợ lý AI" },
 ];
 

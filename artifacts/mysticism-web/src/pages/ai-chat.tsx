@@ -10,14 +10,20 @@ import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { useAISettings } from "@/contexts/ai-settings";
 
 const SUGGESTED_QUESTIONS = [
-  "Số vận mệnh của tôi là 7, điều đó có ý nghĩa gì?",
-  "Người sinh năm Giáp Tý có mệnh như thế nào?",
-  "Quẻ Càn có ý nghĩa gì trong công việc?",
-  "Số điện thoại kết thúc bằng 8686 có tốt không?",
-  "Cung Mệnh có sao Tử Vi tọa thủ mang lại điều gì?",
-  "Ngũ Hành Hỏa thiếu nên bổ sung như thế nào?",
-  "Người sinh giờ Ngọ có đặc điểm tính cách gì?",
-  "Làm thế nào để hóa giải sao Kình Dương trong lá số?",
+  "Số vận mệnh 7 có ý nghĩa gì và hợp nghề nghiệp nào?",
+  "Người sinh năm Giáp Tý có tính cách và vận mệnh ra sao?",
+  "Quẻ Địa Thiên Thái có nghĩa gì khi hỏi về tình duyên?",
+  "Số điện thoại kết thúc 8686 tốt hay xấu? Ý nghĩa từng số?",
+  "Sao Thái Dương chiếu mệnh năm nay ảnh hưởng gì?",
+  "Ngũ Hành Hỏa thiếu cần bổ sung màu sắc và vật phẩm gì?",
+  "Người sinh giờ Ngọ tuổi Mùi tứ trụ thế nào?",
+  "Cung Mệnh Thiên Đồng Cự Môn hội chiếu mang lại gì?",
+  "Sao La Hầu chiếu cần hóa giải như thế nào?",
+  "Đại Vận Kim có lợi hay bất lợi cho người mệnh Mộc?",
+  "Hợp tuổi Dần và Ngọ có phải Tam Hợp không?",
+  "Xem ngày cưới tháng 6 âm lịch ngày nào tốt nhất?",
+  "Phong thuỷ hướng Tây Nam tốt cho người Mệnh Quái nào?",
+  "Tên có tổng nét 25 theo Hán Tự mang vận khí gì?",
 ];
 
 export default function AIChatPage() {

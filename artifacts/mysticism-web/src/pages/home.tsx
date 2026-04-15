@@ -134,6 +134,54 @@ const MODULES = [
     tagColor: "bg-orange-500/10 text-orange-300/80",
     symbolColor: "text-orange-400/80",
   },
+  {
+    href: "/hop-tuoi",
+    symbol: "♡",
+    symbolSub: "Duyên số",
+    title: "Hợp Tuổi & Duyên Số",
+    subtitle: "Tương Hợp Huyền Học",
+    desc: "Phân tích mức độ tương hợp giữa hai người qua Mệnh Quái Bát Trạch, Can Chi Ngũ Hành, Cung Tuổi Địa Chi và Thần Số Đường Đời. Điểm tương hợp tổng hợp.",
+    tags: ["Cung Tuổi", "Mệnh Quái", "Ngũ Hành", "Thần Số"],
+    accent: "from-pink-600/20 to-pink-500/5 border-pink-500/30 hover:border-pink-400/60",
+    tagColor: "bg-pink-500/10 text-pink-300/80",
+    symbolColor: "text-pink-400/80",
+  },
+  {
+    href: "/xem-ngay-tot",
+    symbol: "黃",
+    symbolSub: "Hoàng Đạo",
+    title: "Xem Ngày Tốt",
+    subtitle: "Chọn Ngày Hoàng Đạo",
+    desc: "Tìm ngày Hoàng Đạo phù hợp nhất trong tháng theo từng mục đích: cưới hỏi, khai trương, động thổ, ký kết, xuất hành, nhập trạch, phẫu thuật và nhiều hơn.",
+    tags: ["Hôn nhân", "Khai trương", "Động thổ", "Xuất hành"],
+    accent: "from-yellow-600/20 to-yellow-500/5 border-yellow-500/30 hover:border-yellow-400/60",
+    tagColor: "bg-yellow-500/10 text-yellow-300/80",
+    symbolColor: "text-yellow-400/80",
+  },
+  {
+    href: "/sao-han",
+    symbol: "★",
+    symbolSub: "Sao chiếu",
+    title: "Sao Hạn Hàng Năm",
+    subtitle: "Vận Trình Chiêm Tinh",
+    desc: "Tra cứu sao chiếu mệnh theo tuổi Can Chi trong từng năm. Xem Thái Tuế, Thái Dương, Thiên Đức, La Hầu, Phúc Tinh và nhiều sao hạn khác trong 7 năm liên tiếp.",
+    tags: ["Thái Tuế", "Thái Dương", "La Hầu", "Phúc Tinh"],
+    accent: "from-violet-600/20 to-violet-500/5 border-violet-500/30 hover:border-violet-400/60",
+    tagColor: "bg-violet-500/10 text-violet-300/80",
+    symbolColor: "text-violet-400/80",
+  },
+  {
+    href: "/lich-su",
+    symbol: "◈",
+    symbolSub: "Lưu trữ",
+    title: "Lịch Sử Tra Cứu",
+    subtitle: "Kho Lưu Cá Nhân",
+    desc: "Xem lại toàn bộ các lần tra cứu được lưu trữ trên thiết bị. Tìm kiếm, lọc theo chức năng và xem lại kết quả đầy đủ bất cứ lúc nào.",
+    tags: ["Lịch sử", "Tìm kiếm", "Lọc", "Xem lại"],
+    accent: "from-slate-600/20 to-slate-500/5 border-slate-500/30 hover:border-slate-400/60",
+    tagColor: "bg-slate-500/10 text-slate-300/80",
+    symbolColor: "text-slate-400/80",
+  },
 ];
 
 const FEATURES = [
@@ -160,7 +208,7 @@ const FEATURES = [
 ];
 
 const STEPS = [
-  { num: "01", title: "Chọn phương pháp", desc: "Lựa chọn trong 11 hệ thống: Thần số, Bát tự, Kinh Dịch, Cát Hung, Phong Thủy, Xem Tên, Lịch Cá Nhân, Từ Điển và nhiều hơn nữa." },
+  { num: "01", title: "Chọn phương pháp", desc: "Lựa chọn trong 15 hệ thống: Thần số, Bát tự, Kinh Dịch, Cát Hung, Hợp Tuổi, Sao Hạn, Xem Ngày Tốt, Phong Thủy, Xem Tên và nhiều hơn nữa." },
   { num: "02", title: "Nhập thông tin", desc: "Cung cấp ngày sinh, tên gọi, câu hỏi hoặc con số cần tra cứu theo từng phương pháp." },
   { num: "03", title: "Nhận luận giải AI", desc: "AI phân tích và đưa ra luận giải chi tiết, sâu sắc bằng tiếng Việt trong vài giây." },
 ];
@@ -231,7 +279,7 @@ export default function Home() {
 
           <div className="flex flex-wrap justify-center gap-8 pt-8 border-t border-primary/10 mt-8">
             {[
-              { val: "11", label: "Hệ thống huyền học" },
+              { val: "15", label: "Hệ thống huyền học" },
               { val: "64", label: "Quẻ Dịch" },
               { val: "AI", label: "GPT-5.4 & Gemini 3.0" },
             ].map((s) => (
@@ -254,7 +302,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <p className="text-xs uppercase tracking-[0.3em] text-primary/60">Hệ thống tra cứu</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">11 Môn Huyền Học</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">15 Môn Huyền Học</h2>
             <p className="text-muted-foreground max-w-xl mx-auto">Mỗi phương pháp là một cánh cửa độc lập dẫn đến sự thấu hiểu bản thân và vận mệnh.</p>
           </div>
 
@@ -388,6 +436,10 @@ export default function Home() {
               { label: "Xem Tên", href: "/xem-ten" },
               { label: "Lịch Cá Nhân", href: "/lich-ca-nhan" },
               { label: "Từ Điển", href: "/tu-dien" },
+              { label: "Hợp Tuổi", href: "/hop-tuoi" },
+              { label: "Xem Ngày Tốt", href: "/xem-ngay-tot" },
+              { label: "Sao Hạn", href: "/sao-han" },
+              { label: "Lịch Sử", href: "/lich-su" },
               { label: "Trợ lý AI", href: "/ai-chat" },
             ].map((l) => (
               <Link key={l.href} href={l.href} className="text-muted-foreground hover:text-primary transition-colors">{l.label}</Link>

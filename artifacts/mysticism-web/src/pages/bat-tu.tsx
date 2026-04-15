@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { computeBatu, Pillar, NguyenHanhItem } from "@/lib/batu";
+import { computeDaiVan, type DaiVanResult } from "@/lib/dai-van";
 import { useAISSEChat } from "@/hooks/use-ai-sse-chat";
 import { useExportImage } from "@/hooks/use-export-image";
 import { Progress } from "@/components/ui/progress";
@@ -79,6 +80,7 @@ export default function BatuPage() {
   const [date, setDate] = useState("");
   const [dateInput, setDateInput] = useState("");
   const [time, setTime] = useState("06:00");
+  const [gender, setGender] = useState<"nam" | "nu">("nam");
   const [errors, setErrors] = useState({ date: "", time: "" });
   const [touched, setTouched] = useState({ date: false, time: false });
   const [results, setResults] = useState<{
@@ -88,6 +90,7 @@ export default function BatuPage() {
     gio: Pillar;
     nguHanhAnalysis: NguyenHanhItem[];
   } | null>(null);
+  const [daiVan, setDaiVan] = useState<DaiVanResult | null>(null);
 
   const [compare, setCompare] = useState<CompareState>({ date2: "", dateInput2: "", time2: "06:00", results2: null });
   const [showCompare, setShowCompare] = useState(false);
@@ -112,6 +115,7 @@ export default function BatuPage() {
     setTouched({ date: true, time: true });
     if (dateErr || timeErr) return;
     setResults(computeBatu(date, time));
+    setDaiVan(computeDaiVan(date, gender));
     setCompare((c) => ({ ...c, results2: null }));
   };
 
@@ -229,6 +233,18 @@ export default function BatuPage() {
                         {hourToCanChi(selectedHour)}
                       </p>
                     )}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-foreground/80">Giới tính <span className="text-xs text-muted-foreground">(dùng tính Đại Vận)</span></Label>
+                  <div className="flex gap-2">
+                    {(["nam", "nu"] as const).map((g) => (
+                      <button key={g} type="button" onClick={() => setGender(g)}
+                        className={cn("flex-1 py-2 rounded-lg border text-sm font-medium transition-all",
+                          gender === g ? "border-primary bg-primary/20 text-primary" : "border-border/40 text-muted-foreground hover:border-primary/30 bg-background/30")}>
+                        {g === "nam" ? "Nam" : "Nữ"}
+                      </button>
+                    ))}
                   </div>
                 </div>
                 <Button type="submit" disabled={!dateInput || !time} className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-semibold tracking-wider disabled:opacity-40">
@@ -372,6 +388,40 @@ export default function BatuPage() {
                   </CardContent>
                 )}
               </Card>
+
+              {/* Đại Vận section */}
+              {daiVan && (
+                <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl shadow-primary/5">
+                  <CardHeader>
+                    <CardTitle className="text-2xl text-primary">Đại Vận (8 vận 10 năm)</CardTitle>
+                    <CardDescription>{daiVan.note}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {daiVan.pillars.slice(0, 8).map((pillar) => (
+                        <div key={pillar.index} className={cn("rounded-xl border p-3 text-center space-y-2 transition-all",
+                          pillar.quality === "Rất Tốt" ? "border-yellow-500/40 bg-yellow-500/8" :
+                          pillar.quality === "Tốt" ? "border-green-500/40 bg-green-500/8" :
+                          pillar.quality === "Trung Bình" ? "border-amber-500/30 bg-amber-500/5" :
+                          "border-red-500/30 bg-red-500/5")}>
+                          <div className="text-xs text-muted-foreground font-medium">Tuổi {pillar.startAge}–{pillar.endAge}</div>
+                          <div className="text-xl font-bold font-serif text-foreground/90">{pillar.thienCan}</div>
+                          <div className="text-xl font-bold font-serif text-foreground/90">{pillar.diaChi}</div>
+                          <div className={cn("text-[10px] font-semibold px-2 py-0.5 rounded-full inline-block", pillar.qualityColor)}>{pillar.quality}</div>
+                          <div className="text-[10px] text-muted-foreground leading-relaxed">{pillar.nguHanh}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 space-y-2">
+                      {daiVan.pillars.slice(0, 4).map((pillar) => (
+                        <div key={pillar.index} className="text-xs text-muted-foreground leading-relaxed border-l-2 border-primary/20 pl-3">
+                          <span className="font-medium text-foreground/70">Tuổi {pillar.startAge}–{pillar.endAge} ({pillar.thienCan} {pillar.diaChi}):</span> {pillar.desc}
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl shadow-primary/5 mt-8">
                 <CardHeader>
