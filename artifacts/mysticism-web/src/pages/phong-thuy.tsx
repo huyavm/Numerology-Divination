@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData } from "@/lib/reopen-reading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -100,6 +101,14 @@ export default function PhongThuyPage() {
     result: `Mệnh Quái: ${result.gua} — ${result.guaName}\nNgũ hành: ${result.element}\nNhóm: ${result.group === "east" ? "Đông Tứ Mệnh" : "Tây Tứ Mệnh"}\nHướng tốt: ${result.directions.filter(d => d.quality === "auspicious").map(d => `${d.direction} (${d.name})`).join(", ")}\nHướng xấu: ${result.directions.filter(d => d.quality === "inauspicious").map(d => `${d.direction} (${d.name})`).join(", ")}`,
   } : null;
   useAutoHistory(phongThuyEntry);
+
+  useEffect(() => {
+    const d = popReopenData("phong-thuy");
+    if (d) {
+      if (d.namSinh) setYearInput(String(d.namSinh));
+      if (d.gioiTinh) setGender(d.gioiTinh as "nam" | "nu");
+    }
+  }, []);
 
   const handleCalculate = () => {
     const y = parseInt(yearInput);

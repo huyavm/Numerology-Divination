@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData, displayToInputDate } from "@/lib/reopen-reading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -85,6 +86,11 @@ export default function LichCaNhanPage() {
     summary: `Số năm cá nhân ${currentYear}: ${computePersonalYear(dob, currentYear)} — ${getPersonalYearInfo(dob, currentYear).theme}`,
     result: `Ngày sinh: ${dob}\nNăm ${currentYear - 1}: Số cá nhân ${computePersonalYear(dob, currentYear - 1)} — ${getPersonalYearInfo(dob, currentYear - 1).theme}\nNăm ${currentYear}: Số cá nhân ${computePersonalYear(dob, currentYear)} — ${getPersonalYearInfo(dob, currentYear).theme}\nNăm ${currentYear + 1}: Số cá nhân ${computePersonalYear(dob, currentYear + 1)} — ${getPersonalYearInfo(dob, currentYear + 1).theme}`,
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("lich-ca-nhan");
+    if (d?.dob) { setDob(String(d.dob)); setDobInput(displayToInputDate(String(d.dob))); }
+  }, []);
 
   const handleCalculate = (e: React.FormEvent) => {
     e.preventDefault();

@@ -7,6 +7,7 @@ import { AmbientBg } from "@/components/ambient-bg";
 import { readingsApi, type SavedReading } from "@/lib/readings-api";
 import { cn } from "@/lib/utils";
 import { isClerkEnabled } from "@/lib/auth-config";
+import { storeReopenData } from "@/lib/reopen-reading";
 
 const MODULE_LABELS: Record<string, string> = {
   "than-so-hoc": "Thần Số Học",
@@ -87,6 +88,7 @@ function ReadingCard({
   selected: boolean;
   onToggleCompare: (id: number) => void;
 }) {
+  const [, setLocation] = useLocation();
   const [deleting, setDeleting] = useState(false);
   const [editingNote, setEditingNote] = useState(false);
   const [note, setNote] = useState(reading.notes ?? "");
@@ -184,11 +186,15 @@ function ReadingCard({
       )}
 
       <div className="flex items-center gap-2 pt-1">
-        <Link href={`/${reading.module}`}>
-          <button className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-primary/25 text-primary/70 hover:border-primary hover:text-primary transition-all">
-            Mở lại
-          </button>
-        </Link>
+        <button
+          onClick={() => {
+            storeReopenData(reading.module, reading.input_data);
+            setLocation(`/${reading.module}`);
+          }}
+          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border border-primary/25 text-primary/70 hover:border-primary hover:text-primary transition-all"
+        >
+          Mở lại
+        </button>
         <CopyShareBtn readingId={reading.id} />
         <button
           onClick={handleDelete}

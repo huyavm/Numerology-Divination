@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData } from "@/lib/reopen-reading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -103,6 +104,14 @@ export default function NumerologyPage() {
     summary: `Số Đường Đời: ${results.lifePath}. Số Sứ Mệnh: ${results.destiny}. Số Linh Hồn: ${results.soul}. Số Nhân Cách: ${results.personality}.`,
     result: `Họ tên: ${name} | Ngày sinh: ${dob}\nĐường Đời: ${results.lifePath} | Sứ Mệnh: ${results.destiny} | Linh Hồn: ${results.soul} | Nhân Cách: ${results.personality}`,
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("than-so-hoc");
+    if (d) {
+      if (d.hoTen) setName(String(d.hoTen));
+      if (d.ngaySinh) setDob(String(d.ngaySinh));
+    }
+  }, []);
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">

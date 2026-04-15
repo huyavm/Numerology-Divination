@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData } from "@/lib/reopen-reading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -141,6 +142,20 @@ export default function TuViPage() {
     summary: `Mệnh cục: ${result.cuccDesc}. Ngũ hành: ${result.nguHanhCuc}. Can năm: ${result.canNam} ${result.chiNam}.`,
     result: `Ngày sinh: ${form.day}/${form.month}/${form.year} giờ ${form.hour}:00 — ${form.gender === "nam" ? "Nam" : "Nữ"}\nMệnh cục: ${result.cuccDesc} | Ngũ hành: ${result.nguHanhCuc}\n${result.menhDesc}`,
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("tu-vi");
+    if (d) {
+      setForm((f) => ({
+        ...f,
+        ...(d.ngay ? { day: String(d.ngay) } : {}),
+        ...(d.thang ? { month: String(d.thang) } : {}),
+        ...(d.nam ? { year: String(d.nam) } : {}),
+        ...(d.gio !== undefined ? { hour: String(d.gio) } : {}),
+        ...(d.gioiTinh ? { gender: d.gioiTinh as "nam" | "nu" } : {}),
+      }));
+    }
+  }, []);
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background">

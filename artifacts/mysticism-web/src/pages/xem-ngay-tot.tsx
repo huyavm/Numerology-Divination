@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData } from "@/lib/reopen-reading";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -41,6 +42,8 @@ export default function XemNgayTotPage() {
     return { firstDay, daysInMonth };
   }, [year, month]);
 
+  const purposeInfo = PURPOSE_LIST.find(p => p.id === purpose);
+
   useAutoHistory(results && results.length > 0 ? {
     module: "xem-ngay-tot",
     moduleName: "Xem Ngày Tốt",
@@ -48,6 +51,15 @@ export default function XemNgayTotPage() {
     summary: `Tìm thấy ${results.length} ngày tốt. Top 1: ${results[0]?.dayInfo.solar.toLocaleDateString("vi-VN", { day: "numeric", month: "long" })} (điểm ${results[0]?.score})`,
     result: `Mục đích: ${purposeInfo?.label}\nTháng: ${MONTH_NAMES[month - 1]} ${year}\n\nTop 5 ngày tốt nhất:\n${results.slice(0, 5).map((d, i) => `${i + 1}. ${d.dayInfo.solar.toLocaleDateString("vi-VN", { weekday: "short", day: "numeric", month: "long" })} — điểm ${d.score}`).join("\n")}`,
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("xem-ngay-tot");
+    if (d) {
+      if (d.thang) setMonth(Number(d.thang));
+      if (d.nam) setYear(Number(d.nam));
+      if (d.mucDich) setPurpose(d.mucDich as Purpose);
+    }
+  }, []);
 
   const handleSearch = () => {
     const days = findGoodDays(year, month, purpose);
@@ -58,8 +70,6 @@ export default function XemNgayTotPage() {
 
   const prevMonth = () => { if (month === 1) { setMonth(12); setYear(y => y - 1); } else setMonth(m => m - 1); setResults(null); setShowTop(false); };
   const nextMonth = () => { if (month === 12) { setMonth(1); setYear(y => y + 1); } else setMonth(m => m + 1); setResults(null); setShowTop(false); };
-
-  const purposeInfo = PURPOSE_LIST.find(p => p.id === purpose);
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">

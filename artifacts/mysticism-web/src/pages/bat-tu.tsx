@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData, displayToInputDate } from "@/lib/reopen-reading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -158,6 +159,14 @@ export default function BatuPage() {
     summary: `Tứ trụ: ${results.gio.thienCan}${results.gio.diaChi} ${results.ngay.thienCan}${results.ngay.diaChi} ${results.thang.thienCan}${results.thang.diaChi} ${results.nam.thienCan}${results.nam.diaChi}. Ngũ hành chủ: ${results.nguHanhAnalysis.reduce((a, b) => a.percentage >= b.percentage ? a : b).element}.`,
     result: `Ngày sinh: ${date} | Giờ: ${time}\nTứ Trụ:\nGiờ: ${results.gio.thienCan} ${results.gio.diaChi} (${results.gio.nguHanh})\nNgày: ${results.ngay.thienCan} ${results.ngay.diaChi} (${results.ngay.nguHanh})\nTháng: ${results.thang.thienCan} ${results.thang.diaChi} (${results.thang.nguHanh})\nNăm: ${results.nam.thienCan} ${results.nam.diaChi} (${results.nam.nguHanh})`,
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("bat-tu");
+    if (d) {
+      if (d.ngaySinh) { setDate(String(d.ngaySinh)); setDateInput(displayToInputDate(String(d.ngaySinh))); }
+      if (d.gioSinh) setTime(String(d.gioSinh));
+    }
+  }, []);
 
   const nhCompatDesc = (items1: NguyenHanhItem[], items2: NguyenHanhItem[]) => {
     const dom1 = items1.reduce((a, b) => a.percentage >= b.percentage ? a : b).element;

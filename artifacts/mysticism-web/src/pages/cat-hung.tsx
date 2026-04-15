@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData } from "@/lib/reopen-reading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -584,6 +585,15 @@ export default function CatHungPage() {
     summary: `Biển số ${plateResult.numStr}: ${plateResult.result.verdictLabel} — ${plateResult.result.verdictDescription}`,
     result: `Biển số: ${plate} (${plateResult.numStr})\nKết quả: ${plateResult.result.verdictLabel} — ${plateResult.result.verdictDescription}`,
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("cat-hung");
+    if (d) {
+      if (d.soDienThoai) { handlePhoneChange(String(d.soDienThoai)); setActiveTab("phone"); }
+      if (d.tenChuSo) setOwnerName(String(d.tenChuSo));
+      if (d.bienSo) { setPlate(String(d.bienSo)); setActiveTab("plate"); }
+    }
+  }, []);
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">

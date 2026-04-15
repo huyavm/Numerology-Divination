@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData, displayToInputDate } from "@/lib/reopen-reading";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -93,6 +94,11 @@ export default function SaoHanPage() {
     summary: `Năm ${currentYear}: ${results.find(r => r.year === currentYear)?.mainStar.name || ""} (${results.find(r => r.year === currentYear)?.overallLuck || ""})`,
     result: results.map(r => `Năm ${r.year} (${r.canChi}): ${r.mainStar.name} — ${r.overallLuck}. ${r.mainStar.advice}`).join("\n"),
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("sao-han");
+    if (d?.dob) { setDob(String(d.dob)); setDobInput(displayToInputDate(String(d.dob))); }
+  }, []);
 
   const handleCalculate = () => {
     const err = validateDateDisplay(dob);

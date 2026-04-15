@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData, displayToInputDate } from "@/lib/reopen-reading";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -85,6 +86,16 @@ export default function HopTuoiPage() {
     summary: `${result.verdict} (${result.totalScore}/100) — ${result.summary.slice(0, 100)}`,
     result: `Người 1: ${result.person1.can} ${result.person1.chi} (${result.person1.zodiac})\nNgười 2: ${result.person2.can} ${result.person2.chi} (${result.person2.zodiac})\nĐiểm: ${result.totalScore}/100\n${result.verdict}\n${result.summary}`,
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("hop-tuoi");
+    if (d) {
+      if (d.dob1) { setDob1(String(d.dob1)); setDob1Input(displayToInputDate(String(d.dob1))); }
+      if (d.gioiTinh1) setGender1(d.gioiTinh1 as "nam" | "nu");
+      if (d.dob2) { setDob2(String(d.dob2)); setDob2Input(displayToInputDate(String(d.dob2))); }
+      if (d.gioiTinh2) setGender2(d.gioiTinh2 as "nam" | "nu");
+    }
+  }, []);
 
   const handleCalculate = () => {
     const e1 = validateDateDisplay(dob1);

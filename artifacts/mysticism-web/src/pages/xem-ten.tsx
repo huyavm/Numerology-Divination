@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
 import { useAutoHistory } from "@/lib/use-auto-history";
 import { SaveReadingBtn } from "@/components/save-reading-btn";
+import { popReopenData } from "@/lib/reopen-reading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -94,6 +95,11 @@ export default function XemTenPage() {
     summary: `${fullName}: Nhân Cách ${grid.nhanCach}, Tổng Cách ${grid.tongCach}. ${score?.label || ""}`,
     result: `Tên: ${fullName}\nThiên Cách: ${grid.thienCach}\nĐịa Cách: ${grid.diaCach}\nNhân Cách: ${grid.nhanCach}\nNgoại Cách: ${grid.ngoaiCach}\nTổng Cách: ${grid.tongCach}\nSố Linh Hồn: ${grid.soLinhHon}\nSố Sứ Mệnh: ${grid.soSuMenh}`,
   } : null);
+
+  useEffect(() => {
+    const d = popReopenData("xem-ten");
+    if (d?.hoTen) setFullName(String(d.hoTen));
+  }, []);
 
   return (
     <div className="min-h-[100dvh] flex flex-col bg-background relative overflow-hidden">

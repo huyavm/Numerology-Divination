@@ -25,6 +25,7 @@ import XemNgayTotPage from "@/pages/xem-ngay-tot";
 import SaoHanPage from "@/pages/sao-han";
 import LichSuPage from "@/pages/lich-su";
 import ProfilePage from "@/pages/profile";
+import ShareViewPage from "@/pages/share-view";
 import SignInPage from "@/pages/sign-in";
 import SignUpPage from "@/pages/sign-up";
 import { PwaInstallPrompt } from "@/components/pwa-install-prompt";
@@ -84,6 +85,7 @@ function Router() {
       <Route path="/xem-ngay-tot" component={XemNgayTotPage} />
       <Route path="/sao-han" component={SaoHanPage} />
       <Route path="/lich-su" component={LichSuPage} />
+      <Route path="/share/:token" component={ShareViewPage} />
       <Route component={NotFound} />
     </Switch>
   );
