@@ -4,7 +4,7 @@
   "description": "Nền tảng huyền học: Thần Số Học, Bát Tự, Kinh Dịch, Phong Thủy và Trợ lý AI",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0d0818",
+  "background_color": "#05020e",
   "theme_color": "#1a0f2e",
   "orientation": "portrait-primary",
   "icons": [
@@ -12,7 +12,13 @@
       "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
   "categories": ["lifestyle", "education"],
