@@ -168,7 +168,11 @@ export default function LichSuPage() {
               {/* History list */}
               <div className="space-y-3">
                 {filtered.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground text-sm">Không tìm thấy kết quả phù hợp.</div>
+                  <div className="text-center py-12 space-y-3">
+                    <div className="text-4xl text-primary/15">◇</div>
+                    <p className="text-muted-foreground text-sm">Không tìm thấy kết quả phù hợp.</p>
+                    <button onClick={() => { setSearch(""); setFilter("all"); }} className="text-xs text-primary/60 hover:text-primary underline underline-offset-2 transition-colors">Xóa bộ lọc</button>
+                  </div>
                 ) : (
                   filtered.map(entry => (
                     <HistoryItem key={entry.id} entry={entry} onDelete={() => handleDelete(entry.id)} />

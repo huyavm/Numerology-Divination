@@ -19,6 +19,68 @@ import { ExportDownloadBar } from "@/components/export-download-bar";
 
 const CUONG_TUOC = ["Vượng", "Miếu", "Đắc", "Bình", "Hãm"];
 
+const CUC_START_AGES: Record<string, number> = {
+  "Hỏa": 6, "Thổ": 5, "Kim": 4, "Mộc": 3, "Thủy": 2,
+};
+
+function DaiHanSection({ result, birthYear, gender }: { result: TuViResult; birthYear: number; gender: string }) {
+  const canIdx = THIEN_CAN.indexOf(result.canNam);
+  const chiIdx = DIA_CHI.indexOf(result.chiNam);
+  const isDuongCan = canIdx % 2 === 0;
+  const isThuan = (gender === "nam" && isDuongCan) || (gender === "nu" && !isDuongCan);
+  const dir = isThuan ? 1 : -1;
+  const startAge = CUC_START_AGES[result.nguHanhCuc] ?? 4;
+
+  const periods = Array.from({ length: 8 }, (_, i) => {
+    const ci = ((canIdx + dir * (i + 1)) % 10 + 10) % 10;
+    const dci = ((chiIdx + dir * (i + 1)) % 12 + 12) % 12;
+    const age = startAge + i * 10;
+    const yearStart = birthYear + age;
+    return { can: THIEN_CAN[ci], chi: DIA_CHI[dci], startAge: age, endAge: age + 9, yearStart };
+  });
+
+  const currentAge = new Date().getFullYear() - birthYear;
+  const activePeriod = periods.findIndex(p => currentAge >= p.startAge && currentAge <= p.endAge);
+
+  return (
+    <div>
+      <h2 className="text-lg font-semibold text-foreground mb-1">Đại Hạn</h2>
+      <p className="text-xs text-muted-foreground mb-4">
+        {isThuan ? "Thuận" : "Nghịch"} hành — mỗi đại hạn kéo dài 10 năm, bắt đầu từ tuổi {startAge}.
+      </p>
+      <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+        {periods.map((p, i) => {
+          const isActive = i === activePeriod;
+          return (
+            <div
+              key={i}
+              className={cn(
+                "border rounded-xl p-2.5 text-center space-y-1 transition-all",
+                isActive
+                  ? "border-yellow-400/60 bg-yellow-400/10 shadow-[0_0_12px_rgba(250,204,21,0.12)]"
+                  : "border-primary/15 bg-card/30"
+              )}
+            >
+              <div className={cn("text-xs font-bold", isActive ? "text-yellow-400" : "text-primary")}>
+                {p.can} {p.chi}
+              </div>
+              <div className="text-[10px] text-muted-foreground leading-tight">
+                Tuổi {p.startAge}–{p.endAge}
+              </div>
+              <div className="text-[10px] text-muted-foreground/60">
+                {p.yearStart}
+              </div>
+              {isActive && (
+                <div className="text-[9px] text-yellow-400 font-semibold tracking-wide">HIỆN TẠI</div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function StarBadge({ name, type }: { name: string; type: string }) {
   const style =
     type === "chinh-tinh" ? "bg-primary/20 border-primary/50 text-primary" :
@@ -325,6 +387,9 @@ export default function TuViPage() {
                   ))}
                 </div>
               </div>
+
+              {/* Đại Hạn Cycles */}
+              <DaiHanSection result={result} birthYear={parseInt(form.year)} gender={form.gender} />
 
               {/* Selected Cung Detail */}
               {selectedCung && (

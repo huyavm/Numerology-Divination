@@ -11,6 +11,48 @@ import { cn } from "@/lib/utils";
 import { analyzeCompatibility, type CompatibilityResult } from "@/lib/hop-tuoi";
 import { dateInputToDisplay, validateDateDisplay } from "@/lib/form-utils";
 
+function CompatibilityRadar({ data }: { data: { label: string; abbr: string; score: number }[] }) {
+  const size = 220;
+  const cx = size / 2, cy = size / 2;
+  const r = size * 0.34;
+  const n = data.length;
+  const points = data.map((d, i) => {
+    const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+    const ratio = d.score / 100;
+    return { x: cx + r * ratio * Math.cos(angle), y: cy + r * ratio * Math.sin(angle) };
+  });
+  const polygon = points.map(p => `${p.x},${p.y}`).join(" ");
+  const gridPts = (ratio: number) =>
+    Array.from({ length: n }, (_, i) => {
+      const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+      return `${cx + r * ratio * Math.cos(angle)},${cy + r * ratio * Math.sin(angle)}`;
+    }).join(" ");
+  const lblPts = data.map((d, i) => {
+    const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+    const lr = r * 1.36;
+    return { x: cx + lr * Math.cos(angle), y: cy + lr * Math.sin(angle), abbr: d.abbr, score: d.score };
+  });
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} className="w-full max-w-[240px] mx-auto">
+      {[0.25, 0.5, 0.75, 1].map((r2, i) => (
+        <polygon key={i} points={gridPts(r2)} fill="none" stroke="rgba(201,160,48,0.12)" strokeWidth="0.8" />
+      ))}
+      {Array.from({ length: n }, (_, i) => {
+        const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
+        return <line key={i} x1={cx} y1={cy} x2={cx + r * Math.cos(angle)} y2={cy + r * Math.sin(angle)} stroke="rgba(201,160,48,0.18)" strokeWidth="0.8" />;
+      })}
+      <polygon points={polygon} fill="rgba(201,160,48,0.16)" stroke="rgba(201,160,48,0.85)" strokeWidth="1.6" strokeLinejoin="round" />
+      {points.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r="3.5" fill="#c9a030" opacity="0.9" />)}
+      {lblPts.map((p, i) => (
+        <g key={i}>
+          <text x={p.x} y={p.y - 4} textAnchor="middle" fill="rgba(255,255,255,0.55)" fontSize="7.5" fontWeight="600">{p.abbr}</text>
+          <text x={p.x} y={p.y + 7} textAnchor="middle" fill="#c9a030" fontSize="9" fontWeight="700">{p.score}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function ScoreRing({ score, size = 100 }: { score: number; size?: number }) {
   const r = size * 0.38;
   const circ = 2 * Math.PI * r;
@@ -211,29 +253,37 @@ export default function HopTuoiPage() {
                 </CardContent>
               </Card>
 
-              {/* Score breakdown bars */}
+              {/* Score breakdown — radar + bars */}
               <Card className="bg-card/40 backdrop-blur-sm border-primary/20">
                 <CardHeader><CardTitle className="text-xl text-primary">Biểu Đồ Tương Hợp</CardTitle></CardHeader>
-                <CardContent className="space-y-4">
-                  {[
-                    { label: "Cung Tuổi (35%)", score: result.zodiacRel.score },
-                    { label: "Ngũ Hành (25%)", score: result.nguHanhRel.score },
-                    { label: "Mệnh Quái (20%)", score: result.guaRel.score },
-                    { label: "Thần Số (20%)", score: result.numScore },
-                  ].map(item => {
-                    const color = item.score >= 80 ? "bg-yellow-400" : item.score >= 65 ? "bg-green-400" : item.score >= 50 ? "bg-amber-400" : "bg-red-400";
-                    return (
-                      <div key={item.label} className="space-y-1.5">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-muted-foreground">{item.label}</span>
-                          <span className="font-semibold text-foreground">{item.score}/100</span>
+                <CardContent className="space-y-6">
+                  <CompatibilityRadar data={[
+                    { label: "Cung Tuổi", abbr: "Tuổi", score: result.zodiacRel.score },
+                    { label: "Ngũ Hành", abbr: "Ngũ H.", score: result.nguHanhRel.score },
+                    { label: "Mệnh Quái", abbr: "M.Quái", score: result.guaRel.score },
+                    { label: "Thần Số", abbr: "Thần S.", score: result.numScore },
+                  ]} />
+                  <div className="space-y-3">
+                    {[
+                      { label: "Cung Tuổi (35%)", score: result.zodiacRel.score },
+                      { label: "Ngũ Hành (25%)", score: result.nguHanhRel.score },
+                      { label: "Mệnh Quái (20%)", score: result.guaRel.score },
+                      { label: "Thần Số (20%)", score: result.numScore },
+                    ].map(item => {
+                      const color = item.score >= 80 ? "bg-yellow-400" : item.score >= 65 ? "bg-green-400" : item.score >= 50 ? "bg-amber-400" : "bg-red-400";
+                      return (
+                        <div key={item.label} className="space-y-1.5">
+                          <div className="flex justify-between text-xs">
+                            <span className="text-muted-foreground">{item.label}</span>
+                            <span className="font-semibold text-foreground">{item.score}/100</span>
+                          </div>
+                          <div className="h-2 bg-background/40 rounded-full overflow-hidden">
+                            <div className={cn("h-full rounded-full transition-all duration-1000", color)} style={{ width: `${item.score}%` }} />
+                          </div>
                         </div>
-                        <div className="h-2 bg-background/40 rounded-full overflow-hidden">
-                          <div className={cn("h-full rounded-full transition-all duration-1000", color)} style={{ width: `${item.score}%` }} />
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </CardContent>
               </Card>
             </div>

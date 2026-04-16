@@ -519,6 +519,8 @@ export default function CatHungPage() {
 
   const [plate, setPlate] = useState("");
   const [plateResult, setPlateResult] = useState<{ result: CatHungResult; numStr: string } | null>(null);
+  const [bankNum, setBankNum] = useState("");
+  const [bankResult, setBankResult] = useState<{ result: CatHungResult; numStr: string } | null>(null);
   const [activeTab, setActiveTab] = useState("phone");
 
   const last6 = extractLastSixDigits(phone);
@@ -610,15 +612,18 @@ export default function CatHungPage() {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3 bg-card/40 border border-primary/20">
-              <TabsTrigger value="phone" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
-                Số Điện Thoại
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 bg-card/40 border border-primary/20">
+              <TabsTrigger value="phone" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary text-xs sm:text-sm">
+                Điện Thoại
               </TabsTrigger>
-              <TabsTrigger value="compare" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
-                So Sánh 2 Số
+              <TabsTrigger value="compare" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary text-xs sm:text-sm">
+                So Sánh
               </TabsTrigger>
-              <TabsTrigger value="plate" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary">
+              <TabsTrigger value="plate" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary text-xs sm:text-sm">
                 Biển Số Xe
+              </TabsTrigger>
+              <TabsTrigger value="bank" className="data-[state=active]:bg-primary/20 data-[state=active]:text-primary text-xs sm:text-sm">
+                Tài Khoản NH
               </TabsTrigger>
             </TabsList>
 
@@ -874,6 +879,77 @@ export default function CatHungPage() {
                     />
                   </div>
                   <PlateResult result={plateResult.result} numStr={plateResult.numStr} />
+                </>
+              )}
+            </TabsContent>
+            <TabsContent value="bank" className="space-y-8 mt-6">
+              <Card className="bg-card/40 backdrop-blur-sm border-primary/20 shadow-xl">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-primary">Số Tài Khoản Ngân Hàng</CardTitle>
+                  <CardDescription>
+                    Nhập 6–12 chữ số cuối của số tài khoản để luận đoán cát hung theo huyền số học.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={(e) => {
+                    e.preventDefault();
+                    const cleaned = bankNum.replace(/\D/g, "");
+                    const numStr = cleaned.slice(-8);
+                    if (numStr.length < 6) return;
+                    setBankResult({ result: analyzeCatHung(numStr), numStr });
+                  }} className="flex gap-3">
+                    <div className="flex-1 space-y-1.5">
+                      <Label htmlFor="bank" className="flex items-center gap-1.5 text-sm font-medium text-foreground/80">
+                        <svg className="w-4 h-4 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeWidth={1.8} d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline strokeWidth={1.8} points="9 22 9 12 15 12 15 22"/></svg>
+                        Số tài khoản (6–18 chữ số)
+                      </Label>
+                      <div className="relative">
+                        <input
+                          id="bank"
+                          type="text"
+                          inputMode="numeric"
+                          value={bankNum}
+                          onChange={(e) => setBankNum(e.target.value.replace(/\D/g, "").slice(0, 18))}
+                          placeholder="VD: 0123456789012"
+                          maxLength={18}
+                          required
+                          className={cn(
+                            "flex h-10 w-full rounded-md border bg-background/50 px-3 py-2 pl-10 pr-12 text-sm font-mono tracking-[0.1em] transition-all duration-200 outline-none",
+                            bankNum.length >= 6 ? "border-green-500/60 focus:ring-1 focus:ring-green-500/30"
+                              : bankNum ? "border-primary/40 focus:ring-1 focus:ring-primary/20"
+                              : "border-border/50 focus:border-primary/50 focus:ring-1 focus:ring-primary/20"
+                          )}
+                        />
+                        <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" strokeWidth={1.8}/><line x1="1" y1="10" x2="23" y2="10" strokeWidth={1.8}/></svg>
+                        <span className={cn("absolute right-3 top-1/2 -translate-y-1/2 text-xs font-mono tabular-nums", bankNum.length >= 6 ? "text-green-400" : "text-muted-foreground/50")}>
+                          {bankNum.length}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">Phân tích dựa trên 8 chữ số cuối mang năng lượng tài lộc</p>
+                    </div>
+                    <div className="flex items-center pb-5">
+                      <Button
+                        type="submit"
+                        disabled={bankNum.replace(/\D/g, "").length < 6}
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-10 px-6"
+                      >
+                        LUẬN ĐOÁN
+                      </Button>
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+              {bankResult && (
+                <>
+                  <div className="flex justify-end">
+                    <SaveReadingBtn
+                      module="cat-hung"
+                      title={`Cát Hung Tài Khoản — ...${bankResult.numStr}`}
+                      inputData={{ taiKhoan: `...${bankResult.numStr}` }}
+                      resultData={{ ketQua: bankResult.result.verdictLabel, moTa: bankResult.result.verdictDescription }}
+                    />
+                  </div>
+                  <PlateResult result={bankResult.result} numStr={bankResult.numStr} />
                 </>
               )}
             </TabsContent>

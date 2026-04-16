@@ -956,3 +956,170 @@ export function XemNgayTotKnowledge() {
     </div>
   );
 }
+
+export function LichCaNhanKnowledge() {
+  return (
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">Nguồn tri thức — Lịch Cá Nhân</p>
+
+      <KBSection title="Chu Kỳ Cá Nhân — Nền tảng lý thuyết">
+        <p className="leading-relaxed">
+          <strong className="text-primary">Lịch Cá Nhân</strong> là ứng dụng Thần Số Học vào việc xác định năng lượng của từng giai đoạn thời gian trong cuộc đời. Mỗi người trải qua <strong className="text-primary">chu kỳ 9 năm</strong> liên tục, và trong mỗi năm lại có <strong className="text-primary">12 chu kỳ tháng</strong>, rồi đến <strong className="text-primary">chu kỳ ngày</strong>. Hệ thống này giúp xác định thời điểm thuận lợi để hành động, nghỉ ngơi, hoặc tái cơ cấu.
+        </p>
+        <KBGrid
+          items={[
+            { label: "Năm Cá Nhân", value: "Chu kỳ 9 năm", sub: "Định hướng chiến lược năm", color: "text-primary" },
+            { label: "Tháng Cá Nhân", value: "Chu kỳ con trong năm", sub: "Năng lượng từng tháng", color: "text-primary" },
+            { label: "Ngày Cá Nhân", value: "Chu kỳ con trong tháng", sub: "Hành động từng ngày", color: "text-primary" },
+            { label: "Số Đường Đời", value: "Ảnh hưởng nền tảng", sub: "Màu sắc cá nhân bền vững", color: "text-yellow-400" },
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Cách tính Năm Cá Nhân">
+        <p className="leading-relaxed mb-2">
+          Năm Cá Nhân = <strong className="text-primary">Ngày sinh + Tháng sinh + Năm dương lịch hiện tại</strong> (rút gọn về số 1–9).
+        </p>
+        <div className="bg-background/30 rounded-lg p-3 border border-primary/15 text-xs space-y-1">
+          <p className="text-foreground/80">Ví dụ: Sinh ngày <strong>15/8</strong>, đang ở năm <strong>2025</strong></p>
+          <p className="text-muted-foreground">→ 1+5 + 8 + 2+0+2+5 = 6 + 8 + 9 = 23 → 2+3 = <strong className="text-primary">5</strong></p>
+          <p className="text-muted-foreground">→ Năm Cá Nhân 2025 là số <strong className="text-primary">5</strong> (năm biến chuyển, tự do)</p>
+        </div>
+        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+          Năm mới cá nhân bắt đầu từ <strong>ngày sinh</strong> của bạn, không phải từ 1/1. Tháng trước sinh nhật vẫn thuộc Năm Cá Nhân cũ.
+        </p>
+      </KBSection>
+
+      <KBSection title="Ý nghĩa 9 Chu Kỳ Năm">
+        <KBTable
+          headers={["Năm", "Chủ đề", "Năng lượng", "Hành động khuyến nghị"]}
+          rows={[
+            ["1", "Khởi đầu mới", "Bắt đầu, độc lập, tiên phong", "Khởi nghiệp, đặt mục tiêu mới, ra quyết định táo bạo"],
+            ["2", "Hợp tác & kiên nhẫn", "Cân bằng, quan hệ, nhạy cảm", "Xây dựng mối quan hệ, chờ đợi, lắng nghe"],
+            ["3", "Sáng tạo & biểu đạt", "Vui vẻ, giao tiếp, nghệ thuật", "Học tập, sáng tác, kết nối xã hội rộng"],
+            ["4", "Xây dựng nền tảng", "Kỷ luật, chăm chỉ, ổn định", "Tiết kiệm, học nghề, xây nhà, lập hệ thống"],
+            ["5", "Biến chuyển & tự do", "Thay đổi, phiêu lưu, linh hoạt", "Du lịch, thử nghiệm, chấp nhận thay đổi"],
+            ["6", "Gia đình & trách nhiệm", "Yêu thương, chăm sóc, cộng đồng", "Hôn nhân, sinh con, chăm sóc người thân"],
+            ["7", "Nội tâm & tri thức", "Nghiên cứu, tâm linh, tĩnh tâm", "Học sâu, thiền định, phân tích bản thân"],
+            ["8", "Sức mạnh & thịnh vượng", "Vật chất, quyền lực, thành tựu", "Đầu tư, thăng tiến, mở rộng kinh doanh"],
+            ["9", "Kết thúc & buông bỏ", "Hoàn thành, bác ái, thanh lọc", "Kết thúc điều không còn phù hợp, tổng kết"],
+          ]}
+        />
+      </KBSection>
+
+      <KBSection title="Tháng & Ngày Cá Nhân">
+        <p className="leading-relaxed mb-2">
+          Trong một Năm Cá Nhân, mỗi tháng cũng có số riêng:
+        </p>
+        <div className="bg-background/30 rounded-lg p-3 border border-primary/15 text-xs space-y-1 mb-2">
+          <p className="text-foreground/80">Tháng Cá Nhân = <strong className="text-primary">Năm Cá Nhân + Số tháng dương lịch</strong> (rút gọn)</p>
+          <p className="text-muted-foreground">Ví dụ: Năm Cá Nhân 5, tháng 11 → 5+11=16 → 1+6 = <strong className="text-primary">7</strong> (tháng tĩnh tâm)</p>
+        </div>
+        <div className="bg-background/30 rounded-lg p-3 border border-primary/15 text-xs space-y-1">
+          <p className="text-foreground/80">Ngày Cá Nhân = <strong className="text-primary">Tháng Cá Nhân + Ngày dương lịch</strong> (rút gọn)</p>
+          <p className="text-muted-foreground">Giúp xác định năng lượng từng ngày để tối ưu hành động cụ thể.</p>
+        </div>
+        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+          Chu kỳ ngày không thay thế Lịch Vạn Niên — hai hệ thống bổ sung nhau: Lịch Vạn Niên cho biết ngày tốt theo Can Chi, còn Lịch Cá Nhân cho biết ngày phù hợp với <em>năng lượng riêng của bạn</em>.
+        </p>
+      </KBSection>
+    </div>
+  );
+}
+
+export function LichVanNienKnowledge() {
+  return (
+    <div className="space-y-3">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground text-center py-2">Nguồn tri thức — Lịch Vạn Niên</p>
+
+      <KBSection title="Lịch Vạn Niên là gì?">
+        <p className="leading-relaxed">
+          <strong className="text-primary">Lịch Vạn Niên</strong> (萬年曆) là bộ lịch truyền thống Á Đông kết hợp <em>dương lịch</em>, <em>âm lịch</em> và các hệ thống huyền học: <strong className="text-primary">Can Chi</strong>, <strong className="text-primary">Trực ngày</strong>, <strong className="text-primary">Hoàng Đạo / Hắc Đạo</strong>, <strong className="text-primary">Tiết Khí</strong> và <strong className="text-primary">Nhị Thập Bát Tú</strong>. Người xưa dùng để tra cứu ngày tốt xấu, định thời điểm cho mọi việc hệ trọng.
+        </p>
+      </KBSection>
+
+      <KBSection title="10 Thiên Can & 12 Địa Chi">
+        <div className="space-y-3">
+          <div>
+            <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mb-2">10 Thiên Can (Ngũ hành & Âm Dương)</p>
+            <KBTable
+              headers={["Can", "Hành", "Âm/Dương", "Ý nghĩa"]}
+              rows={[
+                ["Giáp (甲)", "Mộc", "Dương", "Khởi đầu, tiên phong, mạnh mẽ"],
+                ["Ất (乙)", "Mộc", "Âm", "Linh hoạt, mềm mại, bền bỉ"],
+                ["Bính (丙)", "Hỏa", "Dương", "Rực rỡ, nhiệt huyết, nổi bật"],
+                ["Đinh (丁)", "Hỏa", "Âm", "Ấm áp, tâm linh, sâu sắc"],
+                ["Mậu (戊)", "Thổ", "Dương", "Vững chắc, trung tâm, bao dung"],
+                ["Kỷ (己)", "Thổ", "Âm", "Nội tâm, cẩn thận, tích lũy"],
+                ["Canh (庚)", "Kim", "Dương", "Quyết đoán, cứng rắn, thẳng thắn"],
+                ["Tân (辛)", "Kim", "Âm", "Tinh tế, sắc bén, quý phái"],
+                ["Nhâm (壬)", "Thủy", "Dương", "Trí tuệ, linh hoạt, bao la"],
+                ["Quý (癸)", "Thủy", "Âm", "Nhạy cảm, huyền bí, thấu cảm"],
+              ]}
+            />
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-primary/80 uppercase tracking-wider mb-2">12 Địa Chi (Con giáp)</p>
+            <KBTable
+              headers={["Chi", "Giáp", "Giờ", "Hướng", "Ngũ Hành"]}
+              rows={[
+                ["Tý (子)", "Chuột", "23:00–01:00", "Bắc", "Thủy"],
+                ["Sửu (丑)", "Trâu", "01:00–03:00", "Đông Bắc", "Thổ"],
+                ["Dần (寅)", "Hổ", "03:00–05:00", "Đông Bắc", "Mộc"],
+                ["Mão (卯)", "Mèo", "05:00–07:00", "Đông", "Mộc"],
+                ["Thìn (辰)", "Rồng", "07:00–09:00", "Đông Nam", "Thổ"],
+                ["Tỵ (巳)", "Rắn", "09:00–11:00", "Nam", "Hỏa"],
+                ["Ngọ (午)", "Ngựa", "11:00–13:00", "Nam", "Hỏa"],
+                ["Mùi (未)", "Dê", "13:00–15:00", "Tây Nam", "Thổ"],
+                ["Thân (申)", "Khỉ", "15:00–17:00", "Tây", "Kim"],
+                ["Dậu (酉)", "Gà", "17:00–19:00", "Tây", "Kim"],
+                ["Tuất (戌)", "Chó", "19:00–21:00", "Tây Bắc", "Thổ"],
+                ["Hợi (亥)", "Lợn", "21:00–23:00", "Bắc", "Thủy"],
+              ]}
+            />
+          </div>
+        </div>
+      </KBSection>
+
+      <KBSection title="12 Trực Ngày — Hoàng Đạo & Hắc Đạo">
+        <p className="leading-relaxed mb-2">
+          Mỗi ngày âm lịch được gán một trong <strong className="text-primary">12 Trực</strong> (Kiến→Trừ→Mãn→Bình→Định→Chấp→Phá→Nguy→Thành→Thu→Khai→Bế), luân phiên liên tục. Trong đó <strong className="text-green-400">6 trực Hoàng Đạo</strong> và <strong className="text-red-400">6 trực Hắc Đạo</strong>:
+        </p>
+        <KBTable
+          headers={["Nhóm", "Trực", "Đặc điểm"]}
+          rows={[
+            ["Hoàng Đạo (tốt)", "Kiến, Trừ, Mãn, Bình, Định, Thành", "Thuận lợi cho hầu hết việc — khởi sự, ký kết, di chuyển"],
+            ["Hắc Đạo (xấu)", "Chấp, Phá, Nguy, Thu, Khai, Bế", "Cần thận trọng, hạn chế việc quan trọng"],
+          ]}
+        />
+        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+          Ghi chú: "Hoàng Đạo" và "Hắc Đạo" theo Trực chỉ là một trong nhiều yếu tố. Ngày thực sự tốt cần kết hợp thêm Can Chi ngày, Thần Sát, và tuổi của người dùng.
+        </p>
+      </KBSection>
+
+      <KBSection title="24 Tiết Khí — Vòng Mặt Trời">
+        <p className="leading-relaxed mb-2">
+          <strong className="text-primary">24 Tiết Khí</strong> (節氣) chia năm mặt trời thành 24 giai đoạn bằng nhau (mỗi tiết ~15 ngày), đánh dấu sự thay đổi của khí hậu và năng lượng thiên nhiên:
+        </p>
+        <div className="grid grid-cols-2 gap-1 text-xs">
+          {[
+            ["Lập Xuân", "~4/2"], ["Vũ Thủy", "~19/2"], ["Kinh Trập", "~6/3"], ["Xuân Phân", "~21/3"],
+            ["Thanh Minh", "~5/4"], ["Cốc Vũ", "~20/4"], ["Lập Hạ", "~6/5"], ["Tiểu Mãn", "~21/5"],
+            ["Mang Chủng", "~6/6"], ["Hạ Chí", "~21/6"], ["Tiểu Thử", "~7/7"], ["Đại Thử", "~23/7"],
+            ["Lập Thu", "~7/8"], ["Xử Thử", "~23/8"], ["Bạch Lộ", "~8/9"], ["Thu Phân", "~23/9"],
+            ["Hàn Lộ", "~8/10"], ["Sương Giáng", "~23/10"], ["Lập Đông", "~7/11"], ["Tiểu Tuyết", "~22/11"],
+            ["Đại Tuyết", "~7/12"], ["Đông Chí", "~22/12"], ["Tiểu Hàn", "~6/1"], ["Đại Hàn", "~20/1"],
+          ].map(([name, date]) => (
+            <div key={name} className="flex justify-between px-2 py-1 rounded bg-background/20 border border-border/20">
+              <span className="text-foreground/75">{name}</span>
+              <span className="text-muted-foreground">{date}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+          Tiết Khí dùng để xác định tháng sinh trong Bát Tự (không phải tháng âm lịch), tính Can Chi tháng, và chọn thời điểm hành động theo mùa.
+        </p>
+      </KBSection>
+    </div>
+  );
+}

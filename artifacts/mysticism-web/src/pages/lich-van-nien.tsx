@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Navbar } from "@/components/layout/navbar";
+import { LichVanNienKnowledge } from "@/components/knowledge-base";
 import { buildMonthCalendar, formatLunar, getGioHoangDao, type DayInfo } from "@/lib/lunar-calendar";
 
 const DOW = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
@@ -282,6 +283,7 @@ export default function LichVanNienPage() {
               );
             })}
           </div>
+          <LichVanNienKnowledge />
         </div>
       </main>
     </div>
