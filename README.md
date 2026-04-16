@@ -21,6 +21,7 @@
 - [Kiến trúc hệ thống](#kiến-trúc-hệ-thống)
 - [Cài bằng Docker (khuyên dùng)](#cài-bằng-docker-khuyên-dùng)
 - [Cài thủ công trên VPS](#cài-thủ-công-trên-vps)
+- [Cập nhật phiên bản](#cập-nhật-phiên-bản)
 - [Cấu hình HTTPS](#cấu-hình-https)
 - [Cấu hình Clerk Production](#cấu-hình-clerk-production)
 - [Cấu hình AI (Admin Panel)](#cấu-hình-ai-admin-panel)
@@ -370,6 +371,185 @@ server {
 ```bash
 sudo ln -s /etc/nginx/sites-available/huyen-bi /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
+```
+
+---
+
+## Cập nhật phiên bản
+
+Mỗi khi có tính năng mới, bản vá lỗi hoặc nâng cấp phụ thuộc, thực hiện theo hướng dẫn tương ứng với cách bạn đang triển khai.
+
+> **Trước khi update:** Luôn sao lưu database và file `.env` phòng trường hợp cần rollback.
+
+---
+
+### Backup nhanh trước khi update
+
+```bash
+# Sao lưu database (bắt buộc nếu có dữ liệu người dùng)
+# Docker:
+docker exec huyen-bi-db pg_dump -U postgres huyenbi > backup_$(date +%Y%m%d).sql
+
+# VPS thủ công:
+pg_dump -U huyenbi huyenbi > backup_$(date +%Y%m%d).sql
+
+# Sao lưu file .env
+cp .env .env.backup
+```
+
+---
+
+### Cập nhật khi dùng Docker (khuyên dùng)
+
+```bash
+# 1. Vào thư mục project
+cd /opt/huyen-bi        # Hoặc thư mục bạn đã clone
+
+# 2. Kéo code mới nhất
+git pull origin main
+
+# 3. Rebuild và khởi động lại (downtime khoảng 30–60 giây)
+docker compose up --build -d
+
+# 4. Kiểm tra log xem có lỗi không
+docker compose logs -f --tail=50
+```
+
+> Database schema tự động được migrate khi server khởi động — bạn không cần chạy lệnh migration thủ công.
+
+**Kiểm tra sau update:**
+
+```bash
+# Xem trạng thái các container
+docker compose ps
+
+# Kiểm tra API server
+curl http://localhost/api/healthz
+```
+
+---
+
+### Cập nhật khi cài thủ công trên VPS
+
+```bash
+# 1. Vào thư mục project
+cd /opt/huyen-bi
+
+# 2. Kéo code mới nhất
+git pull origin main
+
+# 3. Cài dependencies mới (nếu có)
+pnpm install --no-frozen-lockfile
+
+# 4. Rebuild backend
+pnpm --filter @workspace/api-server run build
+
+# 5. Rebuild frontend
+PORT=3000 BASE_PATH=/ NODE_ENV=production \
+  VITE_CLERK_PUBLISHABLE_KEY=pk_live_... \
+  pnpm --filter @workspace/mysticism-web run build
+
+# 6. Khởi động lại backend (PM2 tự reload)
+pm2 reload huyen-bi-api
+
+# 7. Kiểm tra trạng thái
+pm2 status
+pm2 logs huyen-bi-api --lines 30
+```
+
+> Frontend là file tĩnh — Nginx phục vụ ngay từ thư mục `dist/public/` mà không cần restart.
+
+---
+
+### Cập nhật chỉ Frontend (không đổi backend)
+
+Khi bản update chỉ thay đổi giao diện, không có API mới:
+
+```bash
+git pull origin main
+
+# Docker:
+docker compose up --build -d web
+
+# VPS thủ công:
+PORT=3000 BASE_PATH=/ NODE_ENV=production \
+  VITE_CLERK_PUBLISHABLE_KEY=pk_live_... \
+  pnpm --filter @workspace/mysticism-web run build
+# Không cần restart Nginx hay PM2
+```
+
+---
+
+### Cập nhật chỉ Backend (không đổi frontend)
+
+```bash
+git pull origin main
+
+# Docker:
+docker compose up --build -d api
+
+# VPS thủ công:
+pnpm --filter @workspace/api-server run build
+pm2 reload huyen-bi-api
+```
+
+---
+
+### Xem lịch sử cập nhật
+
+```bash
+# Xem 10 commit gần nhất để biết có gì mới
+git log --oneline -10
+
+# Xem chi tiết thay đổi của một commit
+git show <commit_hash>
+
+# Xem file nào thay đổi trong lần update vừa pull
+git diff HEAD~1 --name-only
+```
+
+---
+
+### Rollback về phiên bản trước
+
+Nếu bản update có lỗi nghiêm trọng:
+
+```bash
+# Xem danh sách các commit (tìm hash của phiên bản cũ)
+git log --oneline -20
+
+# Quay về commit cụ thể
+git checkout <commit_hash>
+
+# Docker — rebuild lại từ code cũ
+docker compose up --build -d
+
+# VPS — rebuild frontend + backend rồi pm2 reload
+```
+
+**Khôi phục database** (nếu schema bị thay đổi):
+
+```bash
+# Docker:
+docker exec -i huyen-bi-db psql -U postgres huyenbi < backup_YYYYMMDD.sql
+
+# VPS:
+psql -U huyenbi huyenbi < backup_YYYYMMDD.sql
+```
+
+---
+
+### Kiểm tra phiên bản đang chạy
+
+```bash
+# Xem commit đang deploy
+git rev-parse --short HEAD
+
+# Docker — xem image đang dùng
+docker compose images
+
+# VPS — xem thời gian deploy gần nhất
+pm2 info huyen-bi-api | grep "started"
 ```
 
 ---
