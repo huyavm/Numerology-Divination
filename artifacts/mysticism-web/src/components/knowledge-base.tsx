@@ -6,7 +6,7 @@ function KBSection({ title, children }: { title: string; children: React.ReactNo
     <div className="border border-primary/15 rounded-xl overflow-hidden">
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-5 py-4 text-left bg-card/20 hover:bg-primary/5 transition-colors"
+        className="accordion-hover w-full flex items-center justify-between px-5 py-4 text-left bg-card/20 hover:bg-primary/5 transition-colors"
       >
         <span className="text-sm font-semibold text-primary/80 uppercase tracking-widest">{title}</span>
         <span className={`text-primary/60 transition-transform duration-300 ${open ? "rotate-180" : ""}`}>▾</span>

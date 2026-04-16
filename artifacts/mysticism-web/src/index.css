@@ -340,6 +340,207 @@
   animation: magic-line-grow 1.2s ease-out forwards;
 }
 
+/* ═══════════════════════════════════════════════
+   HOVER EFFECTS — CSS only, no JS
+   ═══════════════════════════════════════════════ */
+
+/* ── 1. Nav top-level link: gold underline slide from center ── */
+.nav-link-hover {
+  position: relative;
+}
+.nav-link-hover::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 100%;
+  height: 1.5px;
+  background: hsl(var(--primary));
+  border-radius: 1px;
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nav-link-hover:hover::after,
+.nav-link-hover.active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* ── 2. Dropdown menu item: left gold bar + nudge right ── */
+.dropdown-item-hover {
+  position: relative;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.dropdown-item-hover::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 2px;
+  border-radius: 1px;
+  background: hsl(var(--primary));
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.dropdown-item-hover:hover::before {
+  transform: scaleY(1);
+}
+.dropdown-item-hover:hover {
+  transform: translateX(4px);
+}
+
+/* ── 3. Card lift: subtle rise + ambient glow ── */
+.card-hover {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.28s ease,
+              border-color 0.28s ease;
+}
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px hsl(var(--primary) / 0.14),
+              0 4px 16px hsl(var(--primary) / 0.08);
+}
+
+/* ── 4. Button shimmer: light sweep across on hover ── */
+@keyframes shimmer-sweep {
+  from { left: -80%; }
+  to   { left: 130%;  }
+}
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.btn-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.07),
+    transparent
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+.btn-shimmer:hover::before {
+  animation: shimmer-sweep 0.55s ease forwards;
+}
+
+/* ── 5. Tab trigger: scale + glow on hover ── */
+.tab-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.tab-hover:hover:not([data-state="active"]) {
+  transform: scale(1.03);
+  box-shadow: 0 0 12px hsl(var(--primary) / 0.1);
+}
+
+/* ── 6. Input: gold glow ring on focus (global, no class needed) ── */
+.input-glow:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.18),
+              0 0 14px hsl(var(--primary) / 0.10);
+}
+main input:not([type="date"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):focus,
+main textarea:focus {
+  box-shadow: 0 0 0 2px hsl(var(--primary) / 0.15),
+              0 0 16px hsl(var(--primary) / 0.08) !important;
+  border-color: hsl(var(--primary) / 0.5) !important;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* ── 7. Icon float: icon lifts on card hover ── */
+.icon-float {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              filter 0.3s ease;
+}
+.card-hover:hover .icon-float {
+  transform: translateY(-4px) scale(1.12);
+  filter: drop-shadow(0 4px 8px hsl(var(--primary) / 0.3));
+}
+
+/* ── 8. Mobile nav item: background slide from left ── */
+.mobile-nav-item {
+  position: relative;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+.mobile-nav-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: hsl(var(--primary) / 0.07);
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  border-radius: inherit;
+}
+.mobile-nav-item:hover::before {
+  transform: translateX(0);
+}
+
+/* ── 9. Knowledge accordion header: text glow on hover ── */
+.accordion-hover {
+  transition: color 0.2s ease;
+}
+.accordion-hover:hover {
+  color: hsl(var(--primary));
+  text-shadow: 0 0 18px hsl(var(--primary) / 0.25);
+}
+
+/* ── 10. Score ring / stat number: pulse scale on hover ── */
+.stat-hover {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-block;
+}
+.stat-hover:hover {
+  transform: scale(1.08);
+}
+
+/* ── 11. Global: primary buttons get shimmer automatically ── */
+button[type="submit"],
+button.bg-primary,
+a.bg-primary {
+  position: relative;
+  overflow: hidden;
+}
+button[type="submit"]::before,
+button.bg-primary::before,
+a.bg-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -80%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+button[type="submit"]:hover::before,
+button.bg-primary:hover::before,
+a.bg-primary:hover::before {
+  animation: shimmer-sweep 0.55s ease forwards;
+}
+
+/* ── 12. Card components: border glow on hover ── */
+.border-primary\/20:hover,
+.border-primary\/25:hover {
+  border-color: hsl(var(--primary) / 0.4) !important;
+  transition: border-color 0.3s ease;
+}
+
+/* ── 13. Dropdown label (group header text): slight shimmer ── */
+button.dropdown-item-hover:hover span:first-child,
+a.dropdown-item-hover:hover span:first-child {
+  color: hsl(var(--primary));
+}
+
 /* ── Star Cursor ── */
 @media (hover: hover) {
   html, body, * {

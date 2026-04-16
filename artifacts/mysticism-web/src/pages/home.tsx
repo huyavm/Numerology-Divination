@@ -273,12 +273,12 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
             <Link href="/than-so-hoc">
-              <button className="btn-ripple px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 transition-all duration-200 hover:shadow-[0_0_28px_hsl(var(--primary)/0.5)] hover:-translate-y-1">
+              <button className="btn-ripple btn-shimmer px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 transition-all duration-200 hover:shadow-[0_0_28px_hsl(var(--primary)/0.5)] hover:-translate-y-1">
                 Bắt đầu khám phá
               </button>
             </Link>
             <Link href="/ai-chat">
-              <button className="btn-ripple px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-semibold text-base hover:bg-primary/10 transition-all duration-200 hover:-translate-y-1 hover:border-primary/60">
+              <button className="btn-ripple btn-shimmer px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-semibold text-base hover:bg-primary/10 transition-all duration-200 hover:-translate-y-1 hover:border-primary/60">
                 Hỏi Trợ Lý AI
               </button>
             </Link>
@@ -319,14 +319,14 @@ export default function Home() {
               <div key={m.href} data-reveal data-reveal-delay={i * 60}>
                 <TiltCard>
                   <Link href={m.href} className="group block h-full">
-                    <div className={`h-full rounded-2xl border bg-gradient-to-br ${m.accent} p-6 transition-all duration-300 hover:shadow-[0_8px_40px_hsl(var(--primary)/0.2)] cursor-pointer`}>
+                    <div className={`card-hover h-full rounded-2xl border bg-gradient-to-br ${m.accent} p-6 cursor-pointer`}>
                       <div className="flex items-start justify-between mb-4">
                         <div>
                           <p className="text-xs uppercase tracking-widest text-muted-foreground/60 mb-1">{m.subtitle}</p>
-                          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors">{m.title}</h3>
+                          <h3 className="text-xl font-bold text-foreground group-hover:text-primary transition-colors duration-200">{m.title}</h3>
                         </div>
                         <div className="text-right flex-shrink-0 ml-4">
-                          <div className={`text-4xl font-bold leading-none ${m.symbolColor} group-hover:scale-110 transition-transform duration-300`}>{m.symbol}</div>
+                          <div className={`icon-float text-4xl font-bold leading-none ${m.symbolColor}`}>{m.symbol}</div>
                           <div className="text-[10px] text-muted-foreground/50 mt-1">{m.symbolSub}</div>
                         </div>
                       </div>
@@ -417,12 +417,12 @@ export default function Home() {
               <p className="text-muted-foreground text-lg">Hành trình thấu hiểu bản thân và vận mệnh bắt đầu từ một câu hỏi.</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
                 <Link href="/lich-van-nien">
-                  <button className="btn-ripple px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all duration-200 hover:shadow-[0_0_28px_hsl(var(--primary)/0.5)] hover:-translate-y-1">
+                  <button className="btn-ripple btn-shimmer px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all duration-200 hover:shadow-[0_0_28px_hsl(var(--primary)/0.5)] hover:-translate-y-1">
                     Xem Lịch Hôm Nay
                   </button>
                 </Link>
                 <Link href="/ai-chat">
-                  <button className="btn-ripple px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-semibold hover:bg-primary/10 transition-all duration-200 hover:-translate-y-1 hover:border-primary/60">
+                  <button className="btn-ripple btn-shimmer px-8 py-3.5 rounded-xl border border-primary/30 text-primary font-semibold hover:bg-primary/10 transition-all duration-200 hover:-translate-y-1 hover:border-primary/60">
                     Chat với AI
                   </button>
                 </Link>

@@ -134,7 +134,7 @@ function DropdownMenu({ group, location }: { group: NavGroup; location: string }
                 href={child.href}
                 onClick={() => setOpen(false)}
                 className={cn(
-                  "flex flex-col px-3 py-2 mx-1 rounded-lg transition-colors group",
+                  "dropdown-item-hover flex flex-col px-3 py-2 mx-1 rounded-lg group",
                   location === child.href
                     ? "bg-primary/15 text-primary"
                     : "hover:bg-primary/8 text-foreground"
@@ -187,10 +187,10 @@ function MobileGroupSection({
               href={child.href}
               onClick={onClose}
               className={cn(
-                "block px-2 py-2 rounded-lg text-sm transition-colors",
+                "mobile-nav-item block px-2 py-2 rounded-lg text-sm transition-colors",
                 location === child.href
                   ? "text-primary font-semibold bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-primary/5"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               {child.label}
@@ -296,8 +296,8 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "text-xs tracking-wide transition-colors hover:text-primary whitespace-nowrap py-1",
-                    location === item.href ? "text-primary font-semibold" : "text-muted-foreground"
+                    "nav-link-hover text-xs tracking-wide transition-colors hover:text-primary whitespace-nowrap py-1",
+                    location === item.href ? "text-primary font-semibold active" : "text-muted-foreground"
                   )}
                 >
                   {item.label}
